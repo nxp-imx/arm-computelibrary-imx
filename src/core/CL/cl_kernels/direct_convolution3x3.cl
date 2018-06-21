@@ -40,7 +40,7 @@
 #endif /* STRIDE_X == 2 */
 
 #define CONVOLUTION1x3_STRIDE1(acc, src_row_ptr, weights_row_ptr)                                                                                  \
-    ({                                                                                                                                             \
+    do {                                                                                                                                             \
         VEC_DATA_TYPE(DATA_TYPE, 3)                                                                                                                \
         weights_values0 = vload3(0, weights_row_ptr);                                                                                              \
         VEC_DATA_TYPE(DATA_TYPE, 8)                                                                                                                \
@@ -51,10 +51,10 @@
         acc = ADD_OP(acc, MUL_OP(src0, (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s0));                                                          \
         acc = ADD_OP(acc, MUL_OP((VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s1234, src0.s567, src1.s0), (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s1)); \
         acc = ADD_OP(acc, MUL_OP((VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s234, src0.s567, src1.s01), (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s2)); \
-    })
+    } while (0)
 
 #define CONVOLUTION1x3_STRIDE2(acc, src_row_ptr, weights_row_ptr)                                                                               \
-    ({                                                                                                                                          \
+    do {                                                                                                                                          \
         VEC_DATA_TYPE(DATA_TYPE, 3)                                                                                                             \
         weights_values0 = vload3(0, weights_row_ptr);                                                                                           \
         VEC_DATA_TYPE(DATA_TYPE, 16)                                                                                                            \
@@ -64,7 +64,7 @@
         acc = ADD_OP(acc, MUL_OP(src0.even, (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s0));                                                  \
         acc = ADD_OP(acc, MUL_OP((VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s1357, src0.s9BDF), (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s1));      \
         acc = ADD_OP(acc, MUL_OP((VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s2468, src0.sACE, src1), (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s2)); \
-    })
+    } while (0)
 
 #if defined(DATA_LAYOUT_NHWC)
 
@@ -327,7 +327,7 @@ __kernel void direct_convolution3x3(
 #if defined(WEIGHTS_DEPTH)
 
 #define CONVOLUTION1x3_BIFROST(acc, src0, src1, weights_row0) \
-    ({                                                        \
+    do {                                                        \
         acc.s0 = mad(src0.s0, weights_row0.s0, acc.s0);       \
         acc.s1 = mad(src0.s1, weights_row0.s0, acc.s1);       \
         acc.s2 = mad(src0.s2, weights_row0.s0, acc.s2);       \
@@ -340,7 +340,7 @@ __kernel void direct_convolution3x3(
         acc.s1 = mad(src0.s3, weights_row0.s2, acc.s1);       \
         acc.s2 = mad(src1.s0, weights_row0.s2, acc.s2);       \
         acc.s3 = mad(src1.s1, weights_row0.s2, acc.s3);       \
-    })
+    } while(0)
 
 /** An optimized direct convolution 3x3 OpenCL kernel for Bifrost architectures when the data type is F32
  *

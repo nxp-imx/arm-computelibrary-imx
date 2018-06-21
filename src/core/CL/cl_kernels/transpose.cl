@@ -24,24 +24,24 @@
 #include "helpers.h"
 
 #define SWAP_ROW(u0, l0)     \
-    ({                       \
+    do {                       \
         tmp_swap = u0;       \
         u0       = l0;       \
         l0       = tmp_swap; \
-    })
+    }while(0)
 
 #define SWAP_4x4(u0, u1, u2, u3, l0, l1, l2, l3) \
-    ({                                           \
+    do {                                           \
         VEC_DATA_TYPE(DATA_TYPE, 4)              \
         tmp_swap;                                \
         SWAP_ROW(u0, l0);                        \
         SWAP_ROW(u1, l1);                        \
         SWAP_ROW(u2, l2);                        \
         SWAP_ROW(u3, l3);                        \
-    })
+    }while
 
 #define SWAP_8x8(u0, u1, u2, u3, u4, u5, u6, u7, l0, l1, l2, l3, l4, l5, l6, l7) \
-    ({                                                                           \
+    do {                                                                           \
         VEC_DATA_TYPE(DATA_TYPE, 8)                                              \
         tmp_swap;                                                                \
         SWAP_ROW(u0, l0);                                                        \
@@ -52,10 +52,10 @@
         SWAP_ROW(u5, l5);                                                        \
         SWAP_ROW(u6, l6);                                                        \
         SWAP_ROW(u7, l7);                                                        \
-    })
+    }while(0)
 
 #define TRANSPOSE_4x4(u0, u1, u2, u3) \
-    ({                                \
+    do {                                \
         VEC_DATA_TYPE(DATA_TYPE, 4)   \
         tmp;                          \
         tmp.s012 = u0.s123;           \
@@ -75,26 +75,26 @@
         tmp.s0 = u2.s3;               \
         u2.s3  = u3.s2;               \
         u3.s2  = tmp.s0;              \
-    })
+    } while(0)
 
 #define TRANSPOSE_8x8(u0, u1, u2, u3, u4, u5, u6, u7)                                             \
-    ({                                                                                            \
+    do {                                                                                            \
         TRANSPOSE_4x4(u0.s0123, u1.s0123, u2.s0123, u3.s0123);                                    \
         TRANSPOSE_4x4(u0.s4567, u1.s4567, u2.s4567, u3.s4567);                                    \
         TRANSPOSE_4x4(u4.s0123, u5.s0123, u6.s0123, u7.s0123);                                    \
         TRANSPOSE_4x4(u4.s4567, u5.s4567, u6.s4567, u7.s4567);                                    \
         SWAP_4x4(u0.s4567, u1.s4567, u2.s4567, u3.s4567, u4.s0123, u5.s0123, u6.s0123, u7.s0123); \
-    })
+    } while(0)
 
 #define TRANSPOSE_16x16(u0, u1, u2, u3, u4, u5, u6, u7, u8, u9, u10, u11, u12, u13, u14, u15)                                                \
-    ({                                                                                                                                       \
+    do {                                                                                                                                       \
         TRANSPOSE_8x8(u0.s01234567, u1.s01234567, u2.s01234567, u3.s01234567, u4.s01234567, u5.s01234567, u6.s01234567, u7.s01234567);       \
         TRANSPOSE_8x8(u0.s89ABCDEF, u1.s89ABCDEF, u2.s89ABCDEF, u3.s89ABCDEF, u4.s89ABCDEF, u5.s89ABCDEF, u6.s89ABCDEF, u7.s89ABCDEF);       \
         TRANSPOSE_8x8(u8.s01234567, u9.s01234567, u10.s01234567, u11.s01234567, u12.s01234567, u13.s01234567, u14.s01234567, u15.s01234567); \
         TRANSPOSE_8x8(u8.s89ABCDEF, u9.s89ABCDEF, u10.s89ABCDEF, u11.s89ABCDEF, u12.s89ABCDEF, u13.s89ABCDEF, u14.s89ABCDEF, u15.s89ABCDEF); \
         SWAP_8x8(u0.s89ABCDEF, u1.s89ABCDEF, u2.s89ABCDEF, u3.s89ABCDEF, u4.s89ABCDEF, u5.s89ABCDEF, u6.s89ABCDEF, u7.s89ABCDEF,             \
                  u8.s01234567, u9.s01234567, u10.s01234567, u11.s01234567, u12.s01234567, u13.s01234567, u14.s01234567, u15.s01234567);      \
-    })
+    } while(0)
 
 #ifndef DATA_TYPE_IN_BYTES
 #error DATA_TYPE_IN_BYTES not set for the transpose OpenCL kernel

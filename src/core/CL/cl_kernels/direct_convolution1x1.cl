@@ -315,12 +315,12 @@ __kernel void direct_convolution1x1(
 #if defined(WEIGHTS_DEPTH)
 
 #define CONVOLUTION1x1_BIFROST(acc, src, weight_value) \
-    ({                                                 \
+    do {                                                 \
         acc.s0 = mad(src.s0, weight_value, acc.s0);    \
         acc.s1 = mad(src.s1, weight_value, acc.s1);    \
         acc.s2 = mad(src.s2, weight_value, acc.s2);    \
         acc.s3 = mad(src.s3, weight_value, acc.s3);    \
-    })
+    } while(0)
 
 /** An optimized direct convolution 1x1 OpenCL kernel for Bifrost architectures when the data type is F32
  *

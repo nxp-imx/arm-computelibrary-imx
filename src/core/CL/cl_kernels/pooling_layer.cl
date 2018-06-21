@@ -49,7 +49,7 @@
 #endif /* STRIDE_X == 3 */
 
 #define POOLING3x3_STRIDE1(res, input, output)                                                                                               \
-    ({                                                                                                                                       \
+    do {                                                                                                                                       \
         VEC_DATA_TYPE(DATA_TYPE, 4)                                                                                                          \
         data00 = vload4(0, (__global DATA_TYPE *)tensor3D_offset(&input, 0, 0, 0));                                                          \
         VEC_DATA_TYPE(DATA_TYPE, 2)                                                                                                          \
@@ -89,10 +89,11 @@
         \
         res = POOL_OP((VEC_DATA_TYPE(DATA_TYPE, 4))(values00.s036, values01.s1), (VEC_DATA_TYPE(DATA_TYPE, 4))(values00.s147, values01.s2)); \
         res = POOL_OP(res, (VEC_DATA_TYPE(DATA_TYPE, 4))(values00.s25, values01.s03));                                                       \
-    })
+    } while (0)
 
 #define POOLING3x3_STRIDE2(res, input, output)                                                                                               \
-    ({                                                                                                                                       \
+   do 																	    \
+    {                                                                                                                                       \
         VEC_DATA_TYPE(DATA_TYPE, 8)                                                                                                          \
         data00           = vload8(0, (__global DATA_TYPE *)tensor3D_offset(&input, 0, 0, 0));                                                \
         DATA_TYPE data01 = *((__global DATA_TYPE *)tensor3D_offset(&input, 0, 0, 0) + 8);                                                    \
@@ -129,10 +130,11 @@
         \
         res = POOL_OP((VEC_DATA_TYPE(DATA_TYPE, 4))(values00.s036, values01.s1), (VEC_DATA_TYPE(DATA_TYPE, 4))(values00.s147, values01.s2)); \
         res = POOL_OP(res, (VEC_DATA_TYPE(DATA_TYPE, 4))(values00.s25, values01.s03));                                                       \
-    })
+    } while (0)
 
 #define POOLING3x3_STRIDE3(res, input, output)                                                                                       \
-    ({                                                                                                                               \
+    do                                                                                                                               \ 
+      {                                                                                                                               \
         VEC_DATA_TYPE(DATA_TYPE, 8)                                                                                                  \
         data00 = vload8(0, (__global DATA_TYPE *)tensor3D_offset(&input, 0, 0, 0));                                                  \
         VEC_DATA_TYPE(DATA_TYPE, 4)                                                                                                  \
@@ -159,7 +161,7 @@
         \
         res = POOL_OP((VEC_DATA_TYPE(DATA_TYPE, 4))(data00.s036, data01.s1), (VEC_DATA_TYPE(DATA_TYPE, 4))(data00.s147, data01.s2)); \
         res = POOL_OP(res, (VEC_DATA_TYPE(DATA_TYPE, 4))(data00.s25, data01.s03));                                                   \
-    })
+    } while (0)
 
 DATA_TYPE calculate_avg_scale(const int pool_size_x, const int pool_size_y, const int upper_bound_w, const int upper_bound_h,
                               const int pad_x, const int pad_y, const int stride_x, const int stride_y)

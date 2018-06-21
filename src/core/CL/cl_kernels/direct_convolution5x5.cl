@@ -36,7 +36,7 @@
 #endif /* STRIDE_X == 2 */
 
 #define CONVOLUTION1x5_STRIDE1(acc, src_row_ptr, weights_row_ptr)                                                               \
-    ({                                                                                                                          \
+    do {                                                                                                                          \
         VEC_DATA_TYPE(DATA_TYPE, 4)                                                                                             \
         weights_values0          = vload4(0, weights_row_ptr);                                                                  \
         DATA_TYPE weights_value1 = *(weights_row_ptr + 4);                                                                      \
@@ -50,10 +50,10 @@
         acc += (VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s234, src0.s567, src1.s01) * (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s2; \
         acc += (VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s345, src0.s67, src1.s012) * (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s3; \
         acc += (VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s45, src0.s67, src1.s0123) * (VEC_DATA_TYPE(DATA_TYPE, 8))weights_value1;     \
-    })
+    } while (0)
 
 #define CONVOLUTION1x5_STRIDE2(acc, src_row_ptr, weights_row_ptr)                                                               \
-    ({                                                                                                                          \
+    do {                                                                                                                          \
         VEC_DATA_TYPE(DATA_TYPE, 4)                                                                                             \
         weights_values0          = vload4(0, weights_row_ptr);                                                                  \
         DATA_TYPE weights_value1 = *(weights_row_ptr + 4);                                                                      \
@@ -67,7 +67,7 @@
         \
         acc += (VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s3579, src0.sBDF, src1.s1) * (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s3; \
         acc += (VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s468a, src0.sCE, src1.s02) * (VEC_DATA_TYPE(DATA_TYPE, 8))weights_value1;     \
-    })
+    } while (0)
 
 #if defined(DATA_LAYOUT_NHWC)
 
@@ -388,7 +388,7 @@ __kernel void direct_convolution5x5(
 #if defined(WEIGHTS_DEPTH)
 
 #define CONVOLUTION1x5_BIFROST(acc, src0, weights_row00, weights_row01) \
-    ({                                                                  \
+    do {                                                                  \
         acc.s0 = mad(src0.s0, weights_row00.s0, acc.s0);                \
         acc.s1 = mad(src0.s1, weights_row00.s0, acc.s1);                \
         acc.s2 = mad(src0.s2, weights_row00.s0, acc.s2);                \
@@ -409,7 +409,7 @@ __kernel void direct_convolution5x5(
         acc.s1 = mad(src0.s5, weights_row01, acc.s1);                   \
         acc.s2 = mad(src0.s6, weights_row01, acc.s2);                   \
         acc.s3 = mad(src0.s7, weights_row01, acc.s3);                   \
-    })
+    } while (0)
 
 /** An optimized direct convolution 5x5 OpenCL kernel for Bifrost architectures when the data type is F32
  *
