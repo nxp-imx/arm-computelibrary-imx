@@ -166,7 +166,7 @@ elif env['arch'] == 'arm64-v8a':
     env.Append(CXXFLAGS = ['-march=armv8-a'])
     env.Append(CPPDEFINES = ['ARM_COMPUTE_AARCH64_V8A','NO_DOT_IN_TOOLCHAIN'])
     if env['os'] == 'linux':
-        prefix = "aarch64-linux-gnu-"
+        prefix = ""
     elif env['os'] == 'bare_metal':
         prefix = "aarch64-elf-"
     elif env['os'] == 'android':

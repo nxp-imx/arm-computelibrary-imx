@@ -902,7 +902,6 @@ Kernel CLKernelLibrary::create_kernel(const std::string &kernel_name, const Stri
         ARM_COMPUTE_ERROR("Kernel %s not found in the CLKernelLibrary", kernel_name.c_str());
     }
     std::string concat_str;
-
 #if defined(ARM_COMPUTE_DEBUG_ENABLED)
     // Enable debug properties in CL kernels
     concat_str += " -DARM_COMPUTE_DEBUG_ENABLED";
@@ -930,6 +929,10 @@ Kernel CLKernelLibrary::create_kernel(const std::string &kernel_name, const Stri
     else if(arm_non_uniform_workgroup_supported(_device))
     {
         concat_str += " -cl-arm-non-uniform-work-group-size ";
+    }
+    else if (_device.getInfo <CL_DEVICE_VENDOR> () == "Vivante Corporation")
+    {
+	std::clog << "Using Vivante Corporation GPU IP" << std::endl;
     }
     else
     {
