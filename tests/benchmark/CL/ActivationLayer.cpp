@@ -48,8 +48,8 @@ namespace benchmark
 {
 namespace
 {
-const auto data_types           = framework::dataset::make("DataType", { DataType::F16, DataType::F32 });
-const auto data_types_mobilenet = framework::dataset::make("DataType", { DataType::F16, DataType::F32, DataType::QASYMM8 });
+const auto data_types           = framework::dataset::make("DataType", { DataType::F32 });
+const auto data_types_mobilenet = framework::dataset::make("DataType", { DataType::F32 });
 } // namespace
 
 using CLActivationLayerFixture = ActivationLayerFixture<CLTensor, CLActivationLayer, CLAccessor>;

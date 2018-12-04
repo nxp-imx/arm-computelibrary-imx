@@ -41,7 +41,7 @@ namespace
 {
 const auto small_data_shapes = framework::dataset::make("M", 8, 12) * framework::dataset::make("N", 8, 12);
 const auto big_data_shapes   = framework::dataset::make("M", 9999, 10001) * framework::dataset::make("N", 20000, 20003);
-const auto data_types        = framework::dataset::make("DataType", { DataType::U8, DataType::U16, DataType::U32 });
+const auto data_types        = framework::dataset::make("DataType", { DataType::U32 });
 } // namespace
 
 using CLGEMMInterleave4x4Fixture = GEMMInterleave4x4Fixture<CLTensor, CLGEMMInterleave4x4, CLAccessor>;

@@ -43,7 +43,7 @@ namespace benchmark
 {
 namespace
 {
-const auto data_types          = framework::dataset::make("DataType", { DataType::F16, DataType::F32 });
+const auto data_types          = framework::dataset::make("DataType", { DataType::F32 });
 const auto reshape_b_only_once = framework::dataset::make("ReshapeBOnlyOnce", { false, true });
 } // namespace
 

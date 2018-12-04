@@ -39,7 +39,7 @@ namespace benchmark
 {
 namespace
 {
-const auto data_types = framework::dataset::make("DataType", { DataType::U8, DataType::S16, DataType::F32 });
+const auto data_types = framework::dataset::make("DataType", { DataType::F32 });
 } // namespace
 
 using CLMinMaxLocationFixture = MinMaxLocationFixture<CLTensor, CLMinMaxLocation, CLAccessor, CLCoordinates2DArray>;

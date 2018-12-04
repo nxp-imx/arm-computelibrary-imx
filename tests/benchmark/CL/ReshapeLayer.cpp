@@ -41,7 +41,7 @@ namespace benchmark
 {
 namespace
 {
-const auto data_types = framework::dataset::make("DataType", { DataType::U8, DataType::U16, DataType::U32, DataType::F16, DataType::F32 });
+const auto data_types = framework::dataset::make("DataType", { DataType::U32, DataType::F32 });
 } // namespace
 
 using CLReshapeLayerFixture = ReshapeLayerFixture<CLTensor, CLReshapeLayer, CLAccessor>;

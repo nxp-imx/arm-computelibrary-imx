@@ -47,7 +47,7 @@ TEST_SUITE(CL)
 
 REGISTER_FIXTURE_DATA_TEST_CASE(SmallROIPoolingLayer, CLROIPoolingLayerFixture, framework::DatasetMode::ALL,
                                 framework::dataset::combine(framework::dataset::combine(datasets::SmallROIPoolingLayerDataset(),
-                                                                                        framework::dataset::make("DataType", { DataType::F16, DataType::F32 })),
+                                                                                        framework::dataset::make("DataType", { DataType::F32 })),
                                                             framework::dataset::make("Batches", { 1, 4, 8 })));
 
 TEST_SUITE_END()
