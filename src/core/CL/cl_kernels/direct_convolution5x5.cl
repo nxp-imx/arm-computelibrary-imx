@@ -82,7 +82,7 @@
 #endif /* STRIDE_X == 2 */
 
 #define CONVOLUTION1x5_STRIDE1_NHWC(acc, row_ptr, weights_ptr)                                                                         \
-    ({                                                                                                                                 \
+    do{                                                                                                                                 \
         VEC_DATA_TYPE(DATA_TYPE, 8)                                                                                                    \
         src0 = (VEC_DATA_TYPE(DATA_TYPE, 8))(                                                                                          \
                 PTR_TO_VALUE(row_ptr + 0 * src_stride_y, DATA_TYPE), PTR_TO_VALUE(row_ptr + 1 * src_stride_y, DATA_TYPE),                  \
@@ -103,10 +103,10 @@
         acc += (VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s234, src0.s567, src1.s01) * (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s2;        \
         acc += (VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s345, src0.s67, src1.s012) * (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s3;        \
         acc += (VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s45, src0.s67, src1.s0123) * (VEC_DATA_TYPE(DATA_TYPE, 8))weights_value1;            \
-    })
+    }while(0)
 
 #define CONVOLUTION1x5_STRIDE2_NHWC(acc, row_ptr, weights_ptr)                                                                         \
-    ({                                                                                                                                 \
+    do{                                                                                                                                 \
         VEC_DATA_TYPE(DATA_TYPE, 16)                                                                                                   \
         src0 = (VEC_DATA_TYPE(DATA_TYPE, 16))(                                                                                         \
                 PTR_TO_VALUE(row_ptr + 0 * src_stride_y, DATA_TYPE), PTR_TO_VALUE(row_ptr + 1 * src_stride_y, DATA_TYPE),                  \
@@ -132,7 +132,7 @@
         \
         acc += (VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s3579, src0.sBDF, src1.s1) * (VEC_DATA_TYPE(DATA_TYPE, 8))weights_values0.s3;        \
         acc += (VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s468a, src0.sCE, src1.s02) * (VEC_DATA_TYPE(DATA_TYPE, 8))weights_value1;            \
-    })
+    }while(0)
 
 /** This kernel performs a direct convolution to convolve the low three dimensions in a tensor with the NHWC data layout
  *

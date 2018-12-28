@@ -24,7 +24,8 @@
 #include "helpers.h"
 
 #define OUTPUT_ROW_4x4_5x5(out, tmp, comm_fact)                     \
-    ({                                                              \
+    do								   \
+    {                                                              \
         comm_fact.s0 = tmp.s2 - 4.25f * tmp.s4 + tmp.s6;            \
         comm_fact.s1 = tmp.s1 - 4.25f * tmp.s3 + tmp.s5;            \
         comm_fact.s2 = 2.5f * tmp.s3;                               \
@@ -41,7 +42,7 @@
         out.s5 = comm_fact.s5 + comm_fact.s6;                       \
         out.s6 = comm_fact.s5 - comm_fact.s6;                       \
         out.s7 = tmp.s7 - tmp.s1 + 5.25f * tmp.s3 - 5.25f * tmp.s5; \
-    })
+    }while(0)
 
 #if defined(NUM_TILES_X) && defined(PAD_LEFT) && defined(PAD_TOP) && defined(OUTPUT_TILE_W) && defined(OUTPUT_TILE_H)
 /** This OpenCL kernel computes the input transform when the kernel size is 3x3/3x1 or 1x3 and the output tile is 2x2/2x1 or 1x2

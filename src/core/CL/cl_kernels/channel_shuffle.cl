@@ -33,11 +33,11 @@
 #define TYPE VEC_DATA_TYPE(DATA_TYPE, VEC_SIZE)
 
 #define DIV_MOD_UINT(x, y, div_res, mod_res)                \
-    ({                                                      \
+    do{                                                      \
         div_res = (uint)((x) * (float)(1.0f / (float)(y))); \
         uint r  = div_res * (y);                            \
         mod_res = (x)-r;                                    \
-    })
+    }while(0)
 
 /** Performs channel shuffle when the data layout is NCHW. See https://arxiv.org/pdf/1707.01083.pdf for details.
  *

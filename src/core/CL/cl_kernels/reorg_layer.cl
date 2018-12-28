@@ -26,12 +26,12 @@
 #if defined(DATA_TYPE) && defined(SRC_DEPTH) && defined(STRIDE)
 
 #define CALCULATE_SRC_COORDINATES(xo, yo, zo, xi, yi, zi)     \
-    ({                                                        \
+    do{                                                        \
         int offset = zo / (int)SRC_DEPTH;                     \
         xi         = xo * (int)STRIDE + offset % (int)STRIDE; \
         yi         = yo * (int)STRIDE + offset / (int)STRIDE; \
         zi         = zo % SRC_DEPTH;                          \
-    })
+    }while(0)
 
 /** Performs a reorganization layer of input tensor to the output tensor when the data layout is NCHW
  *

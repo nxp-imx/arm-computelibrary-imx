@@ -38,7 +38,7 @@
 #endif /* STRIDE_X */
 
 #define CONVOLUTION1x5_STRIDE1(acc, src_row_ptr, weights_row_ptr)                                                    \
-    ({                                                                                                               \
+    do{                                                                                                               \
         int4 weights_values0 = convert_int4(vload4(0, weights_row_ptr));                                             \
         int  weights_value1  = convert_int(*(weights_row_ptr + 4));                                                  \
         int8 src0            = convert_int8(vload8(0, src_row_ptr));                                                 \
@@ -48,10 +48,10 @@
         acc += ((int8)(src0.s234, src0.s567, src1.s01) + input_offset) * ((int8)weights_values0.s2 + weight_offset); \
         acc += ((int8)(src0.s345, src0.s67, src1.s012) + input_offset) * ((int8)weights_values0.s3 + weight_offset); \
         acc += ((int8)(src0.s45, src0.s67, src1.s0123) + input_offset) * ((int8)weights_value1 + weight_offset);     \
-    })
+    }while(0)
 
 #define CONVOLUTION1x5_STRIDE2(acc, src_row_ptr, weights_row_ptr)                                                    \
-    ({                                                                                                               \
+    do{                                                                                                               \
         int4  weights_values0 = convert_int4(vload4(0, weights_row_ptr));                                            \
         int   weights_value1  = convert_int(*(weights_row_ptr + 4));                                                 \
         int16 src0            = convert_int16(vload16(0, src_row_ptr));                                              \
@@ -61,7 +61,7 @@
         acc += ((int8)(src0.s2468, src0.sACE, src1.s0) + input_offset) * ((int8)weights_values0.s2 + weight_offset); \
         acc += ((int8)(src0.s3579, src0.sBDF, src1.s1) + input_offset) * ((int8)weights_values0.s3 + weight_offset); \
         acc += ((int8)(src0.s468a, src0.sCE, src1.s02) + input_offset) * ((int8)weights_value1 + weight_offset);     \
-    })
+    }while(0)
 
 #elif KERNEL_SIZE == 3
 
@@ -74,24 +74,24 @@
 #endif /* STRIDE_X */
 
 #define CONVOLUTION1x3_STRIDE1(acc, src_row_ptr, weights_row_ptr)                                                    \
-    ({                                                                                                               \
+    do{                                                                                                               \
         int3 weights_values0 = convert_int3(vload3(0, weights_row_ptr));                                             \
         int8 src0            = convert_int8(vload8(0, src_row_ptr));                                                 \
         int2 src1            = convert_int2(vload2(0, src_row_ptr + 8));                                             \
         acc += (src0 + input_offset) * ((int8)weights_values0.s0 + weight_offset);                                   \
         acc += ((int8)(src0.s1234, src0.s567, src1.s0) + input_offset) * ((int8)weights_values0.s1 + weight_offset); \
         acc += ((int8)(src0.s234, src0.s567, src1.s01) + input_offset) * ((int8)weights_values0.s2 + weight_offset); \
-    })
+    }while(0)
 
 #define CONVOLUTION1x3_STRIDE2(acc, src_row_ptr, weights_row_ptr)                                                 \
-    ({                                                                                                            \
+    do{                                                                                                            \
         int3  weights_values0 = convert_int3(vload3(0, weights_row_ptr));                                         \
         int16 src0            = convert_int16(vload16(0, src_row_ptr));                                           \
         int   src1            = convert_int(*(src_row_ptr + 16));                                                 \
         acc += (src0.even + input_offset) * ((int8)weights_values0.s0 + weight_offset);                           \
         acc += ((int8)(src0.s1357, src0.s9BDF) + input_offset) * ((int8)weights_values0.s1 + weight_offset);      \
         acc += ((int8)(src0.s2468, src0.sACE, src1) + input_offset) * ((int8)weights_values0.s2 + weight_offset); \
-    })
+    }while(0)
 
 #elif KERNEL_SIZE == 1
 

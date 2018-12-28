@@ -630,7 +630,7 @@ __kernel void winograd_output_transform_4x4_3x3_nhwc(
 }
 
 #define COMPUTE_TMP_COL(col, d0, d1, d2, d3, d4, d5, d6, d7, comm_fact)  \
-    ({                                                                   \
+     do{                                                                   \
         comm_fact.s0 = d1 + d2;                                          \
         comm_fact.s1 = d3 + d4;                                          \
         comm_fact.s2 = d5 + d6;                                          \
@@ -644,7 +644,7 @@ __kernel void winograd_output_transform_4x4_3x3_nhwc(
         \
         col.s1 = comm_fact.s0 + 2.f * comm_fact.s1 + 4.f * comm_fact.s2; \
         col.s3 = comm_fact.s0 + 8.f * comm_fact.s1 + comm_fact.s2 + d7;  \
-    })
+    }while(0)
 
 /** This OpenCL kernel performs Winograd output transform when the output tile is 4x4/4x1 or 1x4, the filter size 5x5/5x1 or 1x5 and the data layout is NCHW
  *

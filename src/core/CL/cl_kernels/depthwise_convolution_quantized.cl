@@ -55,34 +55,34 @@
 
 #if CONV_STRIDE_X == 1
 #define GET_VALUES(first_value, left, middle, right)                              \
-    ({                                                                            \
+    do{                                                                            \
         int8 temp0 = CONVERT(vload8(0, first_value), int8);                       \
         int2 temp1 = CONVERT(vload2(0, (first_value + 8 * sizeof(uchar))), int2); \
         \
         left   = CONVERT(temp0.s01234567, int8);                                  \
         middle = CONVERT((int8)(temp0.s1234, temp0.s567, temp1.s0), int8);        \
         right  = CONVERT((int8)(temp0.s2345, temp0.s67, temp1.s01), int8);        \
-    })
+    }while(0)
 #elif CONV_STRIDE_X == 2
 #define GET_VALUES(first_value, left, middle, right)                     \
-    ({                                                                   \
+    do{                                                                   \
         int16 temp0 = CONVERT(vload16(0, first_value), int16);           \
         int   temp1 = CONVERT(*(first_value + 16 * sizeof(uchar)), int); \
         \
         left   = CONVERT(temp0.s02468ace, int8);                         \
         middle = CONVERT(temp0.s13579bdf, int8);                         \
         right  = CONVERT((int8)(temp0.s2468, temp0.sace, temp1), int8);  \
-    })
+    }while(0)
 #else /* CONV_STRIDE_X */
 #define GET_VALUES(first_value, left, middle, right)                                \
-    ({                                                                              \
+    do{                                                                              \
         int16 temp0 = CONVERT(vload16(0, first_value), int16);                      \
         int8  temp1 = CONVERT(vload8(0, (first_value + 16 * sizeof(uchar))), int8); \
         \
         left   = CONVERT((int8)(temp0.s0369, temp0.scf, temp1.s25), int8);          \
         middle = CONVERT((int8)(temp0.s147a, temp0.sd, temp1.s036), int8);          \
         right  = CONVERT((int8)(temp0.s258b, temp0.se, temp1.s147), int8);          \
-    })
+    }while(0)
 #endif /* CONV_STRIDE_X */
 
 /** This function computes the depthwise convolution quantized.
@@ -288,34 +288,34 @@ __kernel void depthwise_convolution_3x3_quantized_nchw(
 
 #if CONV_STRIDE_X == 1
 #define GET_VALUES(first_value, left, middle, right)                 \
-    ({                                                               \
+    do{                                                               \
         uchar8 temp0 = vload8(0, first_value);                       \
         uchar2 temp1 = vload2(0, (first_value + 8 * sizeof(uchar))); \
         \
         left   = temp0.s01234567;                                    \
         middle = (uchar8)(temp0.s1234, temp0.s567, temp1.s0);        \
         right  = (uchar8)(temp0.s2345, temp0.s67, temp1.s01);        \
-    })
+    }while(0)
 #elif CONV_STRIDE_X == 2
 #define GET_VALUES(first_value, left, middle, right)         \
-    ({                                                       \
+    do{                                                       \
         uchar16 temp0 = vload16(0, first_value);             \
         uchar   temp1 = *(first_value + 16 * sizeof(uchar)); \
         \
         left   = temp0.s02468ace;                            \
         middle = temp0.s13579bdf;                            \
         right  = (uchar8)(temp0.s2468, temp0.sace, temp1);   \
-    })
+    }while(0)
 #else /* CONV_STRIDE_X */
 #define GET_VALUES(first_value, left, middle, right)                   \
-    ({                                                                 \
+    do{                                                                 \
         uchar16 temp0 = vload16(0, first_value);                       \
         uchar8  temp1 = vload8(0, (first_value + 16 * sizeof(uchar))); \
         \
         left   = (uchar8)(temp0.s0369, temp0.scf, temp1.s25);          \
         middle = (uchar8)(temp0.s147a, temp0.sd, temp1.s036);          \
         right  = (uchar8)(temp0.s258b, temp0.se, temp1.s147);          \
-    })
+    }while(0)
 #endif /* CONV_STRIDE_X */
 /** This function computes the depthwise convolution quantized using dot product when the data layout is NCHW.
  *
@@ -565,17 +565,17 @@ __kernel void depthwise_convolution_3x3_quantized_dot8_nchw(
 
 #if WEIGHTS_OFFSET != 0
 #define MULTIPLY_ADD_ACCUMULATE(x, y, acc, sum) \
-    ({                                          \
+    do{                                          \
         sum += CONVERT(x, VEC_INT);             \
         MULTIPLY_ADD(x, y, acc);                \
-    })
+    }while(0)
 #else /* WEIGHTS_OFFSET != 0 */
 #define MULTIPLY_ADD_ACCUMULATE(x, y, acc, sum) MULTIPLY_ADD(x, y, acc)
 #endif /* WEIGHTS_OFFSET != 0 */
 
 #if defined(ARM_COMPUTE_OPENCL_DOT8_ENABLED) && defined(cl_arm_integer_dot_product_int8)
 #define DOT_PRODUCT(acc, val0, val1, val2, val3, val4, val5, val6, val7, val8, w0, w1, w2, w3, w4, w5, w6, w7, w8) \
-    ({                                                                                                             \
+    do{                                                                                                             \
         ARM_DOT((uchar4)(val0.s0, val1.s0, val2.s0, val3.s0), (uchar4)(w0.s0, w1.s0, w2.s0, w3.s0), acc.s0);       \
         ARM_DOT((uchar4)(val4.s0, val5.s0, val6.s0, val7.s0), (uchar4)(w4.s0, w5.s0, w6.s0, w7.s0), acc.s0);       \
         acc.s0 += val8.s0 * w8.s0;                                                                                 \
@@ -591,11 +591,11 @@ __kernel void depthwise_convolution_3x3_quantized_dot8_nchw(
         ARM_DOT((uchar4)(val0.s3, val1.s3, val2.s3, val3.s3), (uchar4)(w0.s3, w1.s3, w2.s3, w3.s3), acc.s3);       \
         ARM_DOT((uchar4)(val4.s3, val5.s3, val6.s3, val7.s3), (uchar4)(w4.s3, w5.s3, w6.s3, w7.s3), acc.s3);       \
         acc.s3 += val8.s3 * w8.s3;                                                                                 \
-    })
+    }while(0)
 
 #if WEIGHTS_OFFSET != 0
 #define DOT_PRODUCT_ACCUMULATE(acc, val0, val1, val2, val3, val4, val5, val6, val7, val8, w0, w1, w2, w3, w4, w5, w6, w7, w8) \
-    ({                                                                                                                        \
+    do{                                                                                                                        \
         ARM_DOT((uchar4)(w0.s0, w1.s0, w2.s0, w3.s0), (uchar4)(val0.s0, val1.s0, val2.s0, val3.s0), acc.s0);                  \
         ARM_DOT((uchar4)(w4.s0, w5.s0, w6.s0, w7.s0), (uchar4)(val4.s0, val5.s0, val6.s0, val7.s0), acc.s0);                  \
         ARM_DOT((uchar4)(w8.s0, 0, 0, 0), (uchar4)val8.s0, acc.s0);                                                           \
@@ -611,13 +611,13 @@ __kernel void depthwise_convolution_3x3_quantized_dot8_nchw(
         ARM_DOT((uchar4)(w0.s3, w1.s3, w2.s3, w3.s3), (uchar4)(val0.s3, val1.s3, val2.s3, val3.s3), acc.s3);                  \
         ARM_DOT((uchar4)(w4.s3, w5.s3, w6.s3, w7.s3), (uchar4)(val4.s3, val5.s3, val6.s3, val7.s3), acc.s3);                  \
         ARM_DOT((uchar4)(w8.s3, 0, 0, 0), (uchar4)val8.s3, acc.s3);                                                           \
-    })
+    }while(0)
 #else /* WEIGHTS_OFFSET != 0 */
 #define DOT_PRODUCT_ACCUMULATE(acc, val0, val1, val2, val3, val4, val5, val6, val7, val8, w0, w1, w2, w3, w4, w5, w6, w7, w8) DOT_PRODUCT(acc, val0, val1, val2, val3, val4, val5, val6, val7, val8, w0, w1, w2, w3, w4, w5, w6, w7, w8)
 #endif /* WEIGHTS_OFFSET != 0 */
 
 #define DOT_PRODUCT_REDUCTION(sum, val0, val1, val2, val3, val4, val5, val6, val7, val8) \
-    ({                                                                                   \
+    do{                                                                                   \
         sum = CONVERT(val0, VEC_INT);                                                    \
         ARM_DOT((uchar4)(val1.s0, val2.s0, val3.s0, val4.s0), (uchar4)1, sum.s0);        \
         ARM_DOT((uchar4)(val5.s0, val6.s0, val7.s0, val8.s0), (uchar4)1, sum.s0);        \
@@ -630,7 +630,7 @@ __kernel void depthwise_convolution_3x3_quantized_dot8_nchw(
         \
         ARM_DOT((uchar4)(val1.s3, val2.s3, val3.s3, val4.s3), (uchar4)1, sum.s3);        \
         ARM_DOT((uchar4)(val5.s3, val6.s3, val7.s3, val8.s3), (uchar4)1, sum.s3);        \
-    })
+    }while(0)
 
 #endif // defined(ARM_COMPUTE_OPENCL_DOT8_ENABLED) && defined(cl_arm_integer_dot_product_int8)
 

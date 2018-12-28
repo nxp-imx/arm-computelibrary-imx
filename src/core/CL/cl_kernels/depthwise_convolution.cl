@@ -217,17 +217,17 @@ __kernel void depthwise_convolution_3x3(
 #endif //defined(CONV_STRIDE_X)
 
 #define CONVOLUTION1x3_BIFROST2X1_STRIDE1(acc, src0, weights_row0) \
-    ({                                                             \
+    do{                                                             \
         acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);            \
         acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);            \
         acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);            \
         acc.s1 = fma(src0.s1, weights_row0.s0, acc.s1);            \
         acc.s1 = fma(src0.s2, weights_row0.s1, acc.s1);            \
         acc.s1 = fma(src0.s3, weights_row0.s2, acc.s1);            \
-    })
+    }while(0)
 
 #define CONVOLUTION1x3_BIFROST4X1_STRIDE1(acc, src0, weights_row0) \
-    ({                                                             \
+    do{                                                             \
         acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);            \
         acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);            \
         acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);            \
@@ -240,20 +240,20 @@ __kernel void depthwise_convolution_3x3(
         acc.s3 = fma(src0.s3, weights_row0.s0, acc.s3);            \
         acc.s3 = fma(src0.s4, weights_row0.s1, acc.s3);            \
         acc.s3 = fma(src0.s5, weights_row0.s2, acc.s3);            \
-    })
+    }while(0)
 
 #define CONVOLUTION1x3_BIFROST2X1_STRIDE2(acc, src0, src1, weights_row0) \
-    ({                                                                   \
+    do{                                                                   \
         acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);                  \
         acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);                  \
         acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);                  \
         acc.s1 = fma(src0.s2, weights_row0.s0, acc.s1);                  \
         acc.s1 = fma(src0.s3, weights_row0.s1, acc.s1);                  \
         acc.s1 = fma(src1.s0, weights_row0.s2, acc.s1);                  \
-    })
+    }while(0)
 
 #define CONVOLUTION1x3_BIFROST4X1_STRIDE2(acc, src0, src1, weights_row0) \
-    ({                                                                   \
+    do{                                                                   \
         acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);                  \
         acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);                  \
         acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);                  \
@@ -266,7 +266,7 @@ __kernel void depthwise_convolution_3x3(
         acc.s3 = fma(src0.s6, weights_row0.s0, acc.s3);                  \
         acc.s3 = fma(src0.s7, weights_row0.s1, acc.s3);                  \
         acc.s3 = fma(src1.s0, weights_row0.s2, acc.s3);                  \
-    })
+    }while(0)
 
 /** This OpenCL kernel is optimized for Bifrost architectures and computes the depthwise convolution 3x3 when both
  * stride_x and stride_y are equal to 1
