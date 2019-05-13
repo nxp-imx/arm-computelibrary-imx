@@ -164,7 +164,7 @@ if env['arch'] == 'armv7a':
     env.Append(CXXFLAGS = ['-march=armv7-a', '-mthumb', '-mfpu=neon'])
 
     if env['os'] == 'linux':
-        prefix = "arm-linux-gnueabihf-"
+        prefix = ""
         env.Append(CXXFLAGS = ['-mfloat-abi=hard'])
     elif env['os'] == 'bare_metal':
         prefix = "arm-eabi-"
