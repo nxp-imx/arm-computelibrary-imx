@@ -1,6 +1,13 @@
+<div align="center">
+ <img src="https://raw.githubusercontent.com/ARM-software/ComputeLibrary/gh-pages/ACL_logo.png"><br><br>
+</div>
+
 Release repository: https://github.com/arm-software/ComputeLibrary
+
 Development repository: https://review.mlplatform.org/#/admin/projects/ml/ComputeLibrary
+
 Please report issues here: https://github.com/ARM-software/ComputeLibrary/issues
+
 **Make sure you are using the latest version of the library before opening an issue. Thanks**
 
 News:
@@ -16,7 +23,8 @@ Related projects:
 
 Documentation available here:
 
-- [v18.11](https://arm-software.github.io/ComputeLibrary/v18.11/)
+- [v19.02](https://arm-software.github.io/ComputeLibrary/v19.02/)
+- [v18.11](https://arm-software.github.io/ComputeLibrary/v18.11/index.xhtml)
 - [v18.08](https://arm-software.github.io/ComputeLibrary/v18.08/)
 - [v18.05](https://arm-software.github.io/ComputeLibrary/v18.05/)
 - [v18.03](https://arm-software.github.io/ComputeLibrary/v18.03/)
@@ -32,8 +40,10 @@ Documentation available here:
 
 Binaries available here:
 
-- [v18.11-linux](https://github.com/ARM-software/ComputeLibrary/releases/download/v18.08/arm_compute-v18.11-bin-linux.tar.gz)
-- [v18.11-android](https://github.com/ARM-software/ComputeLibrary/releases/download/v18.08/arm_compute-v18.11-bin-android.tar.gz)
+- [v19.02-linux](https://github.com/ARM-software/ComputeLibrary/releases/download/v19.02/arm_compute-v19.02-bin-linux.tar.gz)
+- [v19.02-android](https://github.com/ARM-software/ComputeLibrary/releases/download/v19.02/arm_compute-v19.02-bin-android.tar.gz)
+- [v18.11-linux](https://github.com/ARM-software/ComputeLibrary/releases/download/v18.11/arm_compute-v18.11-bin-linux.tar.gz)
+- [v18.11-android](https://github.com/ARM-software/ComputeLibrary/releases/download/v18.11/arm_compute-v18.11-bin-android.tar.gz)
 - [v18.08-linux](https://github.com/ARM-software/ComputeLibrary/releases/download/v18.08/arm_compute-v18.08-bin-linux.tar.gz)
 - [v18.08-android](https://github.com/ARM-software/ComputeLibrary/releases/download/v18.08/arm_compute-v18.08-bin-android.tar.gz)
 - [v18.05-linux](https://github.com/ARM-software/ComputeLibrary/releases/download/v18.05/arm_compute-v18.05-bin-linux.tar.gz)
@@ -51,6 +61,18 @@ Binaries available here:
 - [v17.04](https://github.com/ARM-software/ComputeLibrary/releases/download/v17.04/arm_compute-v17.04-bin.tar.gz)
 - [v17.03.1](https://github.com/ARM-software/ComputeLibrary/releases/download/v17.03.1/arm_compute-v17.03.1-bin.tar.gz)
 
-Contact: developer-compute@arm.com
-
 License & Contributions: The software is provided under MIT license. Contributions to this project are accepted under the same license.
+
+### Public mailing list
+For technical discussion, the ComputeLibrary project has a public mailing list: acl-dev@lists.linaro.org
+The list is open to anyone inside or outside of Arm to self subscribe.  In order to subscribe, please visit the following website:
+https://lists.linaro.org/mailman/listinfo/acl-dev
+
+### Developer Certificate of Origin (DCO)
+Before the ComputeLibrary project accepts your contribution, you need to certify its origin and give us your permission. To manage this process we use the Developer Certificate of Origin (DCO) V1.1 (https://developercertificate.org/)
+
+To indicate that you agree to the the terms of the DCO, you "sign off" your contribution by adding a line with your name and e-mail address to every git commit message:
+
+```Signed-off-by: John Doe <john.doe@example.org>```
+
+You must use your real name, no pseudonyms or anonymous contributions are accepted.
