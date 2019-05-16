@@ -192,7 +192,7 @@ elif 'arm64-v8.2-a' in env['arch']:
     else:
         env.Append(CXXFLAGS = ['-march=armv8.2-a+fp16']) # explicitly enable fp16 extension otherwise __ARM_FEATURE_FP16_VECTOR_ARITHMETIC is undefined
         if env['os'] == 'linux':
-            prefix = "aarch64-linux-gnu-"
+            prefix = ""
         elif env['os'] == 'bare_metal':
             prefix = "aarch64-elf-"
         elif env['os'] == 'android':

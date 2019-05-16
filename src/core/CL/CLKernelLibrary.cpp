@@ -1001,7 +1001,10 @@ Kernel CLKernelLibrary::create_kernel(const std::string &kernel_name, const Stri
     }
     else if (_device.getInfo <CL_DEVICE_VENDOR> () == "Vivante Corporation")
     {
-	std::clog << "Using Vivante Corporation GPU IP" << std::endl;
+        concat_str += " -cl-std=CL1.2 ";
+#if defined(ARM_COMPUTE_DEBUG_ENABLED)
+        std::clog << "Using Vivante Corporation GPU IP" << std::endl;
+#endif 
     }
     else
     {
