@@ -66,12 +66,12 @@ constant int offsets_s[16][2] =
  *
  */
 #define LOAD_AND_SET_MASK(ptr, a, stride, dark, bright, dark_mask, bright_mask) \
-    {                                                                           \
+    do {                                                                           \
         unsigned char pixel;                                                    \
         pixel = *(ptr + (int)stride * offsets_s[a][1] + offsets_s[a][0]);       \
         dark_mask |= (pixel < dark) << a;                                       \
         bright_mask |= (pixel > bright) << a;                                   \
-    }
+    } while (0)
 
 /** Checks if a pixel is a corner. Pixel is considerred as a corner if the 9 continuous pixels in the Bresenham circle are bright or dark.
  *
@@ -80,7 +80,7 @@ constant int offsets_s[16][2] =
  * @param[out] isCorner    Indicate whether candidate pixel is corner
  */
 #define CHECK_CORNER(bright_mask, dark_mask, isCorner)    \
-    {                                                     \
+    do {                                                     \
         for(int i = 0; i < 16; i++)                       \
         {                                                 \
             isCorner |= ((bright_mask & 0x1FF) == 0x1FF); \
@@ -92,7 +92,7 @@ constant int offsets_s[16][2] =
             bright_mask >>= 1;                            \
             dark_mask >>= 1;                              \
         }                                                 \
-    }
+    } while (0)
 
 /* Calculate pixel's strength */
 uchar compute_strength(uchar candidate_pixel, __global unsigned char *ptr, unsigned int stride, unsigned char threshold)

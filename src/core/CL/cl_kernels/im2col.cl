@@ -1031,7 +1031,7 @@ __kernel void im2col3x3_nhwc(
 
 #if PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 #define IM2COL1x9(i)                                                                                                                                                       \
-    ({                                                                                                                                                                     \
+    do {                                                                                                                                                                     \
         yi_coord = yi - (int)PAD_TOP + i * DILATION_Y;                                                                                                                     \
         yi_coord = min((uint)yi_coord, (uint)(SRC_HEIGHT - 1));                                                                                                            \
         \
@@ -1077,10 +1077,10 @@ __kernel void im2col3x3_nhwc(
         (values7, 0, (__global DATA_TYPE *)(output_ptr) + (7 + i * 9) * SRC_DEPTH);                                                                                        \
         VSTORE(VECTOR_SIZE)                                                                                                                                                \
         (values8, 0, (__global DATA_TYPE *)(output_ptr) + (8 + i * 9) * SRC_DEPTH);                                                                                        \
-    })
+    } while (0)
 #else // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 #define IM2COL1x9(i)                                                                              \
-    ({                                                                                            \
+    do{                                                                                            \
         yi_coord = yi - (int)PAD_TOP + i * DILATION_Y;                                            \
         yi_coord = min((uint)yi_coord, (uint)(SRC_HEIGHT - 1));                                   \
         \
@@ -1115,7 +1115,7 @@ __kernel void im2col3x3_nhwc(
         (values7, 0, (__global DATA_TYPE *)(output_ptr) + (7 + i * 9) * SRC_DEPTH);               \
         VSTORE(VECTOR_SIZE)                                                                       \
         (values8, 0, (__global DATA_TYPE *)(output_ptr) + (8 + i * 9) * SRC_DEPTH);               \
-    })
+    } while (0)
 #endif // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 
 /** This kernel performs im2col when the kernel size is 9x9 and the data layout is NHWC

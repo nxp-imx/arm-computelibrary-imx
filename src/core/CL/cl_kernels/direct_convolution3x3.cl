@@ -79,7 +79,7 @@
 #endif /* STRIDE_X == 2 */
 
 #define CONVOLUTION1x3_STRIDE_NHWC_STRIDE1(acc, row_ptr, weights_ptr)                                                                      \
-    {                                                                                                                                      \
+    do {                                                                                                                                      \
         VEC_DATA_TYPE(DATA_TYPE, 8)                                                                                                        \
         src0 = (VEC_DATA_TYPE(DATA_TYPE, 8))(                                                                                              \
                 PTR_TO_VALUE(row_ptr + 0 * src_stride_y, DATA_TYPE),                                                                           \
@@ -102,10 +102,10 @@
         acc = ADD_OP(acc, MUL_OP(src0, (VEC_DATA_TYPE(DATA_TYPE, 8))weights.s0));                                                          \
         acc = ADD_OP(acc, MUL_OP((VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s1234, src0.s567, src1.s0), (VEC_DATA_TYPE(DATA_TYPE, 8))weights.s1)); \
         acc = ADD_OP(acc, MUL_OP((VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s234, src0.s567, src1.s01), (VEC_DATA_TYPE(DATA_TYPE, 8))weights.s2)); \
-    }
+    } while (0)
 
 #define CONVOLUTION1x3_STRIDE_NHWC_STRIDE2(acc, row_ptr, weights_ptr)                                                                   \
-    {                                                                                                                                   \
+    do {                                                                                                                                   \
         VEC_DATA_TYPE(DATA_TYPE, 16)                                                                                                    \
         src0 = (VEC_DATA_TYPE(DATA_TYPE, 16))(                                                                                          \
                 PTR_TO_VALUE(row_ptr + 0 * src_stride_y, DATA_TYPE),                                                                        \
@@ -134,7 +134,7 @@
         acc = ADD_OP(acc, MUL_OP(src0.s02468ACE, (VEC_DATA_TYPE(DATA_TYPE, 8))weights.s0));                                             \
         acc = ADD_OP(acc, MUL_OP((VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s1357, src0.s9BDF), (VEC_DATA_TYPE(DATA_TYPE, 8))weights.s1));      \
         acc = ADD_OP(acc, MUL_OP((VEC_DATA_TYPE(DATA_TYPE, 8))(src0.s2468, src0.sACE, src1), (VEC_DATA_TYPE(DATA_TYPE, 8))weights.s2)); \
-    }
+    } while (0)
 
 /** This kernel performs a direct convolution to convolve the low three dimensions.
  *

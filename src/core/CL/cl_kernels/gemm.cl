@@ -35,12 +35,12 @@
 
 #if(SRC_WIDTH % K0)
 #define BOUNDARY_CONDITION_X(x, a)                                                                                                                   \
-    ({                                                                                                                                               \
+    do {                                                                                                                                               \
         a = select(0, a, CONVERT(((x * (VEC_DATA_TYPE(uint, K0))K0 + INC(K0)) < (VEC_DATA_TYPE(uint, K0))SRC_WIDTH), VEC_DATA_TYPE(DATA_TYPE, K0))); \
-    })
+    } while (0)
 #else // (SRC_WIDTH % K0)
 #define BOUNDARY_CONDITION_X(x, a) \
-    ({})
+    do {} while (0)
 #endif // (SRC_WIDTH % K0)
 
 /** This OpenCL kernel reshapes the lhs input matrix. The kernel splits the input matrix in blocks of size M0xK0 and stores each one (not transposed) in
@@ -274,41 +274,41 @@ __kernel void gemm_reshape_lhs_matrix_nt(TENSOR3D_DECLARATION(src),
 
 #if M0 == 2
 #define TRANSPOSE_COLUMN_AND_STORE(output_ptr, output_step_x, i)                                  \
-    ({                                                                                            \
+    do {                                                                                            \
         VEC_DATA_TYPE(DATA_TYPE, M0)                                                              \
         res = (VEC_DATA_TYPE(DATA_TYPE, M0))(a0.s##i, a1.s##i);                                   \
         VSTORE(M0)                                                                                \
         (res, 0, (__global DATA_TYPE *)(output_ptr + 0x##i * output_step_x * sizeof(DATA_TYPE))); \
-    })
+    } while (0)
 #elif M0 == 3 // M0 == 3
 #define TRANSPOSE_COLUMN_AND_STORE(output_ptr, output_step_x, i)                                  \
-    ({                                                                                            \
+    do {                                                                                            \
         VEC_DATA_TYPE(DATA_TYPE, M0)                                                              \
         res = (VEC_DATA_TYPE(DATA_TYPE, M0))(a0.s##i, a1.s##i, a2.s##i);                          \
         VSTORE(M0)                                                                                \
         (res, 0, (__global DATA_TYPE *)(output_ptr + 0x##i * output_step_x * sizeof(DATA_TYPE))); \
-    })
+    } while (0)
 #elif M0 == 4 // M0 == 4
 #define TRANSPOSE_COLUMN_AND_STORE(output_ptr, output_step_x, i)                                  \
-    ({                                                                                            \
+    do {                                                                                            \
         VEC_DATA_TYPE(DATA_TYPE, M0)                                                              \
         res = (VEC_DATA_TYPE(DATA_TYPE, M0))(a0.s##i, a1.s##i, a2.s##i, a3.s##i);                 \
         VSTORE(M0)                                                                                \
         (res, 0, (__global DATA_TYPE *)(output_ptr + 0x##i * output_step_x * sizeof(DATA_TYPE))); \
-    })
+    } while (0)
 #elif M0 == 5 // M0 == 5
 #define TRANSPOSE_COLUMN_AND_STORE(output_ptr, output_step_x, i)                                      \
-    ({                                                                                                \
+    do {                                                                                                \
         VEC_DATA_TYPE(DATA_TYPE, 4)                                                                   \
         res0           = (VEC_DATA_TYPE(DATA_TYPE, 4))(a0.s##i, a1.s##i, a2.s##i, a3.s##i);           \
         DATA_TYPE res1 = a4.s##i;                                                                     \
         VSTORE(4)                                                                                     \
         (res0, 0, (__global DATA_TYPE *)(output_ptr + 0x##i * output_step_x * sizeof(DATA_TYPE)));    \
         *((__global DATA_TYPE *)(output_ptr + 0x##i * output_step_x * sizeof(DATA_TYPE)) + 4) = res1; \
-    })
+    } while (0)
 #elif M0 == 6 // M0 == 6
 #define TRANSPOSE_COLUMN_AND_STORE(output_ptr, output_step_x, i)                                       \
-    ({                                                                                                 \
+    do {                                                                                                 \
         VEC_DATA_TYPE(DATA_TYPE, 4)                                                                    \
         res0 = (VEC_DATA_TYPE(DATA_TYPE, 4))(a0.s##i, a1.s##i, a2.s##i, a3.s##i);                      \
         VEC_DATA_TYPE(DATA_TYPE, 2)                                                                    \
@@ -317,10 +317,10 @@ __kernel void gemm_reshape_lhs_matrix_nt(TENSOR3D_DECLARATION(src),
         (res0, 0, (__global DATA_TYPE *)(output_ptr + 0x##i * output_step_x * sizeof(DATA_TYPE)));     \
         VSTORE(2)                                                                                      \
         (res1, 0, (__global DATA_TYPE *)(output_ptr + 0x##i * output_step_x * sizeof(DATA_TYPE)) + 4); \
-    })
+    } while (0)
 #elif M0 == 7 // M0 == 7
 #define TRANSPOSE_COLUMN_AND_STORE(output_ptr, output_step_x, i)                                       \
-    ({                                                                                                 \
+    do {                                                                                                 \
         VEC_DATA_TYPE(DATA_TYPE, 4)                                                                    \
         res0 = (VEC_DATA_TYPE(DATA_TYPE, 4))(a0.s##i, a1.s##i, a2.s##i, a3.s##i);                      \
         VEC_DATA_TYPE(DATA_TYPE, 3)                                                                    \
@@ -329,15 +329,15 @@ __kernel void gemm_reshape_lhs_matrix_nt(TENSOR3D_DECLARATION(src),
         (res0, 0, (__global DATA_TYPE *)(output_ptr + 0x##i * output_step_x * sizeof(DATA_TYPE)));     \
         VSTORE(3)                                                                                      \
         (res1, 0, (__global DATA_TYPE *)(output_ptr + 0x##i * output_step_x * sizeof(DATA_TYPE)) + 4); \
-    })
+    } while (0)
 #elif M0 == 8 // M0 == 8
 #define TRANSPOSE_COLUMN_AND_STORE(output_ptr, output_step_x, i)                                                      \
-    ({                                                                                                                \
+    do {                                                                                                                \
         VEC_DATA_TYPE(DATA_TYPE, M0)                                                                                  \
         res = (VEC_DATA_TYPE(DATA_TYPE, M0))(a0.s##i, a1.s##i, a2.s##i, a3.s##i, a4.s##i, a5.s##i, a6.s##i, a7.s##i); \
         VSTORE(M0)                                                                                                    \
         (res, 0, (__global DATA_TYPE *)(output_ptr + 0x##i * output_step_x * sizeof(DATA_TYPE)));                     \
-    })
+    } while (0)
 #else // M0 not supported
 #error "M0 value not supported"
 #endif // N0 conditions
@@ -1132,28 +1132,28 @@ __kernel void gemm_reshape_rhs_matrix_t(TENSOR3D_DECLARATION(src),
 
 #if K0 == 2
 #define ARM_DOT_K0(a, b, c)     \
-    ({                          \
+    do {                          \
         c = fma(a.s0, b.s0, c); \
         c = fma(a.s1, b.s1, c); \
-    })
+    } while (0)
 #elif K0 == 3 // K0 == 3
 #define ARM_DOT_K0(a, b, c)     \
-    ({                          \
+    do {                          \
         c = fma(a.s0, b.s0, c); \
         c = fma(a.s1, b.s1, c); \
         c = fma(a.s2, b.s2, c); \
-    })
+    } while (0)
 #elif K0 == 4 // K0 == 4
 #define ARM_DOT_K0(a, b, c)     \
-    ({                          \
+    do {                          \
         c = fma(a.s0, b.s0, c); \
         c = fma(a.s1, b.s1, c); \
         c = fma(a.s2, b.s2, c); \
         c = fma(a.s3, b.s3, c); \
-    })
+    } while (0)
 #elif K0 == 8 // K0 == 8
 #define ARM_DOT_K0(a, b, c)     \
-    ({                          \
+    do {                          \
         c = fma(a.s0, b.s0, c); \
         c = fma(a.s1, b.s1, c); \
         c = fma(a.s2, b.s2, c); \
@@ -1162,10 +1162,10 @@ __kernel void gemm_reshape_rhs_matrix_t(TENSOR3D_DECLARATION(src),
         c = fma(a.s5, b.s5, c); \
         c = fma(a.s6, b.s6, c); \
         c = fma(a.s7, b.s7, c); \
-    })
+    } while (0)
 #elif K0 == 16 // K0 == 16
 #define ARM_DOT_K0(a, b, c)     \
-    ({                          \
+    do {                          \
         c = fma(a.s0, b.s0, c); \
         c = fma(a.s1, b.s1, c); \
         c = fma(a.s2, b.s2, c); \
@@ -1182,35 +1182,35 @@ __kernel void gemm_reshape_rhs_matrix_t(TENSOR3D_DECLARATION(src),
         c = fma(a.sD, b.sD, c); \
         c = fma(a.sE, b.sE, c); \
         c = fma(a.sF, b.sF, c); \
-    })
+    } while (0)
 #else // K0 not supported
 #error "K0 value not supported"
 #endif // K0 conditions
 
 #if N0 == 2
 #define ARM_DOT_K0XN0(a, b, c)           \
-    ({                                   \
+    do {                                   \
         ARM_DOT_K0((a), (b##0), (c.s0)); \
         ARM_DOT_K0((a), (b##1), (c.s1)); \
-    })
+    } while (0)
 #elif N0 == 3 // N0 == 3
 #define ARM_DOT_K0XN0(a, b, c)           \
-    ({                                   \
+    do {                                   \
         ARM_DOT_K0((a), (b##0), (c.s0)); \
         ARM_DOT_K0((a), (b##1), (c.s1)); \
         ARM_DOT_K0((a), (b##2), (c.s2)); \
-    })
+    } while (0)
 #elif N0 == 4 // N0 == 4
 #define ARM_DOT_K0XN0(a, b, c)           \
-    ({                                   \
+    do {                                   \
         ARM_DOT_K0((a), (b##0), (c.s0)); \
         ARM_DOT_K0((a), (b##1), (c.s1)); \
         ARM_DOT_K0((a), (b##2), (c.s2)); \
         ARM_DOT_K0((a), (b##3), (c.s3)); \
-    })
+    } while (0)
 #elif N0 == 8 // N0 == 8
 #define ARM_DOT_K0XN0(a, b, c)           \
-    ({                                   \
+    do {                                   \
         ARM_DOT_K0((a), (b##0), (c.s0)); \
         ARM_DOT_K0((a), (b##1), (c.s1)); \
         ARM_DOT_K0((a), (b##2), (c.s2)); \
@@ -1219,10 +1219,10 @@ __kernel void gemm_reshape_rhs_matrix_t(TENSOR3D_DECLARATION(src),
         ARM_DOT_K0((a), (b##5), (c.s5)); \
         ARM_DOT_K0((a), (b##6), (c.s6)); \
         ARM_DOT_K0((a), (b##7), (c.s7)); \
-    })
+    } while (0)
 #elif N0 == 16 // N0 == 16
 #define ARM_DOT_K0XN0(a, b, c)           \
-    ({                                   \
+    do{                                   \
         ARM_DOT_K0((a), (b##0), (c.s0)); \
         ARM_DOT_K0((a), (b##1), (c.s1)); \
         ARM_DOT_K0((a), (b##2), (c.s2)); \
@@ -1239,7 +1239,7 @@ __kernel void gemm_reshape_rhs_matrix_t(TENSOR3D_DECLARATION(src),
         ARM_DOT_K0((a), (b##D), (c.sD)); \
         ARM_DOT_K0((a), (b##E), (c.sE)); \
         ARM_DOT_K0((a), (b##F), (c.sF)); \
-    })
+    } while (0)
 #else // N0 not supported
 #error "N0 value not supported"
 #endif // N0 conditions

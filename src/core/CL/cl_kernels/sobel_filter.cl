@@ -382,18 +382,18 @@ __kernel void sobel_separable5x1(
 
 /* Calculates single horizontal iteration. */
 #define SOBEL1x1_HOR(src, gx, gy, idx)                               \
-    {                                                                \
+    do {                                                                \
         int8 val = convert_int8(vload8(0, offset(src, idx - 3, 0))); \
         gx += val * X##idx;                                          \
         gy += val * Y##idx;                                          \
-    }
+    }  while (0)
 
 /* Calculates single vertical iteration. */
 #define SOBEL1x1_VERT(src, g, direction, idx)                          \
-    {                                                                  \
+    do {                                                                  \
         int8 val = vload8(0, (__global int *)offset(src, 0, idx - 3)); \
         g += val * (int8)direction##idx;                               \
-    }
+    } while (0)
 
 /* Calculates a 1x7 horizontal iteration. */
 #define SOBEL1x7(ptr, gx, gy)                        \

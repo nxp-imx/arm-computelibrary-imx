@@ -1950,33 +1950,33 @@ __kernel void gemmlowp_mm_bifrost_dot8(IMAGE_DECLARATION(src0),
 
 #if K0 == 2
 #define ARM_DOT_K0(a, b, c)                                         \
-    ({                                                              \
+    do {                                                              \
         ARM_DOT((uchar4)(a, (uchar2)0), (uchar4)(b, (uchar2)0), c); \
-    })
+    } while (0)
 #elif K0 == 3 // K0 == 3
 #define ARM_DOT_K0(a, b, c)                                       \
-    ({                                                            \
+    do {                                                            \
         ARM_DOT((uchar4)(a, (uchar)0), (uchar4)(b, (uchar)0), c); \
-    })
+    } while (0)
 #elif K0 == 4 // K0 == 4
 #define ARM_DOT_K0(a, b, c) \
-    ({                      \
+    do {                      \
         ARM_DOT(a, b, c);   \
-    })
+    } while (0)
 #elif K0 == 8 // K0 == 8
 #define ARM_DOT_K0(a, b, c)           \
-    ({                                \
+    do {                                \
         ARM_DOT(a.s0123, b.s0123, c); \
         ARM_DOT(a.s4567, b.s4567, c); \
-    })
+    } while (0)
 #elif K0 == 16 // K0 == 16
 #define ARM_DOT_K0(a, b, c)           \
-    ({                                \
+    do {                                \
         ARM_DOT(a.s0123, b.s0123, c); \
         ARM_DOT(a.s4567, b.s4567, c); \
         ARM_DOT(a.s89AB, b.s89AB, c); \
         ARM_DOT(a.sCDEF, b.sCDEF, c); \
-    })
+    } while (0)
 #else // K0 not supported
 #error "K0 value not supported"
 #endif // K0
@@ -1985,28 +1985,28 @@ __kernel void gemmlowp_mm_bifrost_dot8(IMAGE_DECLARATION(src0),
 
 #if K0 == 2
 #define ARM_DOT_K0(a, b, c)     \
-    ({                          \
+    do {                          \
         c += (uint)a.s0 * b.s0; \
         c += (uint)a.s1 * b.s1; \
-    })
+    } while (0)
 #elif K0 == 3 // K0 == 3
 #define ARM_DOT_K0(a, b, c)     \
-    ({                          \
+    do {                          \
         c += (uint)a.s0 * b.s0; \
         c += (uint)a.s1 * b.s1; \
         c += (uint)a.s2 * b.s2; \
-    })
+    } while (0)
 #elif K0 == 4 // K0 == 4
 #define ARM_DOT_K0(a, b, c)     \
-    ({                          \
+    do {                          \
         c += (uint)a.s0 * b.s0; \
         c += (uint)a.s1 * b.s1; \
         c += (uint)a.s2 * b.s2; \
         c += (uint)a.s3 * b.s3; \
-    })
+    } while (0)
 #elif K0 == 8 // K0 == 8
 #define ARM_DOT_K0(a, b, c)     \
-    ({                          \
+    do {                          \
         c += (uint)a.s0 * b.s0; \
         c += (uint)a.s1 * b.s1; \
         c += (uint)a.s2 * b.s2; \
@@ -2015,10 +2015,10 @@ __kernel void gemmlowp_mm_bifrost_dot8(IMAGE_DECLARATION(src0),
         c += (uint)a.s5 * b.s5; \
         c += (uint)a.s6 * b.s6; \
         c += (uint)a.s7 * b.s7; \
-    })
+    } while (0)
 #elif K0 == 16 // K0 == 16
 #define ARM_DOT_K0(a, b, c)     \
-    ({                          \
+    do {                          \
         c += (uint)a.s0 * b.s0; \
         c += (uint)a.s1 * b.s1; \
         c += (uint)a.s2 * b.s2; \
@@ -2035,7 +2035,7 @@ __kernel void gemmlowp_mm_bifrost_dot8(IMAGE_DECLARATION(src0),
         c += (uint)a.sD * b.sD; \
         c += (uint)a.sE * b.sE; \
         c += (uint)a.sF * b.sF; \
-    })
+    } while (0)
 #else // K0 not supported
 #error "K0 value not supported"
 #endif // K0
@@ -2044,28 +2044,28 @@ __kernel void gemmlowp_mm_bifrost_dot8(IMAGE_DECLARATION(src0),
 
 #if N0 == 2
 #define ARM_DOT_K0XN0(a, b, c)           \
-    ({                                   \
+    do {                                   \
         ARM_DOT_K0((a), (b##0), (c.s0)); \
         ARM_DOT_K0((a), (b##1), (c.s1)); \
-    })
+    } while (0)
 #elif N0 == 3 // N0 == 3
 #define ARM_DOT_K0XN0(a, b, c)           \
-    ({                                   \
+    do {                                   \
         ARM_DOT_K0((a), (b##0), (c.s0)); \
         ARM_DOT_K0((a), (b##1), (c.s1)); \
         ARM_DOT_K0((a), (b##2), (c.s2)); \
-    })
+    } while (0)
 #elif N0 == 4 // N0 == 4
 #define ARM_DOT_K0XN0(a, b, c)           \
-    ({                                   \
+    do {                                   \
         ARM_DOT_K0((a), (b##0), (c.s0)); \
         ARM_DOT_K0((a), (b##1), (c.s1)); \
         ARM_DOT_K0((a), (b##2), (c.s2)); \
         ARM_DOT_K0((a), (b##3), (c.s3)); \
-    })
+    } while (0)
 #elif N0 == 8 // N0 == 8
 #define ARM_DOT_K0XN0(a, b, c)           \
-    ({                                   \
+    do {                                   \
         ARM_DOT_K0((a), (b##0), (c.s0)); \
         ARM_DOT_K0((a), (b##1), (c.s1)); \
         ARM_DOT_K0((a), (b##2), (c.s2)); \
@@ -2074,10 +2074,10 @@ __kernel void gemmlowp_mm_bifrost_dot8(IMAGE_DECLARATION(src0),
         ARM_DOT_K0((a), (b##5), (c.s5)); \
         ARM_DOT_K0((a), (b##6), (c.s6)); \
         ARM_DOT_K0((a), (b##7), (c.s7)); \
-    })
+    } while (0)
 #elif N0 == 16 // N0 == 16
 #define ARM_DOT_K0XN0(a, b, c)           \
-    ({                                   \
+    do {                                   \
         ARM_DOT_K0((a), (b##0), (c.s0)); \
         ARM_DOT_K0((a), (b##1), (c.s1)); \
         ARM_DOT_K0((a), (b##2), (c.s2)); \
@@ -2094,7 +2094,7 @@ __kernel void gemmlowp_mm_bifrost_dot8(IMAGE_DECLARATION(src0),
         ARM_DOT_K0((a), (b##D), (c.sD)); \
         ARM_DOT_K0((a), (b##E), (c.sE)); \
         ARM_DOT_K0((a), (b##F), (c.sF)); \
-    })
+    } while (0)
 #else // N0 not supported
 #error "N0 value not supported"
 #endif // N0 conditions

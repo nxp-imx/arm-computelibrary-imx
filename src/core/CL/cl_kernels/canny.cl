@@ -259,7 +259,7 @@ __kernel void suppress_non_maximum(
  * @param[in] y_cur      Y-coordinate of current central pixel
  */
 #define check_pixel(early_test, x_pos, y_pos, x_cur, y_cur)                               \
-    {                                                                                     \
+    do {                                                                                     \
         if(!early_test)                                                                   \
         {                                                                                 \
             /* Number of elements in the local stack 1, points to next available entry */ \
@@ -275,7 +275,7 @@ __kernel void suppress_non_maximum(
                 *((__global char *)offset(&l1_stack_counter, x_cur, y_cur)) += 1;         \
             }                                                                             \
         }                                                                                 \
-    }
+    } while (0)
 
 /** Perform hysteresis.
  *
