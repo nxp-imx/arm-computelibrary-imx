@@ -263,7 +263,7 @@ __kernel void hog_block_normalization(IMAGE_DECLARATION(src),
         }
     }
 
-    sum += dot(sum_f32, (float4)1.0f);
+    sum += dot(sum_f32, (float4){1.0f});
 
     float scale = 1.0f / (sqrt(sum) + NUM_BINS_PER_BLOCK * 0.1f);
 
@@ -317,7 +317,7 @@ __kernel void hog_block_normalization(IMAGE_DECLARATION(src),
         ((__global float *)dst.ptr)[k] = val;
     }
 
-    sum += dot(sum_f32, (float4)1.0f);
+    sum += dot(sum_f32, (float4){1.0f});
 
     // We use the same constants of OpenCV
     scale = 1.0f / (sqrt(sum) + 1e-3f);
@@ -432,7 +432,7 @@ __kernel void hog_detector(IMAGE_DECLARATION(src),
         }
     }
 
-    score += dot(score_f32, (float4)1.0f);
+    score += dot(score_f32, (float4){1.0f});
 
     // Add the bias. The bias is located at the position (descriptor_size() - 1)
     // (descriptor_size - 1) = NUM_BINS_PER_DESCRIPTOR_X * NUM_BLOCKS_PER_DESCRIPTOR_Y
