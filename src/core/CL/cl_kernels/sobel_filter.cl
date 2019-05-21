@@ -382,38 +382,43 @@ __kernel void sobel_separable5x1(
 
 /* Calculates single horizontal iteration. */
 #define SOBEL1x1_HOR(src, gx, gy, idx)                               \
-    do {                                                                \
+  do {                                                               \
         int8 val = convert_int8(vload8(0, offset(src, idx - 3, 0))); \
         gx += val * X##idx;                                          \
         gy += val * Y##idx;                                          \
-    }  while (0)
+    } while (0)
 
 /* Calculates single vertical iteration. */
 #define SOBEL1x1_VERT(src, g, direction, idx)                          \
-    do {                                                                  \
+  do {                                                                 \
         int8 val = vload8(0, (__global int *)offset(src, 0, idx - 3)); \
         g += val * (int8)direction##idx;                               \
     } while (0)
 
 /* Calculates a 1x7 horizontal iteration. */
-#define SOBEL1x7(ptr, gx, gy)                        \
-    SOBEL1x1_HOR(ptr, gx, gy, 0)                     \
-    SOBEL1x1_HOR(ptr, gx, gy, 1)                 \
-    SOBEL1x1_HOR(ptr, gx, gy, 2)             \
-    SOBEL1x1_HOR(ptr, gx, gy, 3)         \
-    SOBEL1x1_HOR(ptr, gx, gy, 4)     \
-    SOBEL1x1_HOR(ptr, gx, gy, 5) \
-    SOBEL1x1_HOR(ptr, gx, gy, 6)
+#define SOBEL1x7(ptr, gx, gy)           \
+    do {                                \
+        SOBEL1x1_HOR(ptr, gx, gy, 0);   \
+        SOBEL1x1_HOR(ptr, gx, gy, 1);   \
+        SOBEL1x1_HOR(ptr, gx, gy, 2);   \
+        SOBEL1x1_HOR(ptr, gx, gy, 3);   \
+        SOBEL1x1_HOR(ptr, gx, gy, 4);   \
+        SOBEL1x1_HOR(ptr, gx, gy, 5);   \
+        SOBEL1x1_HOR(ptr, gx, gy, 6);   \
+    } while (0)
 
 /* Calculates a 7x1 vertical iteration. */
-#define SOBEL7x1(ptr, g, direction)                         \
-    SOBEL1x1_VERT(ptr, g, direction, 0)                     \
-    SOBEL1x1_VERT(ptr, g, direction, 1)                 \
-    SOBEL1x1_VERT(ptr, g, direction, 2)             \
-    SOBEL1x1_VERT(ptr, g, direction, 3)         \
-    SOBEL1x1_VERT(ptr, g, direction, 4)     \
-    SOBEL1x1_VERT(ptr, g, direction, 5) \
-    SOBEL1x1_VERT(ptr, g, direction, 6)
+#define SOBEL7x1(ptr, g, direction)           \
+    do {                                      \
+        SOBEL1x1_VERT(ptr, g, direction, 0);  \
+        SOBEL1x1_VERT(ptr, g, direction, 1);  \
+        SOBEL1x1_VERT(ptr, g, direction, 2);  \
+        SOBEL1x1_VERT(ptr, g, direction, 3);  \
+        SOBEL1x1_VERT(ptr, g, direction, 4);  \
+        SOBEL1x1_VERT(ptr, g, direction, 5);  \
+        SOBEL1x1_VERT(ptr, g, direction, 6);  \
+    } while (0)
+
 
 /** Apply a 1x7 sobel matrix to a single channel U8 input image and output two temporary channel S16 images and leave the borders undefined.
  *

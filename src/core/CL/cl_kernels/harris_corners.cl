@@ -177,7 +177,7 @@ inline float16 harris_score_1x5(Image *src_gx, Image *src_gy, int row)
     gy2 += (gy * gy);
     gxgy += (gx * gy);
 
-    return (float16)(gx2, gy2, gxgy, (float4)0);
+    return (float16)(gx2, gy2, gxgy, (float4){0});
 }
 
 /** Function running harris score on 5x5 block size
@@ -308,7 +308,7 @@ inline float16 harris_score_1x7(Image *src_gx, Image *src_gy, int row)
     gy2 += (gy * gy);
     gxgy += (gx * gy);
 
-    return (float16)(gx2, gy2, gxgy, (float4)0);
+    return (float16)(gx2, gy2, gxgy, (float4){0});
 }
 
 /** Function running harris score on 7x7 block size

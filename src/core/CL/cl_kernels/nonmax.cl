@@ -50,7 +50,7 @@ __kernel void non_max_suppression(
 
     if(all(vc == (DATA_TYPE)0))
     {
-        vstore8(0, 0, (__global DATA_TYPE *)dst.ptr);
+        vstore8((VEC_DATA_TYPE(DATA_TYPE, 8)){0}, 0, (__global DATA_TYPE *)dst.ptr);
 
         return;
     }
