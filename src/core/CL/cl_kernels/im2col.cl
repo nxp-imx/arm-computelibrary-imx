@@ -319,16 +319,33 @@ __kernel void im2col3x3_nchw(
     int3 x = (int3)xi + (int3)(0, 1, 2);
     int3 y = (int3)yi + (int3)(0, 1, 2);
 
-    VEC_DATA_TYPE(COND_DATA_TYPE, 3)
-    cond0 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s0 >= 0 && y.s0 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE, 3));
-    VEC_DATA_TYPE(COND_DATA_TYPE, 3)
-    cond1 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s1 >= 0 && y.s1 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE, 3));
-    VEC_DATA_TYPE(COND_DATA_TYPE, 3)
-    cond2 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s2 >= 0 && y.s2 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE, 3));
+    if (x.s0 < 0 || x.s0 >= SRC_WIDTH || y.s0 < 0 || y.s0 >= SRC_HEIGHT)
+        row0.s0 = PAD_VALUE;
 
-    row0 = select((VEC_DATA_TYPE(DATA_TYPE, 3))PAD_VALUE, row0, cond0);
-    row1 = select((VEC_DATA_TYPE(DATA_TYPE, 3))PAD_VALUE, row1, cond1);
-    row2 = select((VEC_DATA_TYPE(DATA_TYPE, 3))PAD_VALUE, row2, cond2);
+    if (x.s1 < 0 || x.s1 >= SRC_WIDTH || y.s0 < 0 || y.s0 >= SRC_HEIGHT)
+        row0.s1 = PAD_VALUE;
+
+    if (x.s2 < 0 || x.s2 >= SRC_WIDTH || y.s0 < 0 || y.s0 >= SRC_HEIGHT)
+        row0.s2 = PAD_VALUE;
+
+    if (x.s0 < 0 || x.s0 >= SRC_WIDTH || y.s1 < 0 || y.s1 >= SRC_HEIGHT)
+        row1.s0 = PAD_VALUE;
+
+    if (x.s1 < 0 || x.s1 >= SRC_WIDTH || y.s1 < 0 || y.s1 >= SRC_HEIGHT)
+        row1.s1 = PAD_VALUE;
+
+    if (x.s2 < 0 || x.s2 >= SRC_WIDTH || y.s1 < 0 || y.s1 >= SRC_HEIGHT)
+        row1.s2 = PAD_VALUE;
+
+    if (x.s0 < 0 || x.s0 >= SRC_WIDTH || y.s2 < 0 || y.s2 >= SRC_HEIGHT)
+        row2.s0 = PAD_VALUE;
+
+    if (x.s1 < 0 || x.s1 >= SRC_WIDTH || y.s2 < 0 || y.s2 >= SRC_HEIGHT)
+        row2.s1 = PAD_VALUE;
+
+    if (x.s2 < 0 || x.s2 >= SRC_WIDTH || y.s2 < 0 || y.s2 >= SRC_HEIGHT)
+        row2.s2 = PAD_VALUE;
+
 #endif // PAD_LEFT != 0 || PAD_TOP != 0 || PAD_RIGHT != 0 || PAD_BOTTOM != 0
 
     vstore8((VEC_DATA_TYPE(DATA_TYPE, 8))(row0.s012, row1.s012, row2.s01), 0, (__global DATA_TYPE *)output_ptr);
@@ -946,9 +963,18 @@ __kernel void im2col3x3_nhwc(
 #if PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
     // Replace invalid values with PAD_VALUE
     int y_cond = (int)((uint)(yi - (int)PAD_TOP) >= (uint)(SRC_HEIGHT));
-    values0    = select(values0, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
-    values1    = select(values1, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
-    values2    = select(values2, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    //values0    = select(values0, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(cd.s0));
+    values0.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values0.s0;
+    values0.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values0.s1;
+    //values0.s2 = (x_cond.s0 || y_cond) ? PAD_VALUE : values0.s2;
+    //values1    = select(values1, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
+    values1.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values1.s0;
+    values1.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values1.s1;
+    //values1.s2 = (x_cond.s1 || y_cond) ? PAD_VALUE : values1.s2;
+    //values2    = select(values2, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    values2.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values2.s0;
+    values2.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values2.s1;
+    //values2.s2 = (x_cond.s2 || y_cond) ? PAD_VALUE : values2.s2;
 #endif // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 
     // yi == 1
@@ -971,9 +997,18 @@ __kernel void im2col3x3_nhwc(
 #if PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
     // Replace invalid values with zeros
     y_cond  = (int)((uint)(yi - (int)PAD_TOP + 1 * DILATION_Y) >= (uint)(SRC_HEIGHT));
-    values3 = select(values3, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
-    values4 = select(values4, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
-    values5 = select(values5, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    //values3 = select(values3, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
+    values3.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values3.s0;
+    values3.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values3.s1;
+    //values3.s2 = (x_cond.s0 || y_cond) ? PAD_VALUE : values3.s2;
+    //values4 = select(values4, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
+    values4.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values4.s0;
+    values4.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values4.s1;
+    //values4.s2 = (x_cond.s1 || y_cond) ? PAD_VALUE : values4.s2;
+    //values5 = select(values5, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    values5.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values5.s0;
+    values5.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values5.s1;
+    //values5.s2 = (x_cond.s2 || y_cond) ? PAD_VALUE : values5.s2;
 #endif // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 
     // yi == 2
@@ -996,9 +1031,18 @@ __kernel void im2col3x3_nhwc(
 #if PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
     // Replace invalid values with PAD_VALUE
     y_cond  = (int)((uint)(yi - (int)PAD_TOP + 2 * DILATION_Y) >= (uint)(SRC_HEIGHT));
-    values6 = select(values6, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
-    values7 = select(values7, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
-    values8 = select(values8, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    //values6 = select(values6, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
+    values6.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values6.s0;
+    values6.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values6.s1;
+    //values6.s2 = (x_cond.s0 || y_cond) ? PAD_VALUE : values6.s2;
+    //values7 = select(values7, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
+    values7.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values7.s0;
+    values7.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values7.s1;
+    //values7.s2 = (x_cond.s1 || y_cond) ? PAD_VALUE : values7.s2;
+    //values8 = select(values8, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    values8.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values8.s0;
+    values8.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values8.s1;
+    //values8.s2 = (x_cond.s2 || y_cond) ? PAD_VALUE : values8.s2;
 #endif // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 
     // Store
@@ -1031,7 +1075,7 @@ __kernel void im2col3x3_nhwc(
 
 #if PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 #define IM2COL1x9(i)                                                                                                                                                       \
-    ({                                                                                                                                                                     \
+    do {                                                                                                                                                                     \
         yi_coord = yi - (int)PAD_TOP + i * DILATION_Y;                                                                                                                     \
         yi_coord = min((uint)yi_coord, (uint)(SRC_HEIGHT - 1));                                                                                                            \
         \
@@ -1077,10 +1121,10 @@ __kernel void im2col3x3_nhwc(
         (values7, 0, (__global DATA_TYPE *)(output_ptr) + (7 + i * 9) * SRC_DEPTH);                                                                                        \
         VSTORE(VECTOR_SIZE)                                                                                                                                                \
         (values8, 0, (__global DATA_TYPE *)(output_ptr) + (8 + i * 9) * SRC_DEPTH);                                                                                        \
-    })
+    } while (0)
 #else // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 #define IM2COL1x9(i)                                                                              \
-    ({                                                                                            \
+    do{                                                                                            \
         yi_coord = yi - (int)PAD_TOP + i * DILATION_Y;                                            \
         yi_coord = min((uint)yi_coord, (uint)(SRC_HEIGHT - 1));                                   \
         \
@@ -1115,7 +1159,7 @@ __kernel void im2col3x3_nhwc(
         (values7, 0, (__global DATA_TYPE *)(output_ptr) + (7 + i * 9) * SRC_DEPTH);               \
         VSTORE(VECTOR_SIZE)                                                                       \
         (values8, 0, (__global DATA_TYPE *)(output_ptr) + (8 + i * 9) * SRC_DEPTH);               \
-    })
+    } while (0)
 #endif // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 
 /** This kernel performs im2col when the kernel size is 9x9 and the data layout is NHWC

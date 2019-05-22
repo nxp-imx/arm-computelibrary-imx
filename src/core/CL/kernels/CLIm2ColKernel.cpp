@@ -194,11 +194,11 @@ Im2ColConfiguration configure_opencl_kernel(const ITensorInfo *input, const Size
         is_padding_required_nchw          = false;
 
         // Only the 3x3 and 9x9 cases are optimized for NHWC
-        if(kernel_dims == Size2D(3U, 3U) && (conv_info.stride().first == 1U && conv_info.stride().second == 1U))
+        if(kernel_dims == Size2D(3U, 3U))
         {
             kernel_name = "im2col3x3_";
         }
-        else if(kernel_dims == Size2D(9U, 9U) && (conv_info.stride().first == 1U && conv_info.stride().second == 1U))
+        else if(kernel_dims == Size2D(9U, 9U))
         {
             kernel_name = "im2col9x9_";
         }
@@ -211,7 +211,7 @@ Im2ColConfiguration configure_opencl_kernel(const ITensorInfo *input, const Size
         if(dilation == Size2D(1U, 1U))
         {
             const bool squared_im2col = kernel_dims.width == kernel_dims.height;
-            if(squared_im2col && (conv_info.stride().first == 1U && conv_info.stride().second == 1U))
+            if(squared_im2col)
             {
                 // Check if we can run an optimized im2col for NCHW
                 switch(kernel_dims.width)
