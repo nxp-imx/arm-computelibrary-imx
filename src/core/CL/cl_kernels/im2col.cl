@@ -26,11 +26,11 @@
 #if defined(DATA_TYPE) && defined(ELEMENT_SIZE)
 
 #if ELEMENT_SIZE == 1
-#define COND_DATA_TYPE char
+#define COND_DATA_TYPE uchar
 #elif ELEMENT_SIZE == 2
-#define COND_DATA_TYPE short
+#define COND_DATA_TYPE ushort
 #elif ELEMENT_SIZE == 4
-#define COND_DATA_TYPE int
+#define COND_DATA_TYPE uint
 #else // ELEMENT_SIZE
 #error "Element size not support"
 #endif // ELEMENT_SIZE
@@ -319,33 +319,16 @@ __kernel void im2col3x3_nchw(
     int3 x = (int3)xi + (int3)(0, 1, 2);
     int3 y = (int3)yi + (int3)(0, 1, 2);
 
-    if (x.s0 < 0 || x.s0 >= SRC_WIDTH || y.s0 < 0 || y.s0 >= SRC_HEIGHT)
-        row0.s0 = PAD_VALUE;
+    VEC_DATA_TYPE(COND_DATA_TYPE, 3)
+    cond0 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s0 >= 0 && y.s0 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE, 3));
+    VEC_DATA_TYPE(COND_DATA_TYPE, 3)
+    cond1 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s1 >= 0 && y.s1 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE, 3));
+    VEC_DATA_TYPE(COND_DATA_TYPE, 3)
+    cond2 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s2 >= 0 && y.s2 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE, 3));
 
-    if (x.s1 < 0 || x.s1 >= SRC_WIDTH || y.s0 < 0 || y.s0 >= SRC_HEIGHT)
-        row0.s1 = PAD_VALUE;
-
-    if (x.s2 < 0 || x.s2 >= SRC_WIDTH || y.s0 < 0 || y.s0 >= SRC_HEIGHT)
-        row0.s2 = PAD_VALUE;
-
-    if (x.s0 < 0 || x.s0 >= SRC_WIDTH || y.s1 < 0 || y.s1 >= SRC_HEIGHT)
-        row1.s0 = PAD_VALUE;
-
-    if (x.s1 < 0 || x.s1 >= SRC_WIDTH || y.s1 < 0 || y.s1 >= SRC_HEIGHT)
-        row1.s1 = PAD_VALUE;
-
-    if (x.s2 < 0 || x.s2 >= SRC_WIDTH || y.s1 < 0 || y.s1 >= SRC_HEIGHT)
-        row1.s2 = PAD_VALUE;
-
-    if (x.s0 < 0 || x.s0 >= SRC_WIDTH || y.s2 < 0 || y.s2 >= SRC_HEIGHT)
-        row2.s0 = PAD_VALUE;
-
-    if (x.s1 < 0 || x.s1 >= SRC_WIDTH || y.s2 < 0 || y.s2 >= SRC_HEIGHT)
-        row2.s1 = PAD_VALUE;
-
-    if (x.s2 < 0 || x.s2 >= SRC_WIDTH || y.s2 < 0 || y.s2 >= SRC_HEIGHT)
-        row2.s2 = PAD_VALUE;
-
+    row0 = select((VEC_DATA_TYPE(DATA_TYPE, 3))PAD_VALUE, row0, cond0);
+    row1 = select((VEC_DATA_TYPE(DATA_TYPE, 3))PAD_VALUE, row1, cond1);
+    row2 = select((VEC_DATA_TYPE(DATA_TYPE, 3))PAD_VALUE, row2, cond2);
 #endif // PAD_LEFT != 0 || PAD_TOP != 0 || PAD_RIGHT != 0 || PAD_BOTTOM != 0
 
     vstore8((VEC_DATA_TYPE(DATA_TYPE, 8))(row0.s012, row1.s012, row2.s01), 0, (__global DATA_TYPE *)output_ptr);
