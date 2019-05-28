@@ -26,11 +26,14 @@
 #if defined(DATA_TYPE) && defined(ELEMENT_SIZE)
 
 #if ELEMENT_SIZE == 1
-#define COND_DATA_TYPE uchar
+#define COND_DATA_TYPE char
+#define COND_DATA_TYPE_UNSIGNED uchar
 #elif ELEMENT_SIZE == 2
-#define COND_DATA_TYPE ushort
+#define COND_DATA_TYPE short
+#define COND_DATA_TYPE_UNSIGNED ushort
 #elif ELEMENT_SIZE == 4
-#define COND_DATA_TYPE uint
+#define COND_DATA_TYPE int
+#define COND_DATA_TYPE_UNSIGNED uint
 #else // ELEMENT_SIZE
 #error "Element size not support"
 #endif // ELEMENT_SIZE
@@ -319,12 +322,12 @@ __kernel void im2col3x3_nchw(
     int3 x = (int3)xi + (int3)(0, 1, 2);
     int3 y = (int3)yi + (int3)(0, 1, 2);
 
-    VEC_DATA_TYPE(COND_DATA_TYPE, 3)
-    cond0 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s0 >= 0 && y.s0 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE, 3));
-    VEC_DATA_TYPE(COND_DATA_TYPE, 3)
-    cond1 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s1 >= 0 && y.s1 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE, 3));
-    VEC_DATA_TYPE(COND_DATA_TYPE, 3)
-    cond2 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s2 >= 0 && y.s2 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE, 3));
+    VEC_DATA_TYPE(COND_DATA_TYPE_UNSIGNED, 3)
+    cond0 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s0 >= 0 && y.s0 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE_UNSIGNED, 3));
+    VEC_DATA_TYPE(COND_DATA_TYPE_UNSIGNED, 3)
+    cond1 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s1 >= 0 && y.s1 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE_UNSIGNED, 3));
+    VEC_DATA_TYPE(COND_DATA_TYPE_UNSIGNED, 3)
+    cond2 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s2 >= 0 && y.s2 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE_UNSIGNED, 3));
 
     row0 = select((VEC_DATA_TYPE(DATA_TYPE, 3))PAD_VALUE, row0, cond0);
     row1 = select((VEC_DATA_TYPE(DATA_TYPE, 3))PAD_VALUE, row1, cond1);
