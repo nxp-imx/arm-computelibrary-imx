@@ -26,11 +26,11 @@
 #if defined(DATA_TYPE) && defined(ELEMENT_SIZE)
 
 #if ELEMENT_SIZE == 1
-#define COND_DATA_TYPE char
+#define COND_DATA_TYPE uchar
 #elif ELEMENT_SIZE == 2
-#define COND_DATA_TYPE short
+#define COND_DATA_TYPE ushort
 #elif ELEMENT_SIZE == 4
-#define COND_DATA_TYPE int
+#define COND_DATA_TYPE uint
 #else // ELEMENT_SIZE
 #error "Element size not support"
 #endif // ELEMENT_SIZE
@@ -946,9 +946,18 @@ __kernel void im2col3x3_nhwc(
 #if PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
     // Replace invalid values with PAD_VALUE
     int y_cond = (int)((uint)(yi - (int)PAD_TOP) >= (uint)(SRC_HEIGHT));
-    values0    = select(values0, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
-    values1    = select(values1, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
-    values2    = select(values2, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    //values0    = select(values0, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(cd.s0));
+    values0.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values0.s0;
+    values0.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values0.s1;
+    //values0.s2 = (x_cond.s0 || y_cond) ? PAD_VALUE : values0.s2;
+    //values1    = select(values1, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
+    values1.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values1.s0;
+    values1.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values1.s1;
+    //values1.s2 = (x_cond.s1 || y_cond) ? PAD_VALUE : values1.s2;
+    //values2    = select(values2, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    values2.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values2.s0;
+    values2.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values2.s1;
+    //values2.s2 = (x_cond.s2 || y_cond) ? PAD_VALUE : values2.s2;
 #endif // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 
     // yi == 1
@@ -971,9 +980,18 @@ __kernel void im2col3x3_nhwc(
 #if PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
     // Replace invalid values with zeros
     y_cond  = (int)((uint)(yi - (int)PAD_TOP + 1 * DILATION_Y) >= (uint)(SRC_HEIGHT));
-    values3 = select(values3, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
-    values4 = select(values4, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
-    values5 = select(values5, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    //values3 = select(values3, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
+    values3.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values3.s0;
+    values3.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values3.s1;
+    //values3.s2 = (x_cond.s0 || y_cond) ? PAD_VALUE : values3.s2;
+    //values4 = select(values4, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
+    values4.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values4.s0;
+    values4.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values4.s1;
+    //values4.s2 = (x_cond.s1 || y_cond) ? PAD_VALUE : values4.s2;
+    //values5 = select(values5, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    values5.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values5.s0;
+    values5.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values5.s1;
+    //values5.s2 = (x_cond.s2 || y_cond) ? PAD_VALUE : values5.s2;
 #endif // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 
     // yi == 2
@@ -996,9 +1014,18 @@ __kernel void im2col3x3_nhwc(
 #if PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
     // Replace invalid values with PAD_VALUE
     y_cond  = (int)((uint)(yi - (int)PAD_TOP + 2 * DILATION_Y) >= (uint)(SRC_HEIGHT));
-    values6 = select(values6, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
-    values7 = select(values7, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
-    values8 = select(values8, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    //values6 = select(values6, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
+    values6.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values6.s0;
+    values6.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values6.s1;
+    //values6.s2 = (x_cond.s0 || y_cond) ? PAD_VALUE : values6.s2;
+    //values7 = select(values7, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
+    values7.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values7.s0;
+    values7.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values7.s1;
+    //values7.s2 = (x_cond.s1 || y_cond) ? PAD_VALUE : values7.s2;
+    //values8 = select(values8, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    values8.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values8.s0;
+    values8.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values8.s1;
+    //values8.s2 = (x_cond.s2 || y_cond) ? PAD_VALUE : values8.s2;
 #endif // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 
     // Store
