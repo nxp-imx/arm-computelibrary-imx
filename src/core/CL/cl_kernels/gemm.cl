@@ -1133,56 +1133,56 @@ __kernel void gemm_reshape_rhs_matrix_t(TENSOR3D_DECLARATION(src),
 #define CONCAT(a, b) a##b
 
 #define ARM_DOT1(a, b, c) \
-    ({                    \
+    do {                  \
         c = fma(a, b, c); \
-    })
+    } while(0)
 #define ARM_DOT2(a, b, c)       \
-    ({                          \
+    do {                        \
         c = fma(a.s0, b.s0, c); \
         c = fma(a.s1, b.s1, c); \
-    })
+    } while(0)
 #define ARM_DOT3(a, b, c)           \
-    ({                              \
+    do {                            \
         ARM_DOT2(a, b, c);          \
         c = fma((a.s2), (b.s2), c); \
-    })
+    } while(0)
 #define ARM_DOT4(a, b, c)           \
-    ({                              \
+    do {                            \
         ARM_DOT3(a, b, c);          \
         c = fma((a.s3), (b.s3), c); \
-    })
+    } while(0)
 #define ARM_DOT8(a, b, c)            \
-    ({                               \
+    do {                             \
         ARM_DOT4((a.lo), (b.lo), c); \
         ARM_DOT4((a.hi), (b.hi), c); \
-    })
+    } while(0)
 #define ARM_DOT16(a, b, c)           \
-    ({                               \
+    do {                             \
         ARM_DOT8((a.lo), (b.lo), c); \
         ARM_DOT8((a.hi), (b.hi), c); \
-    })
+    } while(0)
 
 #if N0 == 2
 #define ARM_DOT_K0XN0(k0, a, b, c) \
-    ({                             \
+    do {                           \
         CONCAT(ARM_DOT, k0)        \
         ((a), (b##0), (c.s0));     \
         CONCAT(ARM_DOT, k0)        \
         ((a), (b##1), (c.s1));     \
-    })
+    } while(0)
 #elif N0 == 3 // N0 == 3
 #define ARM_DOT_K0XN0(k0, a, b, c) \
-    ({                             \
+    do {                           \
         CONCAT(ARM_DOT, k0)        \
         ((a), (b##0), (c.s0));     \
         CONCAT(ARM_DOT, k0)        \
         ((a), (b##1), (c.s1));     \
         CONCAT(ARM_DOT, k0)        \
         ((a), (b##2), (c.s2));     \
-    })
+    } while(0)
 #elif N0 == 4 // N0 == 4
 #define ARM_DOT_K0XN0(k0, a, b, c) \
-    ({                             \
+    do {                           \
         CONCAT(ARM_DOT, k0)        \
         ((a), (b##0), (c.s0));     \
         CONCAT(ARM_DOT, k0)        \
@@ -1191,10 +1191,10 @@ __kernel void gemm_reshape_rhs_matrix_t(TENSOR3D_DECLARATION(src),
         ((a), (b##2), (c.s2));     \
         CONCAT(ARM_DOT, k0)        \
         ((a), (b##3), (c.s3));     \
-    })
+    } while(0)
 #elif N0 == 8 // N0 == 8
 #define ARM_DOT_K0XN0(k0, a, b, c) \
-    ({                             \
+    do {                           \
         CONCAT(ARM_DOT, k0)        \
         ((a), (b##0), (c.s0));     \
         CONCAT(ARM_DOT, k0)        \
@@ -1211,10 +1211,10 @@ __kernel void gemm_reshape_rhs_matrix_t(TENSOR3D_DECLARATION(src),
         ((a), (b##6), (c.s6));     \
         CONCAT(ARM_DOT, k0)        \
         ((a), (b##7), (c.s7));     \
-    })
+    } while(0)
 #elif N0 == 16 // N0 == 16
 #define ARM_DOT_K0XN0(k0, a, b, c) \
-    ({                             \
+    do {                           \
         CONCAT(ARM_DOT, k0)        \
         ((a), (b##0), (c.s0));     \
         CONCAT(ARM_DOT, k0)        \
@@ -1247,7 +1247,7 @@ __kernel void gemm_reshape_rhs_matrix_t(TENSOR3D_DECLARATION(src),
         ((a), (b##E), (c.sE));     \
         CONCAT(ARM_DOT, k0)        \
         ((a), (b##F), (c.sF));     \
-    })
+    } while(0)
 #else // N0 not supported
 #error "N0 value not supported"
 #endif // N0 conditions
@@ -1756,47 +1756,47 @@ __kernel void gemm_mm_reshaped_only_rhs_t(IMAGE_DECLARATION(lhs),
 }
 
 #define VFMA(a, b, c)     \
-    ({                    \
+    do {                  \
         c = fma(a, b, c); \
-    })
+    } while(0)
 
 #if M0 == 1
 #define LD_RHS_VFMA_M0xN0(i, a, c)                                                                               \
-    ({                                                                                                           \
+    do {                                                                                                         \
         VEC_DATA_TYPE(DATA_TYPE, N0)                                                                             \
         b = VLOAD(N0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset + 0x##i * RHS_STEP_X * sizeof(DATA_TYPE))); \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0));                                            \
-    })
+    } while(0)
 #elif M0 == 2 // M0 == 2
 #define LD_RHS_VFMA_M0xN0(i, a, c)                                                                               \
-    ({                                                                                                           \
+    do {                                                                                                         \
         VEC_DATA_TYPE(DATA_TYPE, N0)                                                                             \
         b = VLOAD(N0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset + 0x##i * RHS_STEP_X * sizeof(DATA_TYPE))); \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##1).s##i), b, (c##1));                                            \
-    })
+    } while(0)
 #elif M0 == 3 // M0 == 3
 #define LD_RHS_VFMA_M0xN0(i, a, c)                                                                               \
-    ({                                                                                                           \
+    do {                                                                                                         \
         VEC_DATA_TYPE(DATA_TYPE, N0)                                                                             \
         b = VLOAD(N0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset + 0x##i * RHS_STEP_X * sizeof(DATA_TYPE))); \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##1).s##i), b, (c##1));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##2).s##i), b, (c##2));                                            \
-    })
+    } while(0)
 #elif M0 == 4 // M0 == 4
 #define LD_RHS_VFMA_M0xN0(i, a, c)                                                                               \
-    ({                                                                                                           \
+    do {                                                                                                         \
         VEC_DATA_TYPE(DATA_TYPE, N0)                                                                             \
         b = VLOAD(N0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset + 0x##i * RHS_STEP_X * sizeof(DATA_TYPE))); \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##1).s##i), b, (c##1));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##2).s##i), b, (c##2));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##3).s##i), b, (c##3));                                            \
-    })
+    } while(0)
 #elif M0 == 5 // M0 == 5
 #define LD_RHS_VFMA_M0xN0(i, a, c)                                                                               \
-    ({                                                                                                           \
+    do {                                                                                                         \
         VEC_DATA_TYPE(DATA_TYPE, N0)                                                                             \
         b = VLOAD(N0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset + 0x##i * RHS_STEP_X * sizeof(DATA_TYPE))); \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0));                                            \
@@ -1804,10 +1804,10 @@ __kernel void gemm_mm_reshaped_only_rhs_t(IMAGE_DECLARATION(lhs),
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##2).s##i), b, (c##2));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##3).s##i), b, (c##3));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##4).s##i), b, (c##4));                                            \
-    })
+    } while(0)
 #elif M0 == 6 // M0 == 6
 #define LD_RHS_VFMA_M0xN0(i, a, c)                                                                               \
-    ({                                                                                                           \
+    do {                                                                                                         \
         VEC_DATA_TYPE(DATA_TYPE, N0)                                                                             \
         b = VLOAD(N0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset + 0x##i * RHS_STEP_X * sizeof(DATA_TYPE))); \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0));                                            \
@@ -1816,10 +1816,10 @@ __kernel void gemm_mm_reshaped_only_rhs_t(IMAGE_DECLARATION(lhs),
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##3).s##i), b, (c##3));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##4).s##i), b, (c##4));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##5).s##i), b, (c##5));                                            \
-    })
+    } while(0)
 #elif M0 == 7 // M0 == 7
 #define LD_RHS_VFMA_M0xN0(i, a, c)                                                                               \
-    ({                                                                                                           \
+    do {                                                                                                         \
         VEC_DATA_TYPE(DATA_TYPE, N0)                                                                             \
         b = VLOAD(N0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset + 0x##i * RHS_STEP_X * sizeof(DATA_TYPE))); \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0));                                            \
@@ -1829,10 +1829,10 @@ __kernel void gemm_mm_reshaped_only_rhs_t(IMAGE_DECLARATION(lhs),
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##4).s##i), b, (c##4));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##5).s##i), b, (c##5));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##6).s##i), b, (c##6));                                            \
-    })
+    } while(0)
 #elif M0 == 8 // M0 == 8
 #define LD_RHS_VFMA_M0xN0(i, a, c)                                                                               \
-    ({                                                                                                           \
+    do {                                                                                                         \
         VEC_DATA_TYPE(DATA_TYPE, N0)                                                                             \
         b = VLOAD(N0)(0, (__global DATA_TYPE *)(rhs_ptr + rhs_offset + 0x##i * RHS_STEP_X * sizeof(DATA_TYPE))); \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##0).s##i), b, (c##0));                                            \
@@ -1843,7 +1843,7 @@ __kernel void gemm_mm_reshaped_only_rhs_t(IMAGE_DECLARATION(lhs),
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##5).s##i), b, (c##5));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##6).s##i), b, (c##6));                                            \
         VFMA((VEC_DATA_TYPE(DATA_TYPE, N0))((a##7).s##i), b, (c##7));                                            \
-    })
+    } while(0)
 #else // M0 not supported
 #error "M0 not supported"
 #endif // M0 not supported
@@ -2364,7 +2364,7 @@ __kernel void gemm_mm_reshaped_only_rhs_nt(IMAGE_DECLARATION(lhs),
     } while (0)
 #elif N0 == 16 // N0 == 16
 #define ARM_DOT_K0XN0(a, b, c)           \
-    do{                                   \
+    do {                                  \
         ARM_DOT_K0((a), (b##0), (c.s0)); \
         ARM_DOT_K0((a), (b##1), (c.s1)); \
         ARM_DOT_K0((a), (b##2), (c.s2)); \

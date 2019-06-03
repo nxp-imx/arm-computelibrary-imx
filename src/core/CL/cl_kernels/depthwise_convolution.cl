@@ -51,17 +51,17 @@ inline __global uchar *ptr_offset(__global uchar *ptr, const int x, const int y,
 #if(DILATION_X == 1 && DILATION_Y == 1)
 
 #define CONVOLUTION1x3_BIFROST2X1_STRIDE1(acc, src0, weights_row0) \
-    ({                                                             \
+    do {                                                           \
         acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);            \
         acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);            \
         acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);            \
         acc.s1 = fma(src0.s1, weights_row0.s0, acc.s1);            \
         acc.s1 = fma(src0.s2, weights_row0.s1, acc.s1);            \
         acc.s1 = fma(src0.s3, weights_row0.s2, acc.s1);            \
-    })
+    } while(0)
 
 #define CONVOLUTION1x3_BIFROST4X1_STRIDE1(acc, src0, weights_row0) \
-    ({                                                             \
+    do {                                                           \
         acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);            \
         acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);            \
         acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);            \
@@ -74,20 +74,20 @@ inline __global uchar *ptr_offset(__global uchar *ptr, const int x, const int y,
         acc.s3 = fma(src0.s3, weights_row0.s0, acc.s3);            \
         acc.s3 = fma(src0.s4, weights_row0.s1, acc.s3);            \
         acc.s3 = fma(src0.s5, weights_row0.s2, acc.s3);            \
-    })
+    } while(0)
 
 #define CONVOLUTION1x3_BIFROST2X1_STRIDE2(acc, src0, src1, weights_row0) \
-    ({                                                                   \
+    do {                                                                 \
         acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);                  \
         acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);                  \
         acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);                  \
         acc.s1 = fma(src0.s2, weights_row0.s0, acc.s1);                  \
         acc.s1 = fma(src0.s3, weights_row0.s1, acc.s1);                  \
         acc.s1 = fma(src1.s0, weights_row0.s2, acc.s1);                  \
-    })
+    } while(0)
 
 #define CONVOLUTION1x3_BIFROST4X1_STRIDE2(acc, src0, src1, weights_row0) \
-    ({                                                                   \
+    do {                                                                 \
         acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);                  \
         acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);                  \
         acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);                  \
@@ -100,32 +100,32 @@ inline __global uchar *ptr_offset(__global uchar *ptr, const int x, const int y,
         acc.s3 = fma(src0.s6, weights_row0.s0, acc.s3);                  \
         acc.s3 = fma(src0.s7, weights_row0.s1, acc.s3);                  \
         acc.s3 = fma(src1.s0, weights_row0.s2, acc.s3);                  \
-    })
+    } while(0)
 
 #else /* DILATION_X==1 && DILATION_Y==1 */
 
 #define CONVOLUTION1x3_BIFROST2X1_STRIDE1(acc, src0_left, src0_mid, src0_right, weights_row0) \
-    ({                                                                                        \
+    do {                                                                                      \
         acc.s0 = fma(src0_left.s0, weights_row0.s0, acc.s0);                                  \
         acc.s0 = fma(src0_mid.s0, weights_row0.s1, acc.s0);                                   \
         acc.s0 = fma(src0_right.s0, weights_row0.s2, acc.s0);                                 \
         acc.s1 = fma(src0_left.s1, weights_row0.s0, acc.s1);                                  \
         acc.s1 = fma(src0_mid.s1, weights_row0.s1, acc.s1);                                   \
         acc.s1 = fma(src0_right.s1, weights_row0.s2, acc.s1);                                 \
-    })
+    } while(0)
 
 #define CONVOLUTION1x3_BIFROST2X1_STRIDE2(acc, src0_left, src0_mid, src0_right, weights_row0) \
-    ({                                                                                        \
+    do {                                                                                      \
         acc.s0 = fma(src0_left.s0, weights_row0.s0, acc.s0);                                  \
         acc.s0 = fma(src0_mid.s0, weights_row0.s1, acc.s0);                                   \
         acc.s0 = fma(src0_right.s0, weights_row0.s2, acc.s0);                                 \
         acc.s1 = fma(src0_left.s2, weights_row0.s0, acc.s1);                                  \
         acc.s1 = fma(src0_mid.s2, weights_row0.s1, acc.s1);                                   \
         acc.s1 = fma(src0_right.s2, weights_row0.s2, acc.s1);                                 \
-    })
+    } while(0)
 
 #define CONVOLUTION1x3_BIFROST4X1_STRIDE1(acc, src0_left, src0_mid, src0_right, weights_row0) \
-    ({                                                                                        \
+    do {                                                                                      \
         acc.s0 = fma(src0_left.s0, weights_row0.s0, acc.s0);                                  \
         acc.s0 = fma(src0_mid.s0, weights_row0.s1, acc.s0);                                   \
         acc.s0 = fma(src0_right.s0, weights_row0.s2, acc.s0);                                 \
@@ -138,10 +138,10 @@ inline __global uchar *ptr_offset(__global uchar *ptr, const int x, const int y,
         acc.s3 = fma(src0_left.s3, weights_row0.s0, acc.s3);                                  \
         acc.s3 = fma(src0_mid.s3, weights_row0.s1, acc.s3);                                   \
         acc.s3 = fma(src0_right.s3, weights_row0.s2, acc.s3);                                 \
-    })
+    } while(0)
 
 #define CONVOLUTION1x3_BIFROST4X1_STRIDE2(acc, src0_left, src0_mid, src0_right, weights_row0) \
-    ({                                                                                        \
+    do {                                                                                      \
         acc.s0 = fma(src0_left.s0, weights_row0.s0, acc.s0);                                  \
         acc.s0 = fma(src0_mid.s0, weights_row0.s1, acc.s0);                                   \
         acc.s0 = fma(src0_right.s0, weights_row0.s2, acc.s0);                                 \
@@ -154,7 +154,7 @@ inline __global uchar *ptr_offset(__global uchar *ptr, const int x, const int y,
         acc.s3 = fma(src0_left.s6, weights_row0.s0, acc.s3);                                  \
         acc.s3 = fma(src0_mid.s6, weights_row0.s1, acc.s3);                                   \
         acc.s3 = fma(src0_right.s6, weights_row0.s2, acc.s3);                                 \
-    })
+    } while(0)
 
 #endif /* DILATION_X==1 && DILATION_Y==1 */
 
@@ -372,57 +372,85 @@ __kernel void depthwise_convolution_3x3(
 }
 #endif //defined(CONV_STRIDE_X)
 
-#define CONVOLUTION1x3_BIFROST2X1_STRIDE1(acc, src0, weights_row0) \
-    do{                                                             \
-        acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);            \
-        acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);            \
-        acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);            \
-        acc.s1 = fma(src0.s1, weights_row0.s0, acc.s1);            \
-        acc.s1 = fma(src0.s2, weights_row0.s1, acc.s1);            \
-        acc.s1 = fma(src0.s3, weights_row0.s2, acc.s1);            \
-    }while(0)
+#if(DILATION_X > 1 || DILATION_Y > 1)
 
-#define CONVOLUTION1x3_BIFROST4X1_STRIDE1(acc, src0, weights_row0) \
-    do{                                                             \
-        acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);            \
-        acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);            \
-        acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);            \
-        acc.s1 = fma(src0.s1, weights_row0.s0, acc.s1);            \
-        acc.s1 = fma(src0.s2, weights_row0.s1, acc.s1);            \
-        acc.s1 = fma(src0.s3, weights_row0.s2, acc.s1);            \
-        acc.s2 = fma(src0.s2, weights_row0.s0, acc.s2);            \
-        acc.s2 = fma(src0.s3, weights_row0.s1, acc.s2);            \
-        acc.s2 = fma(src0.s4, weights_row0.s2, acc.s2);            \
-        acc.s3 = fma(src0.s3, weights_row0.s0, acc.s3);            \
-        acc.s3 = fma(src0.s4, weights_row0.s1, acc.s3);            \
-        acc.s3 = fma(src0.s5, weights_row0.s2, acc.s3);            \
-    }while(0)
+/** Perform 3x3 convolution for stride_x=1 and stride_y=1 when DILATION_X>1 or DILATION_Y>1 for F32
+ *
+ * @param[in] src_addr         Pointer to the starting position of where to perform the convolution
+ * @param[in] src_stride_x     Stride of the source tensor in X dimension (in bytes)
+ * @param[in] src_stride_y     Stride of the source tensor in Y dimension (in bytes)
+ * @param[in] y_offset         Offset from the source tensor from which to start convolution
+ * @param[in] weights_addr     Pointer from where to get weights
+ * @param[in] weights_stride_y Stride of weights tesnsor in Y dimension
+ */
+inline float2 convolution_3x3_dilation_stridex1_stridey1_bifrost_f32(__global uchar *src_addr, const int stride_x_bytes, const int stride_y_bytes,
+                                                                     const int y_offset, __global uchar *weights_addr, const int weights_stride_y)
+{
+    // Load the weights
+    float3 weights_row0 = vload3(0, (__global float *)(weights_addr + 0 * weights_stride_y));
+    float3 weights_row1 = vload3(0, (__global float *)(weights_addr + 1 * weights_stride_y));
+    float3 weights_row2 = vload3(0, (__global float *)(weights_addr + 2 * weights_stride_y));
 
-#define CONVOLUTION1x3_BIFROST2X1_STRIDE2(acc, src0, src1, weights_row0) \
-    do{                                                                   \
-        acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);                  \
-        acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);                  \
-        acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);                  \
-        acc.s1 = fma(src0.s2, weights_row0.s0, acc.s1);                  \
-        acc.s1 = fma(src0.s3, weights_row0.s1, acc.s1);                  \
-        acc.s1 = fma(src1.s0, weights_row0.s2, acc.s1);                  \
-    }while(0)
+    float2 pixels0 = 0.0f;
 
-#define CONVOLUTION1x3_BIFROST4X1_STRIDE2(acc, src0, src1, weights_row0) \
-    do{                                                                   \
-        acc.s0 = fma(src0.s0, weights_row0.s0, acc.s0);                  \
-        acc.s0 = fma(src0.s1, weights_row0.s1, acc.s0);                  \
-        acc.s0 = fma(src0.s2, weights_row0.s2, acc.s0);                  \
-        acc.s1 = fma(src0.s2, weights_row0.s0, acc.s1);                  \
-        acc.s1 = fma(src0.s3, weights_row0.s1, acc.s1);                  \
-        acc.s1 = fma(src0.s4, weights_row0.s2, acc.s1);                  \
-        acc.s2 = fma(src0.s4, weights_row0.s0, acc.s2);                  \
-        acc.s2 = fma(src0.s5, weights_row0.s1, acc.s2);                  \
-        acc.s2 = fma(src0.s6, weights_row0.s2, acc.s2);                  \
-        acc.s3 = fma(src0.s6, weights_row0.s0, acc.s3);                  \
-        acc.s3 = fma(src0.s7, weights_row0.s1, acc.s3);                  \
-        acc.s3 = fma(src1.s0, weights_row0.s2, acc.s3);                  \
-    }while(0)
+    float2 src00_left  = vload2(0, (__global float *)ptr_offset(src_addr, 0, y_offset, stride_x_bytes, stride_y_bytes)); // Row0
+    float2 src00_mid   = vload2(0, (__global float *)ptr_offset(src_addr, DILATION_X, y_offset, stride_x_bytes, stride_y_bytes));
+    float2 src00_right = vload2(0, (__global float *)ptr_offset(src_addr, 2 * DILATION_X, y_offset, stride_x_bytes, stride_y_bytes));
+
+    float2 src10_left  = vload2(0, (__global float *)ptr_offset(src_addr, 0, y_offset + DILATION_Y, stride_x_bytes, stride_y_bytes)); // Row1
+    float2 src10_mid   = vload2(0, (__global float *)ptr_offset(src_addr, DILATION_X, y_offset + DILATION_Y, stride_x_bytes, stride_y_bytes));
+    float2 src10_right = vload2(0, (__global float *)ptr_offset(src_addr, 2 * DILATION_X, y_offset + DILATION_Y, stride_x_bytes, stride_y_bytes));
+
+    float2 src20_left  = vload2(0, (__global float *)ptr_offset(src_addr, 0, y_offset + DILATION_Y * 2, stride_x_bytes, stride_y_bytes)); // Row2
+    float2 src20_mid   = vload2(0, (__global float *)ptr_offset(src_addr, DILATION_X, y_offset + DILATION_Y * 2, stride_x_bytes, stride_y_bytes));
+    float2 src20_right = vload2(0, (__global float *)ptr_offset(src_addr, 2 * DILATION_X, y_offset + DILATION_Y * 2, stride_x_bytes, stride_y_bytes));
+
+    CONVOLUTION1x3_BIFROST2X1_STRIDE1(pixels0, src00_left, src00_mid, src00_right, weights_row0);
+    CONVOLUTION1x3_BIFROST2X1_STRIDE1(pixels0, src10_left, src10_mid, src10_right, weights_row1);
+    CONVOLUTION1x3_BIFROST2X1_STRIDE1(pixels0, src20_left, src20_mid, src20_right, weights_row2);
+
+    return pixels0;
+}
+
+/** Perform 3x3 convolution for stride_x=2 and stride_y=2 when DILATION_X>1 or DILATION_Y>1 for F32
+ *
+ * @param[in] src_addr         Pointer to the starting position of where to perform the convolution
+ * @param[in] src_stride_x     Stride of the source tensor in X dimension (in bytes)
+ * @param[in] src_stride_y     Stride of the source tensor in Y dimension (in bytes)
+ * @param[in] y_offset         Offset from the source tensor from which to start convolution
+ * @param[in] weights_addr     Pointer from where to get weights
+ * @param[in] weights_stride_y Stride of weights tesnsor in Y dimension
+ */
+inline float2 convolution_3x3_dilation_stridex2_stridey2_bifrost_f32(__global uchar *src_addr, const int stride_x_bytes, const int stride_y_bytes,
+                                                                     const int y_offset, __global uchar *weights_addr, const int weights_stride_y)
+{
+    // Load the weights
+    float3 weights_row0 = vload3(0, (__global float *)(weights_addr + 0 * weights_stride_y));
+    float3 weights_row1 = vload3(0, (__global float *)(weights_addr + 1 * weights_stride_y));
+    float3 weights_row2 = vload3(0, (__global float *)(weights_addr + 2 * weights_stride_y));
+
+    float2 pixels0 = 0.0f;
+
+    float3 src00_left  = vload3(0, (__global float *)ptr_offset(src_addr, 0, y_offset, stride_x_bytes, stride_y_bytes)); // Row0
+    float3 src00_mid   = vload3(0, (__global float *)ptr_offset(src_addr, DILATION_X, y_offset, stride_x_bytes, stride_y_bytes));
+    float3 src00_right = vload3(0, (__global float *)ptr_offset(src_addr, 2 * DILATION_X, y_offset, stride_x_bytes, stride_y_bytes));
+
+    float3 src10_left  = vload3(0, (__global float *)ptr_offset(src_addr, 0, y_offset + DILATION_Y, stride_x_bytes, stride_y_bytes)); // Row1
+    float3 src10_mid   = vload3(0, (__global float *)ptr_offset(src_addr, DILATION_X, y_offset + DILATION_Y, stride_x_bytes, stride_y_bytes));
+    float3 src10_right = vload3(0, (__global float *)ptr_offset(src_addr, 2 * DILATION_X, y_offset + DILATION_Y, stride_x_bytes, stride_y_bytes));
+
+    float3 src20_left  = vload3(0, (__global float *)ptr_offset(src_addr, 0, y_offset + DILATION_Y * 2, stride_x_bytes, stride_y_bytes)); // Row2
+    float3 src20_mid   = vload3(0, (__global float *)ptr_offset(src_addr, DILATION_X, y_offset + DILATION_Y * 2, stride_x_bytes, stride_y_bytes));
+    float3 src20_right = vload3(0, (__global float *)ptr_offset(src_addr, 2 * DILATION_X, y_offset + DILATION_Y * 2, stride_x_bytes, stride_y_bytes));
+
+    CONVOLUTION1x3_BIFROST2X1_STRIDE2(pixels0, src00_left, src00_mid, src00_right, weights_row0);
+    CONVOLUTION1x3_BIFROST2X1_STRIDE2(pixels0, src10_left, src10_mid, src10_right, weights_row1);
+    CONVOLUTION1x3_BIFROST2X1_STRIDE2(pixels0, src20_left, src20_mid, src20_right, weights_row2);
+
+    return pixels0;
+}
+
+#endif /* (DILATION_X > 1 || DILATION_Y > 1) */
 
 /** This OpenCL kernel is optimized for Bifrost architectures and computes the depthwise convolution 3x3 when both
  * stride_x and stride_y are equal to 1

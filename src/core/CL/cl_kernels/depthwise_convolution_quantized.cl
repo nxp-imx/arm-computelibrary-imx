@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018 ARM Limited.
+ * Copyright (c) 2017-2019 ARM Limited.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -57,48 +57,48 @@
 
 #if CONV_STRIDE_X == 1
 #define GET_VALUES(first_value, left, middle, right)                              \
-    do{                                                                            \
+    do {                                                                          \
         int8 temp0 = CONVERT(vload8(0, first_value), int8);                       \
         int2 temp1 = CONVERT(vload2(0, (first_value + 8 * sizeof(uchar))), int2); \
         \
         left   = CONVERT(temp0.s01234567, int8);                                  \
         middle = CONVERT((int8)(temp0.s1234, temp0.s567, temp1.s0), int8);        \
         right  = CONVERT((int8)(temp0.s2345, temp0.s67, temp1.s01), int8);        \
-    }while(0)
+    } while(0)
 #elif CONV_STRIDE_X == 2
 #define GET_VALUES(first_value, left, middle, right)                     \
-    do{                                                                   \
+    do {                                                                 \
         int16 temp0 = CONVERT(vload16(0, first_value), int16);           \
         int   temp1 = CONVERT(*(first_value + 16 * sizeof(uchar)), int); \
         \
         left   = CONVERT(temp0.s02468ace, int8);                         \
         middle = CONVERT(temp0.s13579bdf, int8);                         \
         right  = CONVERT((int8)(temp0.s2468, temp0.sace, temp1), int8);  \
-    }while(0)
+    } while(0)
 #else /* CONV_STRIDE_X */
 #define GET_VALUES(first_value, left, middle, right)                                \
-    do{                                                                              \
+    do {                                                                            \
         int16 temp0 = CONVERT(vload16(0, first_value), int16);                      \
         int8  temp1 = CONVERT(vload8(0, (first_value + 16 * sizeof(uchar))), int8); \
         \
         left   = CONVERT((int8)(temp0.s0369, temp0.scf, temp1.s25), int8);          \
         middle = CONVERT((int8)(temp0.s147a, temp0.sd, temp1.s036), int8);          \
         right  = CONVERT((int8)(temp0.s258b, temp0.se, temp1.s147), int8);          \
-    }while(0)
+    } while(0)
 #endif /* CONV_STRIDE_X */
 
 #else /* DILATION_X == 1 */
 
 #if CONV_STRIDE_X == 1
 #define GET_VALUES(first_value, left, middle, right)                                     \
-    do{                                                                                   \
+    do {                                                                                 \
         left   = CONVERT(vload8(0, first_value), int8);                                  \
         middle = CONVERT(vload8(0, first_value + DILATION_X * sizeof(uchar)), int8);     \
         right  = CONVERT(vload8(0, first_value + 2 * DILATION_X * sizeof(uchar)), int8); \
-    }while(0)
+    } while(0)
 #elif CONV_STRIDE_X == 2
 #define GET_VALUES(first_value, left, middle, right)                                      \
-    do{                                                                                    \
+    do {                                                                                  \
         int16 temp0 = CONVERT(vload16(0, first_value), int16);                            \
         left        = CONVERT(temp0.s02468ace, int8);                                     \
         \
@@ -107,10 +107,10 @@
         \
         temp0 = CONVERT(vload16(0, first_value + 2 * DILATION_X * sizeof(uchar)), int16); \
         right = CONVERT(temp0.s02468ace, int8);                                           \
-    }while(0)
+    } while(0)
 #else /* CONV_STRIDE_X */
 #define GET_VALUES(first_value, left, middle, right)                                             \
-    {                                                                                           \
+    do {                                                                                         \
         int16 temp0 = CONVERT(vload16(0, first_value), int16);                                   \
         int8  temp1 = CONVERT(vload8(0, (first_value + 16 * sizeof(uchar))), int8);              \
         left        = CONVERT((int8)(temp0.s0369, temp0.scf, temp1.s25), int8);                  \
@@ -122,7 +122,7 @@
         temp0 = CONVERT(vload16(0, first_value + 2 * DILATION_X * sizeof(uchar)), int16);        \
         temp1 = CONVERT(vload8(0, (first_value + (16 + 2 * DILATION_X) * sizeof(uchar))), int8); \
         right = CONVERT((int8)(temp0.s0369, temp0.scf, temp1.s25), int8);                        \
-    }while(0)
+    } while(0)
 
 #endif /* CONV_STRIDE_X */
 #endif /* DILATION_X==1 */
@@ -330,57 +330,57 @@ __kernel void dwc_3x3_native_qasymm8_nchw(
 #if DILATION_X == 1
 #if CONV_STRIDE_X == 1
 #define GET_VALUES(first_value, left, middle, right)                 \
-    do{                                                               \
+    do {                                                             \
         uchar8 temp0 = vload8(0, first_value);                       \
         uchar2 temp1 = vload2(0, (first_value + 8 * sizeof(uchar))); \
         \
         left   = temp0.s01234567;                                    \
         middle = (uchar8)(temp0.s1234, temp0.s567, temp1.s0);        \
         right  = (uchar8)(temp0.s2345, temp0.s67, temp1.s01);        \
-    }while(0)
+    } while(0)
 #elif CONV_STRIDE_X == 2
 #define GET_VALUES(first_value, left, middle, right)         \
-    do{                                                       \
+    do {                                                     \
         uchar16 temp0 = vload16(0, first_value);             \
         uchar   temp1 = *(first_value + 16 * sizeof(uchar)); \
         \
         left   = temp0.s02468ace;                            \
         middle = temp0.s13579bdf;                            \
         right  = (uchar8)(temp0.s2468, temp0.sace, temp1);   \
-    }while(0)
+    } while(0)
 #else /* CONV_STRIDE_X */
 #define GET_VALUES(first_value, left, middle, right)                   \
-    do{                                                                 \
+    do {                                                               \
         uchar16 temp0 = vload16(0, first_value);                       \
         uchar8  temp1 = vload8(0, (first_value + 16 * sizeof(uchar))); \
         \
         left   = (uchar8)(temp0.s0369, temp0.scf, temp1.s25);          \
         middle = (uchar8)(temp0.s147a, temp0.sd, temp1.s036);          \
         right  = (uchar8)(temp0.s258b, temp0.se, temp1.s147);          \
-    }while(0)
+    } while(0)
 #endif /* CONV_STRIDE_X */
 #else  /*DILATION_X==1*/
 
 #if CONV_STRIDE_X == 1
 #define GET_VALUES(first_value, left, middle, right)                      \
-    ({                                                                    \
+    do {                                                                  \
         left   = vload8(0, first_value);                                  \
         middle = vload8(0, first_value + DILATION_X * sizeof(uchar));     \
         right  = vload8(0, first_value + 2 * DILATION_X * sizeof(uchar)); \
-    })
+    } while(0)
 #elif CONV_STRIDE_X == 2
 #define GET_VALUES(first_value, left, middle, right)                              \
-    do{                                                                            \
+    do {                                                                          \
         uchar16 temp0 = vload16(0, first_value);                                  \
         left          = temp0.s02468ace;                                          \
         temp0         = vload16(0, first_value + DILATION_X * sizeof(uchar));     \
         middle        = temp0.s02468ace;                                          \
         temp0         = vload16(0, first_value + 2 * DILATION_X * sizeof(uchar)); \
         right         = temp0.s02468ace;                                          \
-    }while(0)
+    } while(0)
 #else /* CONV_STRIDE_X */
 #define GET_VALUES(first_value, left, middle, right)                              \
-    do{                                                                            \
+    do {                                                                          \
         uchar16 temp0 = vload16(0, first_value);                                  \
         uchar8  temp1 = vload8(0, (first_value + 16 * sizeof(uchar)));            \
         left          = (uchar8)(temp0.s0369, temp0.scf, temp1.s25);              \
@@ -392,7 +392,7 @@ __kernel void dwc_3x3_native_qasymm8_nchw(
         temp0 = vload16(0, first_value + 2 * DILATION_X * sizeof(uchar));         \
         temp1 = vload8(0, (first_value + (16 + 2 * DILATION_X) * sizeof(uchar))); \
         right = (uchar8)(temp0.s0369, temp0.scf, temp1.s25);                      \
-    }while(0)
+    } while(0)
 
 #endif /* CONV_STRIDE_X */
 #endif /*DILATION_X==1*/
@@ -644,72 +644,35 @@ __kernel void dwc_3x3_native_qasymm8_dot8_nchw(
 
 #if WEIGHTS_OFFSET != 0
 #define MULTIPLY_ADD_ACCUMULATE(x, y, acc, sum) \
-    do{                                          \
+    do {                                        \
         sum += CONVERT(x, VEC_INT);             \
         MULTIPLY_ADD(x, y, acc);                \
-    }while(0)
+    } while(0)
 #else /* WEIGHTS_OFFSET != 0 */
 #define MULTIPLY_ADD_ACCUMULATE(x, y, acc, sum) MULTIPLY_ADD(x, y, acc)
 #endif /* WEIGHTS_OFFSET != 0 */
 
 #if defined(ARM_COMPUTE_OPENCL_DOT8_ENABLED) && defined(cl_arm_integer_dot_product_int8)
-#define DOT_PRODUCT(acc, val0, val1, val2, val3, val4, val5, val6, val7, val8, w0, w1, w2, w3, w4, w5, w6, w7, w8) \
-    do{                                                                                                             \
-        ARM_DOT((uchar4)(val0.s0, val1.s0, val2.s0, val3.s0), (uchar4)(w0.s0, w1.s0, w2.s0, w3.s0), acc.s0);       \
-        ARM_DOT((uchar4)(val4.s0, val5.s0, val6.s0, val7.s0), (uchar4)(w4.s0, w5.s0, w6.s0, w7.s0), acc.s0);       \
-        acc.s0 += val8.s0 * w8.s0;                                                                                 \
-        \
-        ARM_DOT((uchar4)(val0.s1, val1.s1, val2.s1, val3.s1), (uchar4)(w0.s1, w1.s1, w2.s1, w3.s1), acc.s1);       \
-        ARM_DOT((uchar4)(val4.s1, val5.s1, val6.s1, val7.s1), (uchar4)(w4.s1, w5.s1, w6.s1, w7.s1), acc.s1);       \
-        acc.s1 += val8.s1 * w8.s1;                                                                                 \
-        \
-        ARM_DOT((uchar4)(val0.s2, val1.s2, val2.s2, val3.s2), (uchar4)(w0.s2, w1.s2, w2.s2, w3.s2), acc.s2);       \
-        ARM_DOT((uchar4)(val4.s2, val5.s2, val6.s2, val7.s2), (uchar4)(w4.s2, w5.s2, w6.s2, w7.s2), acc.s2);       \
-        acc.s2 += val8.s2 * w8.s2;                                                                                 \
-        \
-        ARM_DOT((uchar4)(val0.s3, val1.s3, val2.s3, val3.s3), (uchar4)(w0.s3, w1.s3, w2.s3, w3.s3), acc.s3);       \
-        ARM_DOT((uchar4)(val4.s3, val5.s3, val6.s3, val7.s3), (uchar4)(w4.s3, w5.s3, w6.s3, w7.s3), acc.s3);       \
-        acc.s3 += val8.s3 * w8.s3;                                                                                 \
-    }while(0)
-
-#if WEIGHTS_OFFSET != 0
-#define DOT_PRODUCT_ACCUMULATE(acc, val0, val1, val2, val3, val4, val5, val6, val7, val8, w0, w1, w2, w3, w4, w5, w6, w7, w8) \
-    do{                                                                                                                        \
-        ARM_DOT((uchar4)(w0.s0, w1.s0, w2.s0, w3.s0), (uchar4)(val0.s0, val1.s0, val2.s0, val3.s0), acc.s0);                  \
-        ARM_DOT((uchar4)(w4.s0, w5.s0, w6.s0, w7.s0), (uchar4)(val4.s0, val5.s0, val6.s0, val7.s0), acc.s0);                  \
-        ARM_DOT((uchar4)(w8.s0, 0, 0, 0), (uchar4)val8.s0, acc.s0);                                                           \
-        \
-        ARM_DOT((uchar4)(w0.s1, w1.s1, w2.s1, w3.s1), (uchar4)(val0.s1, val1.s1, val2.s1, val3.s1), acc.s1);                  \
-        ARM_DOT((uchar4)(w4.s1, w5.s1, w6.s1, w7.s1), (uchar4)(val4.s1, val5.s1, val6.s1, val7.s1), acc.s1);                  \
-        ARM_DOT((uchar4)(w8.s1, 0, 0, 0), (uchar4)val8.s1, acc.s1);                                                           \
-        \
-        ARM_DOT((uchar4)(w0.s2, w1.s2, w2.s2, w3.s2), (uchar4)(val0.s2, val1.s2, val2.s2, val3.s2), acc.s2);                  \
-        ARM_DOT((uchar4)(w4.s2, w5.s2, w6.s2, w7.s2), (uchar4)(val4.s2, val5.s2, val6.s2, val7.s2), acc.s2);                  \
-        ARM_DOT((uchar4)(w8.s2, 0, 0, 0), (uchar4)val8.s2, acc.s2);                                                           \
-        \
-        ARM_DOT((uchar4)(w0.s3, w1.s3, w2.s3, w3.s3), (uchar4)(val0.s3, val1.s3, val2.s3, val3.s3), acc.s3);                  \
-        ARM_DOT((uchar4)(w4.s3, w5.s3, w6.s3, w7.s3), (uchar4)(val4.s3, val5.s3, val6.s3, val7.s3), acc.s3);                  \
-        ARM_DOT((uchar4)(w8.s3, 0, 0, 0), (uchar4)val8.s3, acc.s3);                                                           \
-    }while(0)
-#else /* WEIGHTS_OFFSET != 0 */
-#define DOT_PRODUCT_ACCUMULATE(acc, val0, val1, val2, val3, val4, val5, val6, val7, val8, w0, w1, w2, w3, w4, w5, w6, w7, w8) DOT_PRODUCT(acc, val0, val1, val2, val3, val4, val5, val6, val7, val8, w0, w1, w2, w3, w4, w5, w6, w7, w8)
-#endif /* WEIGHTS_OFFSET != 0 */
+#define DOT_PRODUCT(acc, val0, val1, val2, val3, val4, val5, val6, val7, val8, w0, w1) \
+    do {                                                                               \
+        ARM_DOT((uchar4)(val0, val1, val2, val3), w0.s0123, acc);                      \
+        ARM_DOT((uchar4)(val4, val5, val6, val7), w0.s4567, acc);                      \
+        acc += val8 * w1;                                                              \
+    } while(0)
 
 #define DOT_PRODUCT_REDUCTION(sum, val0, val1, val2, val3, val4, val5, val6, val7, val8) \
-    do{                                                                                   \
-        sum = CONVERT(val0, VEC_INT);                                                    \
-        ARM_DOT((uchar4)(val1.s0, val2.s0, val3.s0, val4.s0), (uchar4)1, sum.s0);        \
-        ARM_DOT((uchar4)(val5.s0, val6.s0, val7.s0, val8.s0), (uchar4)1, sum.s0);        \
-        \
-        ARM_DOT((uchar4)(val1.s1, val2.s1, val3.s1, val4.s1), (uchar4)1, sum.s1);        \
-        ARM_DOT((uchar4)(val5.s1, val6.s1, val7.s1, val8.s1), (uchar4)1, sum.s1);        \
-        \
-        ARM_DOT((uchar4)(val1.s2, val2.s2, val3.s2, val4.s2), (uchar4)1, sum.s2);        \
-        ARM_DOT((uchar4)(val5.s2, val6.s2, val7.s2, val8.s2), (uchar4)1, sum.s2);        \
-        \
-        ARM_DOT((uchar4)(val1.s3, val2.s3, val3.s3, val4.s3), (uchar4)1, sum.s3);        \
-        ARM_DOT((uchar4)(val5.s3, val6.s3, val7.s3, val8.s3), (uchar4)1, sum.s3);        \
-    }while(0)
+    do {                                                                                 \
+        sum = val0;                                                                      \
+        ARM_DOT((uchar4)(val1, val2, val3, val4), (uchar4)1, sum);                       \
+        ARM_DOT((uchar4)(val5, val6, val7, val8), (uchar4)1, sum);                       \
+    } while(0)
+
+#define DOT_PRODUCT_REDUCTION_WEIGHTS(sum, w0, w1) \
+    do {                                           \
+        sum = w1;                                  \
+        ARM_DOT(w0.s0123, (uchar4)1, sum);         \
+        ARM_DOT(w0.s4567, (uchar4)1, sum);         \
+    } while(0)
 
 #endif // defined(ARM_COMPUTE_OPENCL_DOT8_ENABLED) && defined(cl_arm_integer_dot_product_int8)
 
@@ -745,13 +708,11 @@ __kernel void dwc_3x3_native_qasymm8_dot8_nchw(
  * @param[in] dst_stride_w                          Stride of the destination tensor in W dimension (in bytes)
  * @param[in] dst_step_w                            dst_stride_w * number of elements along W processed per workitem(in bytes)
  * @param[in] dst_offset_first_element_in_bytes     The offset of the first element in the destination tensor
- * @param[in] weights_ptr                           Pointer to the weights tensor. Supported data types: same as @p src_ptr
+ * @param[in] weights_ptr                           Pointer to the weights tensor reshaped. Supported data types: same as @p src_ptr
  * @param[in] weights_stride_x                      Stride of the weights tensor in X dimension (in bytes)
  * @param[in] weights_step_x                        weights_stride_x * number of elements along X processed per workitem(in bytes)
  * @param[in] weights_stride_y                      Stride of the weights tensor in Y dimension (in bytes)
  * @param[in] weights_step_y                        weights_stride_y * number of elements along Y processed per workitem(in bytes)
- * @param[in] weights_stride_z                      Stride of the weights tensor in Z dimension (in bytes)
- * @param[in] weights_step_z                        weights_stride_z * number of elements along Y processed per workitem(in bytes)
  * @param[in] weights_offset_first_element_in_bytes The offset of the first element in the weights tensor
  * @param[in] biases_ptr                            (Optional) Pointer to the biases vector. Supported data types: same as @p src_ptr
  * @param[in] biases_stride_x                       (Optional) Stride of the biases vector in X dimension (in bytes)
@@ -762,7 +723,7 @@ __kernel void dwc_3x3_native_qasymm8_dot8_nchw(
 __kernel void dwc_3x3_reshaped_qasymm8_nhwc(
     TENSOR4D_DECLARATION(src),
     TENSOR4D_DECLARATION(dst),
-    TENSOR3D_DECLARATION(weights),
+    IMAGE_DECLARATION(weights),
 #if defined(HAS_BIAS)
     VECTOR_DECLARATION(biases),
 #endif /* defined(HAS_BIAS) */
@@ -797,7 +758,7 @@ __kernel void dwc_3x3_reshaped_qasymm8_nhwc(
 
     int4 y_offset = convert_int4(y_coord * (int)src_stride_y);
 
-    // We compute 4x1x1 [C,W,H] elements
+    // We compute VEC_SIZEx1x1 [C,W,H] elements
     VEC_INT acc = 0, sum = 0;
 
     // Load weights
@@ -945,8 +906,6 @@ __kernel void dwc_3x3_reshaped_qasymm8_nhwc(
  * @param[in] weights_step_x                        weights_stride_x * number of elements along X processed per workitem(in bytes)
  * @param[in] weights_stride_y                      Stride of the weights tensor in Y dimension (in bytes)
  * @param[in] weights_step_y                        weights_stride_y * number of elements along Y processed per workitem(in bytes)
- * @param[in] weights_stride_z                      Stride of the weights tensor in Z dimension (in bytes)
- * @param[in] weights_step_z                        weights_stride_z * number of elements along Y processed per workitem(in bytes)
  * @param[in] weights_offset_first_element_in_bytes The offset of the first element in the weights tensor
  * @param[in] biases_ptr                            (Optional) Pointer to the biases vector. Supported data types: same as @p src_ptr
  * @param[in] biases_stride_x                       (Optional) Stride of the biases vector in X dimension (in bytes)
@@ -958,7 +917,7 @@ __kernel void dwc_3x3_reshaped_qasymm8_nhwc(
 __kernel void dwc_3x3_reshaped_qasymm8_stride1_nhwc(
     TENSOR4D_DECLARATION(src),
     TENSOR4D_DECLARATION(dst),
-    TENSOR3D_DECLARATION(weights),
+    IMAGE_DECLARATION(weights),
 #if defined(HAS_BIAS)
     VECTOR_DECLARATION(biases),
 #endif /* defined(HAS_BIAS) */
@@ -1194,9 +1153,11 @@ __kernel void dwc_3x3_reshaped_qasymm8_stride1_nhwc(
     }
 }
 
-#if defined(ARM_COMPUTE_OPENCL_DOT8_ENABLED) && defined(cl_arm_integer_dot_product_int8)
-/** This function computes the depthwise convolution quantized for NHWC data layout when the stride along the width and height is 1 using dot product
+#if defined(ARM_COMPUTE_OPENCL_DOT8_ENABLED) && defined(cl_arm_integer_dot_product_int8) && VEC_SIZE == 4
+/** This function computes the depthwise convolution quantized for NHWC data layout when the stride along the width and height is 1 using dot product.
  *
+ * @note This kernel assumes VEC_SIZE is 4.
+ * @note The weights tensor is expected to be reshaped using @ref CLDepthwiseConvolutionLayerReshapeWeightsKernel.
  * @note The number of elements read per thread must be passed at compile time using -DVEC_SIZE (e.g. -DVEC_SIZE=2)
  * @note Dimension two of the input tensor (height for NHWC data layout) must be passed at compile time using -DSRC_DIM2 (e.g. -DSRC_DIM_2=112)
  * @note The number of rows processed per thread must be passed at compile time using -DNUM_ROWS_PROCESSED (i.e. -DNUM_ROWS_PROCESSED=2)
@@ -1231,8 +1192,6 @@ __kernel void dwc_3x3_reshaped_qasymm8_stride1_nhwc(
  * @param[in] weights_step_x                        weights_stride_x * number of elements along X processed per workitem(in bytes)
  * @param[in] weights_stride_y                      Stride of the weights tensor in Y dimension (in bytes)
  * @param[in] weights_step_y                        weights_stride_y * number of elements along Y processed per workitem(in bytes)
- * @param[in] weights_stride_z                      Stride of the weights tensor in Z dimension (in bytes)
- * @param[in] weights_step_z                        weights_stride_z * number of elements along Y processed per workitem(in bytes)
  * @param[in] weights_offset_first_element_in_bytes The offset of the first element in the weights tensor
  * @param[in] biases_ptr                            (Optional) Pointer to the biases vector. Supported data types: QASYMM8
  * @param[in] biases_stride_x                       (Optional) Stride of the biases vector in X dimension (in bytes)
@@ -1243,7 +1202,7 @@ __kernel void dwc_3x3_reshaped_qasymm8_stride1_nhwc(
 __kernel void dwc_3x3_reshaped_qasymm8_dot8_stride1_nhwc(
     TENSOR4D_DECLARATION(src),
     TENSOR4D_DECLARATION(dst),
-    TENSOR3D_DECLARATION(weights),
+    IMAGE_DECLARATION(weights),
 #if defined(HAS_BIAS)
     VECTOR_DECLARATION(biases),
 #endif // defined(HAS_BIAS)
@@ -1285,19 +1244,16 @@ __kernel void dwc_3x3_reshaped_qasymm8_dot8_stride1_nhwc(
     VEC_INT sum1 = 0;
 
     // Load weights
-    VEC_UCHAR w0 = VLOAD(VEC_SIZE)(0, weights.ptr + 0 * weights_stride_y + 0 * weights_stride_z);
-    VEC_UCHAR w1 = VLOAD(VEC_SIZE)(0, weights.ptr + 1 * weights_stride_y + 0 * weights_stride_z);
-    VEC_UCHAR w2 = VLOAD(VEC_SIZE)(0, weights.ptr + 2 * weights_stride_y + 0 * weights_stride_z);
-    VEC_UCHAR w3 = VLOAD(VEC_SIZE)(0, weights.ptr + 0 * weights_stride_y + 1 * weights_stride_z);
-    VEC_UCHAR w4 = VLOAD(VEC_SIZE)(0, weights.ptr + 1 * weights_stride_y + 1 * weights_stride_z);
-    VEC_UCHAR w5 = VLOAD(VEC_SIZE)(0, weights.ptr + 2 * weights_stride_y + 1 * weights_stride_z);
-    VEC_UCHAR w6 = VLOAD(VEC_SIZE)(0, weights.ptr + 0 * weights_stride_y + 2 * weights_stride_z);
-    VEC_UCHAR w7 = VLOAD(VEC_SIZE)(0, weights.ptr + 1 * weights_stride_y + 2 * weights_stride_z);
-    VEC_UCHAR w8 = VLOAD(VEC_SIZE)(0, weights.ptr + 2 * weights_stride_y + 2 * weights_stride_z);
+    uchar16 w0 = VLOAD(16)(0, weights_addr);
+    uchar16 w1 = VLOAD(16)(0, weights_addr + 16);
+    uchar4  w2 = VLOAD(4)(0, weights_addr + 32);
 
 #if INPUT_OFFSET != 0
     // Initilize the final result with the weights reduction multiplied by INPUT_OFFSET
-    DOT_PRODUCT_REDUCTION(acc0, w0, w1, w2, w3, w4, w5, w6, w7, w8);
+    DOT_PRODUCT_REDUCTION_WEIGHTS(acc0.s0, w0.s01234567, w0.s8);
+    DOT_PRODUCT_REDUCTION_WEIGHTS(acc0.s1, (uchar8)((w0.s9ABC), (w0.sDEF), w1.s0), w1.s1);
+    DOT_PRODUCT_REDUCTION_WEIGHTS(acc0.s2, w1.s23456789, w1.sA);
+    DOT_PRODUCT_REDUCTION_WEIGHTS(acc0.s3, (uchar8)((w1.sBCD), (w1.sEF), (w2.s012)), w2.s3);
 
     // Multiply the weights reduction with INPUT_OFFSET
     acc0 = INPUT_OFFSET * acc0;
@@ -1340,11 +1296,25 @@ __kernel void dwc_3x3_reshaped_qasymm8_dot8_stride1_nhwc(
     VEC_UCHAR values10 = VLOAD(VEC_SIZE)(0, src_addr + offset.s2);
     VEC_UCHAR values11 = VLOAD(VEC_SIZE)(0, src_addr + offset.s3);
 
-    DOT_PRODUCT_REDUCTION(sum0, values0, values1, values2, values4, values5, values6, values8, values9, values10);
-    DOT_PRODUCT_ACCUMULATE(acc0, values0, values1, values2, values4, values5, values6, values8, values9, values10, w0, w1, w2, w3, w4, w5, w6, w7, w8);
+    DOT_PRODUCT_REDUCTION(sum0.s0, values0.s0, values1.s0, values2.s0, values4.s0, values5.s0, values6.s0, values8.s0, values9.s0, values10.s0);
+    DOT_PRODUCT_REDUCTION(sum1.s0, values1.s0, values2.s0, values3.s0, values5.s0, values6.s0, values7.s0, values9.s0, values10.s0, values11.s0);
+    DOT_PRODUCT(acc0.s0, values0.s0, values1.s0, values2.s0, values4.s0, values5.s0, values6.s0, values8.s0, values9.s0, values10.s0, w0.s01234567, w0.s8);
+    DOT_PRODUCT(acc1.s0, values1.s0, values2.s0, values3.s0, values5.s0, values6.s0, values7.s0, values9.s0, values10.s0, values11.s0, w0.s01234567, w0.s8);
 
-    DOT_PRODUCT_REDUCTION(sum1, values1, values2, values3, values5, values6, values7, values9, values10, values11);
-    DOT_PRODUCT_ACCUMULATE(acc1, values1, values2, values3, values5, values6, values7, values9, values10, values11, w0, w1, w2, w3, w4, w5, w6, w7, w8);
+    DOT_PRODUCT_REDUCTION(sum0.s1, values0.s1, values1.s1, values2.s1, values4.s1, values5.s1, values6.s1, values8.s1, values9.s1, values10.s1);
+    DOT_PRODUCT_REDUCTION(sum1.s1, values1.s1, values2.s1, values3.s1, values5.s1, values6.s1, values7.s1, values9.s1, values10.s1, values11.s1);
+    DOT_PRODUCT(acc0.s1, values0.s1, values1.s1, values2.s1, values4.s1, values5.s1, values6.s1, values8.s1, values9.s1, values10.s1, (uchar8)((w0.s9ABC), (w0.sDEF), w1.s0), w1.s1);
+    DOT_PRODUCT(acc1.s1, values1.s1, values2.s1, values3.s1, values5.s1, values6.s1, values7.s1, values9.s1, values10.s1, values11.s1, (uchar8)((w0.s9ABC), (w0.sDEF), w1.s0), w1.s1);
+
+    DOT_PRODUCT_REDUCTION(sum0.s2, values0.s2, values1.s2, values2.s2, values4.s2, values5.s2, values6.s2, values8.s2, values9.s2, values10.s2);
+    DOT_PRODUCT_REDUCTION(sum1.s2, values1.s2, values2.s2, values3.s2, values5.s2, values6.s2, values7.s2, values9.s2, values10.s2, values11.s2);
+    DOT_PRODUCT(acc0.s2, values0.s2, values1.s2, values2.s2, values4.s2, values5.s2, values6.s2, values8.s2, values9.s2, values10.s2, w1.s23456789, w1.sA);
+    DOT_PRODUCT(acc1.s2, values1.s2, values2.s2, values3.s2, values5.s2, values6.s2, values7.s2, values9.s2, values10.s2, values11.s2, w1.s23456789, w1.sA);
+
+    DOT_PRODUCT_REDUCTION(sum0.s3, values0.s3, values1.s3, values2.s3, values4.s3, values5.s3, values6.s3, values8.s3, values9.s3, values10.s3);
+    DOT_PRODUCT_REDUCTION(sum1.s3, values1.s3, values2.s3, values3.s3, values5.s3, values6.s3, values7.s3, values9.s3, values10.s3, values11.s3);
+    DOT_PRODUCT(acc0.s3, values0.s3, values1.s3, values2.s3, values4.s3, values5.s3, values6.s3, values8.s3, values9.s3, values10.s3, (uchar8)((w1.sBCD), (w1.sEF), (w2.s012)), w2.s3);
+    DOT_PRODUCT(acc1.s3, values1.s3, values2.s3, values3.s3, values5.s3, values6.s3, values7.s3, values9.s3, values10.s3, values11.s3, (uchar8)((w1.sBCD), (w1.sEF), (w2.s012)), w2.s3);
 
 #if defined(HAS_BIAS)
     Vector biases = CONVERT_TO_VECTOR_STRUCT(biases);
@@ -1398,8 +1368,7 @@ __kernel void dwc_3x3_reshaped_qasymm8_dot8_stride1_nhwc(
     VSTORE(VEC_SIZE)
     (ACTIVATION_FUNC(res1), 0, dst_addr + 1 * dst_stride_y);
 }
-
-#endif // defined(ARM_COMPUTE_OPENCL_DOT8_ENABLED) && defined(cl_arm_integer_dot_product_int8)
+#endif // defined(ARM_COMPUTE_OPENCL_DOT8_ENABLED) && defined(cl_arm_integer_dot_product_int8) && VEC_SIZE==4
 
 #endif // defined(NUM_ROWS_PROCESSED) && defined(NUM_PLANES_PROCESSED)
 
