@@ -26,7 +26,7 @@
 #if defined(SRC_DIM_Z)
 
 #define OUTPUT_ROW_2x2_7x7(out, tmp)                                                                                               \
-    ({                                                                                                                             \
+    do {                                                                                                                           \
         out.s0 = -tmp.s0 / 36.f;                                                                                                   \
         out.s1 = (tmp.s0 - tmp.s1 + tmp.s2 - tmp.s3 + tmp.s4 - tmp.s5 + tmp.s6) / 48.f;                                            \
         out.s2 = (tmp.s0 + tmp.s1 + tmp.s2 + tmp.s3 + tmp.s4 + tmp.s5 + tmp.s6) / 48.f;                                            \
@@ -35,7 +35,7 @@
         out.s5 = (tmp.s0 - 3.f * tmp.s1 + 9.f * tmp.s2 - 27.f * tmp.s3 + 81.f * tmp.s4 - 243.f * tmp.s5 + 729.f * tmp.s6) / 720.f; \
         out.s6 = (tmp.s0 + 3.f * tmp.s1 + 9.f * tmp.s2 + 27.f * tmp.s3 + 81.f * tmp.s4 + 243.f * tmp.s5 + 729.f * tmp.s6) / 720.f; \
         out.s7 = tmp.s6;                                                                                                           \
-    })
+    } while(0)
 
 /** This OpenCL kernel performs Winograd filter transform 3x3/3x1/1x3 when the data layout is NCHW and the output tile is 2x2/2x1/1x2
  *
