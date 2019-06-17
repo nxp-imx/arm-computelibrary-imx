@@ -89,7 +89,7 @@ __kernel void im2col1x1_stridex1_nchw(
     // Check which values are valid
     const VEC_DATA_TYPE(COND_DATA_TYPE, 4) cond0 = CONVERT((xc_clamped < SRC_WIDTH), VEC_DATA_TYPE(COND_DATA_TYPE, 4));
 
-    xc_clamped = select((uint4)xc, xc_clamped, convert_int4(cond0));
+    xc_clamped = select((uint4)(xc), xc_clamped, convert_int4(cond0));
 
     // Calculate input indices
     const uint xi = xc;
@@ -117,7 +117,7 @@ __kernel void im2col1x1_stridex1_nchw(
     data = vload4(0, (__global DATA_TYPE *)input_ptr);
 
     // If out-of-bound, overwrite with the first element
-    data = select((VEC_DATA_TYPE(DATA_TYPE, 4))data.s0, data, cond0);
+    data = select((VEC_DATA_TYPE(DATA_TYPE, 4))(data.s0), data, cond0);
 
     *(__global DATA_TYPE *)(output_ptr + yo.s0 * dst_stride_y) = data.s0;
     *(__global DATA_TYPE *)(output_ptr + yo.s1 * dst_stride_y) = data.s1;
@@ -329,9 +329,9 @@ __kernel void im2col3x3_nchw(
     VEC_DATA_TYPE(COND_DATA_TYPE_UNSIGNED, 3)
     cond2 = CONVERT((x >= (int3)0 && x < (int3)SRC_WIDTH && (int3)(y.s2 >= 0 && y.s2 < SRC_HEIGHT)), VEC_DATA_TYPE(COND_DATA_TYPE_UNSIGNED, 3));
 
-    row0 = select((VEC_DATA_TYPE(DATA_TYPE, 3))PAD_VALUE, row0, cond0);
-    row1 = select((VEC_DATA_TYPE(DATA_TYPE, 3))PAD_VALUE, row1, cond1);
-    row2 = select((VEC_DATA_TYPE(DATA_TYPE, 3))PAD_VALUE, row2, cond2);
+    row0 = select((VEC_DATA_TYPE(DATA_TYPE, 3))(PAD_VALUE), row0, cond0);
+    row1 = select((VEC_DATA_TYPE(DATA_TYPE, 3))(PAD_VALUE), row1, cond1);
+    row2 = select((VEC_DATA_TYPE(DATA_TYPE, 3))(PAD_VALUE), row2, cond2);
 #endif // PAD_LEFT != 0 || PAD_TOP != 0 || PAD_RIGHT != 0 || PAD_BOTTOM != 0
 
     vstore8((VEC_DATA_TYPE(DATA_TYPE, 8))(row0.s012, row1.s012, row2.s01), 0, (__global DATA_TYPE *)output_ptr);
@@ -447,17 +447,17 @@ __kernel void im2col5x5_nchw(
 
 #if PAD_LEFT != 0 || PAD_TOP != 0 || PAD_RIGHT != 0 || PAD_BOTTOM != 0
         VEC_DATA_TYPE(COND_DATA_TYPE, 4)
-        cond00 = x0_condition && (VEC_DATA_TYPE(COND_DATA_TYPE, 4))y0_condition.s0;
+        cond00 = x0_condition && (VEC_DATA_TYPE(COND_DATA_TYPE, 4))(y0_condition.s0);
         VEC_DATA_TYPE(COND_DATA_TYPE, 4)
-        cond10                = x0_condition && (VEC_DATA_TYPE(COND_DATA_TYPE, 4))y0_condition.s1;
+        cond10                = x0_condition && (VEC_DATA_TYPE(COND_DATA_TYPE, 4))(y0_condition.s1);
         COND_DATA_TYPE cond01 = (COND_DATA_TYPE)(x1_condition && y0_condition.s0);
         COND_DATA_TYPE cond11 = (COND_DATA_TYPE)(x1_condition && y0_condition.s1);
 
         // Replace with 0 if the value is not valid
-        row00 = select((VEC_DATA_TYPE(DATA_TYPE, 4))PAD_VALUE, row00, cond00);
-        row10 = select((VEC_DATA_TYPE(DATA_TYPE, 4))PAD_VALUE, row10, cond10);
-        row01 = select((DATA_TYPE)PAD_VALUE, row01, cond01);
-        row11 = select((DATA_TYPE)PAD_VALUE, row11, cond11);
+        row00 = select((VEC_DATA_TYPE(DATA_TYPE, 4))(PAD_VALUE), row00, cond00);
+        row10 = select((VEC_DATA_TYPE(DATA_TYPE, 4))(PAD_VALUE), row10, cond10);
+        row01 = select((DATA_TYPE)(PAD_VALUE), row01, cond01);
+        row11 = select((DATA_TYPE)(PAD_VALUE), row11, cond11);
 #endif // PAD_LEFT != 0 || PAD_TOP != 0 || PAD_RIGHT != 0 || PAD_BOTTOM != 0
 
         vstore8((VEC_DATA_TYPE(DATA_TYPE, 8))(row00.s0123, row01,
@@ -491,10 +491,10 @@ __kernel void im2col5x5_nchw(
         COND_DATA_TYPE cond11 = (COND_DATA_TYPE)(x1_condition && y0_condition.s3);
 
         // Replace with 0 if the value is not valid
-        row00 = select((VEC_DATA_TYPE(DATA_TYPE, 4))PAD_VALUE, row00, cond00);
-        row10 = select((VEC_DATA_TYPE(DATA_TYPE, 4))PAD_VALUE, row10, cond10);
-        row01 = select((DATA_TYPE)PAD_VALUE, row01, cond01);
-        row11 = select((DATA_TYPE)PAD_VALUE, row11, cond11);
+        row00 = select((VEC_DATA_TYPE(DATA_TYPE, 4))(PAD_VALUE), row00, cond00);
+        row10 = select((VEC_DATA_TYPE(DATA_TYPE, 4))(PAD_VALUE), row10, cond10);
+        row01 = select((DATA_TYPE)(PAD_VALUE), row01, cond01);
+        row11 = select((DATA_TYPE)(PAD_VALUE), row11, cond11);
 #endif // PAD_LEFT != 0 || PAD_TOP != 0 || PAD_RIGHT != 0 || PAD_BOTTOM != 0
 
         vstore8((VEC_DATA_TYPE(DATA_TYPE, 8))(row00.s0123, row01,
@@ -520,8 +520,8 @@ __kernel void im2col5x5_nchw(
         COND_DATA_TYPE cond01 = (COND_DATA_TYPE)(x1_condition && y1_condition);
 
         // Replace with 0 if the value is not valid
-        row00 = select((VEC_DATA_TYPE(DATA_TYPE, 4))PAD_VALUE, row00, cond00);
-        row01 = select((DATA_TYPE)PAD_VALUE, row01, cond01);
+        row00 = select((VEC_DATA_TYPE(DATA_TYPE, 4))(PAD_VALUE), row00, cond00);
+        row01 = select((DATA_TYPE)(PAD_VALUE), row01, cond01);
 #endif // PAD_LEFT != 0 || PAD_TOP != 0 || PAD_RIGHT != 0 || PAD_BOTTOM != 0
 
         vstore4(row00, 0, (__global DATA_TYPE *)output_ptr);
@@ -949,17 +949,17 @@ __kernel void im2col3x3_nhwc(
 #if PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
     // Replace invalid values with PAD_VALUE
     int y_cond = (int)((uint)(yi - (int)PAD_TOP) >= (uint)(SRC_HEIGHT));
-    //values0    = select(values0, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(cd.s0));
-    values0.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values0.s0;
-    values0.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values0.s1;
+    values0    = select(values0, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
+    //values0.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values0.s0;
+    //values0.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values0.s1;
     //values0.s2 = (x_cond.s0 || y_cond) ? PAD_VALUE : values0.s2;
-    //values1    = select(values1, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
-    values1.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values1.s0;
-    values1.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values1.s1;
+    values1    = select(values1, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
+    //values1.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values1.s0;
+    //values1.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values1.s1;
     //values1.s2 = (x_cond.s1 || y_cond) ? PAD_VALUE : values1.s2;
-    //values2    = select(values2, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
-    values2.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values2.s0;
-    values2.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values2.s1;
+    values2    = select(values2, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    //values2.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values2.s0;
+    //values2.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values2.s1;
     //values2.s2 = (x_cond.s2 || y_cond) ? PAD_VALUE : values2.s2;
 #endif // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 
@@ -983,17 +983,17 @@ __kernel void im2col3x3_nhwc(
 #if PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
     // Replace invalid values with zeros
     y_cond  = (int)((uint)(yi - (int)PAD_TOP + 1 * DILATION_Y) >= (uint)(SRC_HEIGHT));
-    //values3 = select(values3, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
-    values3.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values3.s0;
-    values3.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values3.s1;
+    values3 = select(values3, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
+    //values3.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values3.s0;
+    //values3.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values3.s1;
     //values3.s2 = (x_cond.s0 || y_cond) ? PAD_VALUE : values3.s2;
-    //values4 = select(values4, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
-    values4.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values4.s0;
-    values4.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values4.s1;
+    values4 = select(values4, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
+    //values4.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values4.s0;
+    //values4.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values4.s1;
     //values4.s2 = (x_cond.s1 || y_cond) ? PAD_VALUE : values4.s2;
-    //values5 = select(values5, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
-    values5.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values5.s0;
-    values5.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values5.s1;
+    values5 = select(values5, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    //values5.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values5.s0;
+    //values5.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values5.s1;
     //values5.s2 = (x_cond.s2 || y_cond) ? PAD_VALUE : values5.s2;
 #endif // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 
@@ -1017,17 +1017,17 @@ __kernel void im2col3x3_nhwc(
 #if PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
     // Replace invalid values with PAD_VALUE
     y_cond  = (int)((uint)(yi - (int)PAD_TOP + 2 * DILATION_Y) >= (uint)(SRC_HEIGHT));
-    //values6 = select(values6, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
-    values6.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values6.s0;
-    values6.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values6.s1;
+    values6 = select(values6, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s0));
+    //values6.s0 = (x_cond.s0 || y_cond) ? PAD_VALUE : values6.s0;
+    //values6.s1 = (x_cond.s0 || y_cond) ? PAD_VALUE : values6.s1;
     //values6.s2 = (x_cond.s0 || y_cond) ? PAD_VALUE : values6.s2;
-    //values7 = select(values7, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
-    values7.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values7.s0;
-    values7.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values7.s1;
+    values7 = select(values7, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s1));
+    //values7.s0 = (x_cond.s1 || y_cond) ? PAD_VALUE : values7.s0;
+    //values7.s1 = (x_cond.s1 || y_cond) ? PAD_VALUE : values7.s1;
     //values7.s2 = (x_cond.s1 || y_cond) ? PAD_VALUE : values7.s2;
-    //values8 = select(values8, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
-    values8.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values8.s0;
-    values8.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values8.s1;
+    values8 = select(values8, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond.s2));
+    //values8.s0 = (x_cond.s2 || y_cond) ? PAD_VALUE : values8.s0;
+    //values8.s1 = (x_cond.s2 || y_cond) ? PAD_VALUE : values8.s1;
     //values8.s2 = (x_cond.s2 || y_cond) ? PAD_VALUE : values8.s2;
 #endif // PAD_TOP != 0 || PAD_LEFT != 0 || PAD_BOTTOM != 0 || PAD_RIGHT != 0
 
@@ -1079,15 +1079,15 @@ __kernel void im2col3x3_nhwc(
         VECTOR_N values8 = VLOAD(VECTOR_SIZE)(0, (__global DATA_TYPE *)(input_ptr + offset1));                                                                             \
         \
         int y_cond = (int)((uint)(yi - (int)PAD_TOP + i * DILATION_Y) >= (uint)(SRC_HEIGHT));                                                                              \
-        values0    = select(values0, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s0)); \
-        values1    = select(values1, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s1)); \
-        values2    = select(values2, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s2)); \
-        values3    = select(values3, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s3)); \
-        values4    = select(values4, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s4)); \
-        values5    = select(values5, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s5)); \
-        values6    = select(values6, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s6)); \
-        values7    = select(values7, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s7)); \
-        values8    = select(values8, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))y_cond || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond1));    \
+        values0    = select(values0, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s0)); \
+        values1    = select(values1, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s1)); \
+        values2    = select(values2, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s2)); \
+        values3    = select(values3, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s3)); \
+        values4    = select(values4, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s4)); \
+        values5    = select(values5, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s5)); \
+        values6    = select(values6, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s6)); \
+        values7    = select(values7, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond0.s7)); \
+        values8    = select(values8, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_cond) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_cond1));    \
         \
         VSTORE(VECTOR_SIZE)                                                                                                                                                \
         (values0, 0, (__global DATA_TYPE *)(output_ptr) + (0 + i * 9) * SRC_DEPTH);                                                                                        \
@@ -1301,7 +1301,7 @@ __kernel void im2col_generic_nhwc(
             VECTOR_N values0 = VLOAD(VECTOR_SIZE)(0, (__global DATA_TYPE *)(input_ptr + offset));
 
             // Replace with PAD_VALUE if the value is out-of-bound
-            values0 = select(values0, (VECTOR_N)PAD_VALUE, (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))x_border_condition || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_border_condition));
+            values0 = select(values0, (VECTOR_N)(PAD_VALUE), (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(x_border_condition) || (VEC_DATA_TYPE(COND_DATA_TYPE, VECTOR_SIZE))(y_border_condition));
 
             // Store
             VSTORE(VECTOR_SIZE)

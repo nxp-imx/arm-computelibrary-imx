@@ -244,11 +244,11 @@ __kernel void reduction_operation_y(
         in = CONVERT(vload16(0, (__global DATA_TYPE *)offset(&src, 0, y)), VEC_DATA_TYPE(DATA_TYPE_PROMOTED, 16));
 #if defined(ARG_MAX)
         uint16 cond_conv = CONVERT(isgreater(in, res), uint16);
-        indx             = select(indx, y, cond_conv);
+        indx             = select(indx, (uint16)(y), cond_conv);
         res              = select(res, in, isgreater(in, res));
 #elif defined(ARG_MIN)
         uint16  cond_conv           = CONVERT(isless(in, res), uint16);
-        indx                        = select(indx, y, cond_conv);
+        indx                        = select(indx, (uint16)(y), cond_conv);
         res                         = select(res, in, isless(in, res));
 #else // !(defined(ARG_MAX) || defined(ARG_MIN))
 #if defined(SUM_SQUARE)
@@ -331,11 +331,11 @@ __kernel void reduction_operation_z(
 
 #if defined(ARG_MAX)
         uint16 cond_conv = CONVERT(isgreater(in, res), uint16);
-        indx             = select(indx, z, cond_conv);
+        indx             = select(indx, (uint16)(z), cond_conv);
         res              = select(res, in, isgreater(in, res));
 #elif defined(ARG_MIN)
         uint16 cond_conv = CONVERT(isless(in, res), uint16);
-        indx             = select(indx, z, cond_conv);
+        indx             = select(indx, (uint16)(z), cond_conv);
         res              = select(res, in, isless(in, res));
 #else // !(defined(ARG_MAX) || defined(ARG_MIN))
 #if defined(SUM_SQUARE)
@@ -420,11 +420,11 @@ __kernel void reduction_operation_w(
 
 #if defined(ARG_MAX)
         uint16 cond_conv = CONVERT(isgreater(in, res), uint16);
-        indx             = select(indx, w, cond_conv);
+        indx             = select(indx, (uint16)(w), cond_conv);
         res              = select(res, in, isgreater(in, res));
 #elif defined(ARG_MIN)
         uint16 cond_conv = CONVERT(isless(in, res), uint16);
-        indx             = select(indx, w, cond_conv);
+        indx             = select(indx, (uint16)(w), cond_conv);
         res              = select(res, in, isless(in, res));
 #else // !(defined(ARG_MAX) || defined(ARG_MIN))
 #if defined(SUM_SQUARE)

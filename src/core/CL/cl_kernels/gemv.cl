@@ -68,7 +68,7 @@ __kernel void gemm_mv(TENSOR3D_DECLARATION(src), IMAGE_DECLARATION(weights), VEC
         VEC_DATA_TYPE(DATA_TYPE, 4)
         weights = vload4(0, (__global DATA_TYPE *)(current_weights + i * weights_stride_x));
 
-        int4 offset = (int4)i * (int4)src_stride_x + (int4)(0, 1, 2, 3) * (int4)src_stride_y;
+        int4 offset = (int4)(i) * (int4)(src_stride_x) + (int4)(0, 1, 2, 3) * (int4)(src_stride_y);
 
         VEC_DATA_TYPE(DATA_TYPE, 4)
         tmp0 = vload4(0, (__global DATA_TYPE *)(input_ptr + offset.s0));
@@ -158,9 +158,9 @@ __kernel void gemm_mv_quantized(TENSOR3D_DECLARATION(src),
     // This kernel handle 4 rows in per thread so that it can reuse the weights
     for(int i = 0; i < SRC_WIDTH; i += 4)
     {
-        int4 w = convert_int4(vload4(0, (__global uchar *)(current_weights + i * weights_stride_x))) + (int4)weights_offset;
+        int4 w = convert_int4(vload4(0, (__global uchar *)(current_weights + i * weights_stride_x))) + (int4)(weights_offset);
 
-        int4 offset = (int4)i * (int4)src_stride_x + (int4)(0, 1, 2, 3) * (int4)src_stride_y;
+        int4 offset = (int4)(i) * (int4)(src_stride_x) + (int4)(0, 1, 2, 3) * (int4)(src_stride_y);
 
         int4 tmp0 = convert_int4(vload4(0, (__global uchar *)(input_ptr + offset.s0))) + (int4)input_offset;
         int4 tmp1 = convert_int4(vload4(0, (__global uchar *)(input_ptr + offset.s1))) + (int4)input_offset;

@@ -305,7 +305,8 @@ __kernel void dwc_3x3_native_qasymm8_nchw(
     res0        = max(res0, (uchar8)0);
     res0        = min(res0, (uchar8)255);
 
-    vstore8(ACTIVATION_FUNC(res0), 0, dst.ptr);
+    ACTIVATION_FUNC(res0);
+    vstore8(res0, 0, dst.ptr);
 #if CONV_STRIDE_Y == 1 && DILATION_Y == 1
 #if defined(REAL_MULTIPLIER)
 
@@ -322,7 +323,8 @@ __kernel void dwc_3x3_native_qasymm8_nchw(
     res1        = max(res1, (uchar8)0);
     res1        = min(res1, (uchar8)255);
 
-    vstore8(ACTIVATION_FUNC(res1), 0, dst.ptr + dst_stride_y);
+    ACTIVATION_FUNC(res1);
+    vstore8(res1, 0, dst.ptr + dst_stride_y);
 #endif /* CONV_STRIDE_Y == 1 && DILATION_Y==1*/
 }
 
@@ -605,7 +607,8 @@ __kernel void dwc_3x3_native_qasymm8_dot8_nchw(
     res0        = max(res0, (uchar8)0);
     res0        = min(res0, (uchar8)255);
 
-    vstore8(ACTIVATION_FUNC(res0), 0, dst.ptr);
+    ACTIVATION_FUNC(res0);
+    vstore8(res0, 0, dst.ptr);
 #if CONV_STRIDE_Y == 1 && DILATION_Y == 1
 
 #if defined(REAL_MULTIPLIER)
@@ -622,8 +625,9 @@ __kernel void dwc_3x3_native_qasymm8_dot8_nchw(
     uchar8 res1 = convert_uchar8_sat(values1);
     res1        = max(res1, (uchar8)0);
     res1        = min(res1, (uchar8)255);
-
-    vstore8(ACTIVATION_FUNC(res1), 0, dst.ptr + dst_stride_y);
+    
+    ACTIVATION_FUNC(res1);
+    vstore8(res1, 0, dst.ptr + dst_stride_y);
 #endif /* CONV_STRIDE_Y == 1 && DILATION_Y==1*/
 }
 
@@ -864,8 +868,8 @@ __kernel void dwc_3x3_reshaped_qasymm8_nhwc(
     __global uchar *dst_addr = dst_ptr + dst_offset_first_element_in_bytes + x * dst_step_x + y * dst_step_y + z * dst_step_z;
 #endif /* defined(DST_DEPTH) */
 
-    VSTORE(VEC_SIZE)
-    (ACTIVATION_FUNC(res), 0, dst_addr);
+    ACTIVATION_FUNC(res);
+    VSTORE(VEC_SIZE)(res, 0, dst_addr);
 }
 #endif // defined(CONV_STRIDE_X) && defined(CONV_STRIDE_Y)
 
@@ -1137,19 +1141,19 @@ __kernel void dwc_3x3_reshaped_qasymm8_stride1_nhwc(
     __global uchar *dst_addr = dst_ptr + dst_offset_first_element_in_bytes + x * dst_step_x + y * dst_step_y + (z * NUM_PLANES_PROCESSED) * dst_step_z;
 #endif /* defined(DST_DEPTH) */
 
-    VSTORE(VEC_SIZE)
-    (ACTIVATION_FUNC(res0), 0, dst_addr + 0 * dst_stride_y);
-    VSTORE(VEC_SIZE)
-    (ACTIVATION_FUNC(res1), 0, dst_addr + 1 * dst_stride_y);
+    ACTIVATION_FUNC(res0);
+    VSTORE(VEC_SIZE)(res0, 0, dst_addr + 0 * dst_stride_y);
+    ACTIVATION_FUNC(res1);
+    VSTORE(VEC_SIZE)(res1, 0, dst_addr + 1 * dst_stride_y);
 
 #if((DST_DIM_2 % NUM_PLANES_PROCESSED) != 0)
     if((z * NUM_PLANES_PROCESSED + 1) < DST_DIM_2)
 #endif // ((DST_DIM_2 % NUM_PLANES_PROCESSED) != 0)
     {
-        VSTORE(VEC_SIZE)
-        (ACTIVATION_FUNC(res2), 0, dst_addr + 0 * dst_stride_y + 1 * dst_stride_z);
-        VSTORE(VEC_SIZE)
-        (ACTIVATION_FUNC(res3), 0, dst_addr + 1 * dst_stride_y + 1 * dst_stride_z);
+        ACTIVATION_FUNC(res2);
+        VSTORE(VEC_SIZE)(res2, 0, dst_addr + 0 * dst_stride_y + 1 * dst_stride_z);
+        ACTIVATION_FUNC(res3);
+        VSTORE(VEC_SIZE)(res3, 0, dst_addr + 1 * dst_stride_y + 1 * dst_stride_z);
     }
 }
 
@@ -1363,10 +1367,10 @@ __kernel void dwc_3x3_reshaped_qasymm8_dot8_stride1_nhwc(
     __global uchar *dst_addr = dst_ptr + dst_offset_first_element_in_bytes + x * dst_step_x + y * dst_step_y + z * dst_step_z;
 #endif /* defined(DST_DEPTH) */
 
-    VSTORE(VEC_SIZE)
-    (ACTIVATION_FUNC(res0), 0, dst_addr + 0 * dst_stride_y);
-    VSTORE(VEC_SIZE)
-    (ACTIVATION_FUNC(res1), 0, dst_addr + 1 * dst_stride_y);
+    ACTIVATION_FUNC(res0);
+    VSTORE(VEC_SIZE)(res0, 0, dst_addr + 0 * dst_stride_y);
+    ACTIVATION_FUNC(res1);
+    VSTORE(VEC_SIZE)(res1, 0, dst_addr + 1 * dst_stride_y);
 }
 #endif // defined(ARM_COMPUTE_OPENCL_DOT8_ENABLED) && defined(cl_arm_integer_dot_product_int8) && VEC_SIZE==4
 

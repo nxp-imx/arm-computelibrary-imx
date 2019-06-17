@@ -975,11 +975,11 @@ __kernel void winograd_input_transform_4x4_3x3_stepz1_nhwc(
     z_coord = (z * 4) - (int)PAD_TOP + 4;
 
     // If z < 0, set y to -1
-    valid_y0 = select(y_coord0, (int4) - 1, (int4)z_coord < 0);
-    valid_y1 = select(y_coord1, (int2) - 1, (int2)z_coord < 0);
+    valid_y0 = select(y_coord0, (int4)(-1), (int4)(z_coord < 0));
+    valid_y1 = select(y_coord1, (int2)(-1), (int2)(z_coord < 0));
     // If z >= SRC_DIM_2, set y to SRC_DIM_2
-    valid_y0 = select(valid_y0, (int4)SRC_DIM_1, (int4)z_coord >= (int)SRC_DIM_2);
-    valid_y1 = select(valid_y1, (int2)SRC_DIM_1, (int2)z_coord >= (int)SRC_DIM_2);
+    valid_y0 = select(valid_y0, (int4)(SRC_DIM_1), (int4)(z_coord >= (int)SRC_DIM_2));
+    valid_y1 = select(valid_y1, (int2)(SRC_DIM_1), (int2)(z_coord >= (int)SRC_DIM_2));
 
     // Clamp z coordinate
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
@@ -1011,10 +1011,10 @@ __kernel void winograd_input_transform_4x4_3x3_stepz1_nhwc(
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 0;
 
 #if PAD_TOP != 0
-    valid_y0 = select(y_coord0, (int4) - 1, (int4)z_coord < 0);
-    valid_y1 = select(y_coord1, (int2) - 1, (int2)z_coord < 0);
-    valid_y0 = select(valid_y0, (int)SRC_DIM_1, (int4)z_coord >= (int)SRC_DIM_2);
-    valid_y1 = select(valid_y1, (int)SRC_DIM_1, (int2)z_coord >= (int)SRC_DIM_2);
+    valid_y0 = select(y_coord0, (int4)(-1), (int4)(z_coord < 0));
+    valid_y1 = select(y_coord1, (int2)(-1), (int2)(z_coord < 0));
+    valid_y0 = select(valid_y0, (int)SRC_DIM_1, (int4)(z_coord >= (int)SRC_DIM_2));
+    valid_y1 = select(valid_y1, (int)SRC_DIM_1, (int2)(z_coord >= (int)SRC_DIM_2));
     z_coord  = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 #else  // PAD_TOP != 0
     valid_y0 = y_coord0;
@@ -1028,16 +1028,16 @@ __kernel void winograd_input_transform_4x4_3x3_stepz1_nhwc(
     DATA_TYPE d04 = *(__global DATA_TYPE *)(src_addr + valid_y1.s0 * (int)src_stride_y + z_coord * src_stride_z);
     DATA_TYPE d05 = *(__global DATA_TYPE *)(src_addr + valid_y1.s1 * (int)src_stride_y + z_coord * src_stride_z);
 #else  // !defined(WINOGRAD_INPUT_TRANSFORM_VERTICAL)
-    int4            z_coords0 = (int4)(z * OUTPUT_TILE_H) + (int4)(0, 1, 2, 3) - (int4)PAD_TOP;
-    int2            z_coords1 = (int2)(z * OUTPUT_TILE_H) + (int2)(4, 5) - (int2)PAD_TOP;
+    int4            z_coords0 = (int4)(z * OUTPUT_TILE_H) + (int4)(0, 1, 2, 3) - (int4)(PAD_TOP);
+    int2            z_coords1 = (int2)(z * OUTPUT_TILE_H) + (int2)(4, 5) - (int2)(PAD_TOP);
 
-    valid_y0 = select((int4)y_coord0.s0, (int4) - 1, z_coords0 < (int4)0);
-    valid_y1 = select((int2)y_coord0.s0, (int2) - 1, z_coords1 < (int2)0);
-    valid_y0 = select(valid_y0, (int4)SRC_DIM_1, z_coords0 >= (int4)SRC_DIM_2);
-    valid_y1 = select(valid_y1, (int2)SRC_DIM_1, z_coords1 >= (int2)SRC_DIM_2);
+    valid_y0 = select((int4)(y_coord0.s0), (int4)(-1), z_coords0 < (int4)(0));
+    valid_y1 = select((int2)(y_coord0.s0), (int2)(-1), z_coords1 < (int2)(0));
+    valid_y0 = select(valid_y0, (int4)(SRC_DIM_1), z_coords0 >= (int4)(SRC_DIM_2));
+    valid_y1 = select(valid_y1, (int2)(SRC_DIM_1), z_coords1 >= (int2)(SRC_DIM_2));
 
-    z_coords0 = clamp((int4)z_coords0, (int4)0, (int4)((int)SRC_DIM_2 - 1));
-    z_coords1 = clamp((int2)z_coords1, (int2)0, (int2)((int)SRC_DIM_2 - 1));
+    z_coords0 = clamp(z_coords0, (int4)(0), (int4)((int)SRC_DIM_2 - 1));
+    z_coords1 = clamp(z_coords1, (int2)(0), (int2)((int)SRC_DIM_2 - 1));
 
     DATA_TYPE d00                              = *(__global DATA_TYPE *)(src_addr + valid_y0.s0 * (int)src_stride_y + z_coords0.s0 * src_stride_z);
     DATA_TYPE d01                              = *(__global DATA_TYPE *)(src_addr + valid_y0.s1 * (int)src_stride_y + z_coords0.s1 * src_stride_z);
@@ -1057,11 +1057,11 @@ __kernel void winograd_input_transform_4x4_3x3_stepz1_nhwc(
 #if !defined(WINOGRAD_INPUT_TRANSFORM_HORIZONTAL) && !defined(WINOGRAD_INPUT_TRANSFORM_VERTICAL)
     // Row2
     z_coord  = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 2;
-    valid_y0 = select(y_coord0, (int4) - 1, (int4)z_coord < 0);
-    valid_y1 = select(y_coord1, (int2) - 1, (int2)z_coord < 0);
-    valid_y0 = select(valid_y0, (int4)SRC_DIM_1, (int4)z_coord >= (int)SRC_DIM_2);
-    valid_y1 = select(valid_y1, (int2)SRC_DIM_1, (int2)z_coord >= (int)SRC_DIM_2);
-    z_coord  = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
+    valid_y0 = select(y_coord0, (int4)(-1), (int4)(z_coord < 0));
+    valid_y1 = select(y_coord1, (int2)(-1), (int2)(z_coord < 0));
+    valid_y0 = select(valid_y0, (int4)(SRC_DIM_1), (int4)(z_coord >= (int)SRC_DIM_2));
+    valid_y1 = select(valid_y1, (int2)(SRC_DIM_1), (int2)(z_coord >= (int)SRC_DIM_2));
+    z_coord  = clamp(z_coord, 0, (int)(SRC_DIM_2 - 1));
 
     DATA_TYPE d20 = *(__global DATA_TYPE *)(src_addr + valid_y0.s0 * (int)src_stride_y + z_coord * src_stride_z);
     DATA_TYPE d21 = *(__global DATA_TYPE *)(src_addr + valid_y0.s1 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1148,10 +1148,10 @@ __kernel void winograd_input_transform_4x4_3x3_stepz1_nhwc(
 
     // Row3
     z_coord  = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 3;
-    valid_y0 = select(y_coord0, (int4) - 1, (int4)z_coord < 0);
-    valid_y1 = select(y_coord1, (int2) - 1, (int2)z_coord < 0);
-    valid_y0 = select(valid_y0, (int4)SRC_DIM_1, (int4)z_coord >= (int)SRC_DIM_2);
-    valid_y1 = select(valid_y1, (int2)SRC_DIM_1, (int2)z_coord >= (int)SRC_DIM_2);
+    valid_y0 = select(y_coord0, (int4)(-1), (int4)(z_coord < 0));
+    valid_y1 = select(y_coord1, (int2)(-1), (int2)(z_coord < 0));
+    valid_y0 = select(valid_y0, (int4)(SRC_DIM_1), (int4)(z_coord >= (int)SRC_DIM_2));
+    valid_y1 = select(valid_y1, (int2)(SRC_DIM_1), (int2)(z_coord >= (int)SRC_DIM_2));
     z_coord  = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
     z_coord  = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
@@ -1271,12 +1271,12 @@ __kernel void winograd_input_transform_4x4_3x3_stepz1_nhwc(
 
     // Row5
     z_coord  = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 5;
-    valid_y0 = select(y_coord0, (int4) - 1, (int4)z_coord < 0);
-    valid_y1 = select(y_coord1, (int2) - 1, (int2)z_coord < 0);
-    valid_y0 = select(valid_y0, (int4)SRC_DIM_1, (int4)z_coord >= (int)SRC_DIM_2);
-    valid_y1 = select(valid_y1, (int2)SRC_DIM_1, (int2)z_coord >= (int)SRC_DIM_2);
-    z_coord  = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
-    z_coord  = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
+    valid_y0 = select(y_coord0, (int4)(-1), (int4)(z_coord < 0));
+    valid_y1 = select(y_coord1, (int2)(-1), (int2)(z_coord < 0));
+    valid_y0 = select(valid_y0, (int4)(SRC_DIM_1), (int4)(z_coord >= (int)SRC_DIM_2));
+    valid_y1 = select(valid_y1, (int2)(SRC_DIM_1), (int2)(z_coord >= (int)SRC_DIM_2));
+    z_coord  = clamp(z_coord, 0, (int)(SRC_DIM_2 - 1));
+    z_coord  = clamp(z_coord, 0, (int)(SRC_DIM_2 - 1));
 
     DATA_TYPE d50 = *(__global DATA_TYPE *)(src_addr + valid_y0.s0 * (int)src_stride_y + z_coord * src_stride_z);
     DATA_TYPE d51 = *(__global DATA_TYPE *)(src_addr + valid_y0.s1 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1363,16 +1363,15 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
 
 #if defined(WINOGRAD_INPUT_TRANSFORM_HORIZONTAL)
     // Clamp coordinates. This clamp is valid for all rows
-    int8 y_coord = (int8)(y * OUTPUT_TILE_W) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)PAD_LEFT;
-    y_coord      = clamp(y_coord, (int8) - 1, (int8)SRC_DIM_1);
+    int8 y_coord = (int8)(y * OUTPUT_TILE_W) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)(PAD_LEFT);
+    y_coord      = clamp(y_coord, (int8)(-1), (int8)(SRC_DIM_1));
 
     // Row0
     // We can skip the border clamping along the z dimension as we cannot read out-of-bound in case of 5x1 kernels
     int z_coord = z * OUTPUT_TILE_H;
 
     // Load the input tile
-    VEC_DATA_TYPE(DATA_TYPE, 8)
-    in_row0;
+    VEC_DATA_TYPE(DATA_TYPE, 8) in_row0;
     in_row0.s0 = *(__global DATA_TYPE *)(src_addr + y_coord.s0 * (int)src_stride_y + z_coord * src_stride_z);
     in_row0.s1 = *(__global DATA_TYPE *)(src_addr + y_coord.s1 * (int)src_stride_y + z_coord * src_stride_z);
     in_row0.s2 = *(__global DATA_TYPE *)(src_addr + y_coord.s2 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1383,13 +1382,9 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
     in_row0.s7 = *(__global DATA_TYPE *)(src_addr + y_coord.s7 * (int)src_stride_y + z_coord * src_stride_z);
 
     // Calculate common factors for intermediate tensor
-    VEC_DATA_TYPE(DATA_TYPE, 8)
-    comm_fact0 = 0.0f;
-    VEC_DATA_TYPE(DATA_TYPE, 8)
-    tmp0 = in_row0;
-
-    VEC_DATA_TYPE(DATA_TYPE, 8)
-    out0 = (VEC_DATA_TYPE(DATA_TYPE, 8))0.0f;
+    VEC_DATA_TYPE(DATA_TYPE, 8) comm_fact0 = (VEC_DATA_TYPE(DATA_TYPE, 8))(0.0f);
+    VEC_DATA_TYPE(DATA_TYPE, 8) tmp0 = in_row0;
+    VEC_DATA_TYPE(DATA_TYPE, 8) out0 = (VEC_DATA_TYPE(DATA_TYPE, 8))(0.0f);
 
     OUTPUT_ROW_4x4_5x5(out0, tmp0, comm_fact0);
 
@@ -1399,10 +1394,10 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
 
     // Row0
     // We can skip the border clamping along the z dimension as we cannot read out-of-bound in case of 5x1 kernels
-    int8 z_coord = (int8)(z * OUTPUT_TILE_H) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)PAD_TOP;
-    int8 valid_y = select((int8)y_coord, (int8) - 1, z_coord < (int8)0);         // If z < 0, set y to -1
-    valid_y      = select(valid_y, (int8)SRC_DIM_1, z_coord >= (int8)SRC_DIM_2); // If z >= SRC_DIM_2, set y to SRC_DIM_2
-    z_coord      = clamp(z_coord, (int8)0, (int8)SRC_DIM_2 - 1);                 // Clamp z coordinate
+    int8 z_coord = (int8)(z * OUTPUT_TILE_H) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)(PAD_TOP);
+    int8 valid_y = select((int8)(y_coord), (int8)(-1), z_coord < (int8)(0));         // If z < 0, set y to -1
+    valid_y      = select(valid_y, (int8)(SRC_DIM_1), z_coord >= (int8)(SRC_DIM_2)); // If z >= SRC_DIM_2, set y to SRC_DIM_2
+    z_coord      = clamp(z_coord, (int8)(0), (int8)(SRC_DIM_2 - 1));                 // Clamp z coordinate
 
     // Load the input tile
     VEC_DATA_TYPE(DATA_TYPE, 8)
@@ -1431,13 +1426,13 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
     in_row0, in_row1, in_row2, in_row3, in_row4, in_row5, in_row6, in_row7;
 
     // Clamp coordinates. This clamp is valid for all rows
-    int8 y_coord = (int8)(y * OUTPUT_TILE_W) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)PAD_LEFT;
-    y_coord      = clamp(y_coord, (int8) - 1, (int8)SRC_DIM_1);
+    int8 y_coord = (int8)(y * OUTPUT_TILE_W) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)(PAD_LEFT);
+    y_coord      = clamp(y_coord, (int8)(-1), (int8)(SRC_DIM_1));
 
     // Row0
     int  z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 0;
-    int8 valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);                    // If z < 0, set y to -1
-    valid_y      = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2); // If z >= SRC_DIM_2, set y to SRC_DIM_2
+    int8 valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));                    // If z < 0, set y to -1
+    valid_y      = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2)); // If z >= SRC_DIM_2, set y to SRC_DIM_2
     z_coord      = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);                             // Clamp z coordinate
 
     // Load the input tile
@@ -1452,8 +1447,8 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
 
     // Row1
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 1;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row1.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1467,8 +1462,8 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
 
     // Row2
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 2;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row2.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1482,8 +1477,8 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
 
     // Row3
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 3;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row3.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1497,8 +1492,8 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
 
     // Row4
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 4;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row4.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1512,8 +1507,8 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
 
     // Row5
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 5;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row5.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1527,8 +1522,8 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
 
     // Row6
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 6;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row6.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1542,8 +1537,8 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
 
     // Row7
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 7;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row7.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1725,13 +1720,13 @@ __kernel void winograd_input_transform_2x2_7x7_stepz1_nhwc(
 #if defined(WINOGRAD_INPUT_TRANSFORM_HORIZONTAL)
 
     // Clamp coordinates. This clamp is valid for all rows
-    int8 y_coord = (int8)(y * OUTPUT_TILE_W) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)PAD_LEFT;
-    y_coord      = clamp(y_coord, (int8) - 1, (int8)SRC_DIM_1);
+    int8 y_coord = (int8)(y * OUTPUT_TILE_W) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)(PAD_LEFT);
+    y_coord      = clamp(y_coord, (int8)(-1), (int8)(SRC_DIM_1));
 
     // Clamp coordinates. This clamp is valid for all columns
     int  z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 0;
-    int8 valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);                    // If z < 0, set y to -1
-    valid_y      = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2); // If z >= SRC_DIM_2, set y to SRC_DIM_2
+    int8 valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));                    // If z < 0, set y to -1
+    valid_y      = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2)); // If z >= SRC_DIM_2, set y to SRC_DIM_2
     z_coord      = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     // Load the input tile
@@ -1763,10 +1758,10 @@ __kernel void winograd_input_transform_2x2_7x7_stepz1_nhwc(
 
     // Row0
     // We can skip the border clamping along the z dimension as we cannot read out-of-bound in case of 5x1 kernels
-    int8 z_coord = (int8)(z * OUTPUT_TILE_H) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)PAD_TOP;
-    int8 valid_y = select((int8)y_coord, (int8) - 1, z_coord < (int8)0);         // If z < 0, set y to -1
-    valid_y      = select(valid_y, (int8)SRC_DIM_1, z_coord >= (int8)SRC_DIM_2); // If z >= SRC_DIM_2, set y to SRC_DIM_2
-    z_coord      = clamp(z_coord, (int8)0, (int8)SRC_DIM_2 - 1);                 // Clamp z coordinate
+    int8 z_coord = (int8)(z * OUTPUT_TILE_H) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)(PAD_TOP);
+    int8 valid_y = select((int8)y_coord, (int8)(-1), z_coord < (int8)(0));         // If z < 0, set y to -1
+    valid_y      = select(valid_y, (int8)(SRC_DIM_1), z_coord >= (int8)(SRC_DIM_2)); // If z >= SRC_DIM_2, set y to SRC_DIM_2
+    z_coord      = clamp(z_coord, (int8)(0), (int8)(SRC_DIM_2 - 1));                 // Clamp z coordinate
 
     // Load the input tile
     VEC_DATA_TYPE(DATA_TYPE, 8)
@@ -1796,13 +1791,13 @@ __kernel void winograd_input_transform_2x2_7x7_stepz1_nhwc(
     in_row0, in_row1, in_row2, in_row3, in_row4, in_row5, in_row6, in_row7;
 
     // Clamp coordinates. This clamp is valid for all rows
-    int8 y_coord = (int8)(y * OUTPUT_TILE_W) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)PAD_LEFT;
-    y_coord      = clamp(y_coord, (int8) - 1, (int8)SRC_DIM_1);
+    int8 y_coord = (int8)(y * OUTPUT_TILE_W) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)(PAD_LEFT);
+    y_coord      = clamp(y_coord, (int8)(-1), (int8)(SRC_DIM_1));
 
     // Row0
     int  z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 0;
-    int8 valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);                    // If z < 0, set y to -1
-    valid_y      = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2); // If z >= SRC_DIM_2, set y to SRC_DIM_2
+    int8 valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));                    // If z < 0, set y to -1
+    valid_y      = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2)); // If z >= SRC_DIM_2, set y to SRC_DIM_2
     z_coord      = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);                             // Clamp z coordinate
 
     // Load the input tile
@@ -1817,8 +1812,8 @@ __kernel void winograd_input_transform_2x2_7x7_stepz1_nhwc(
 
     // Row1
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 1;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row1.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * (int)src_stride_z);
@@ -1832,8 +1827,8 @@ __kernel void winograd_input_transform_2x2_7x7_stepz1_nhwc(
 
     // Row2
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 2;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row2.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * (int)src_stride_z);
@@ -1847,8 +1842,8 @@ __kernel void winograd_input_transform_2x2_7x7_stepz1_nhwc(
 
     // Row3
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 3;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row3.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * (int)src_stride_z);
@@ -1862,8 +1857,8 @@ __kernel void winograd_input_transform_2x2_7x7_stepz1_nhwc(
 
     // Row4
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 4;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row4.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * (int)src_stride_z);
@@ -1877,8 +1872,8 @@ __kernel void winograd_input_transform_2x2_7x7_stepz1_nhwc(
 
     // Row5
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 5;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row5.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * (int)src_stride_z);
@@ -1892,8 +1887,8 @@ __kernel void winograd_input_transform_2x2_7x7_stepz1_nhwc(
 
     // Row6
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 6;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row6.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * (int)src_stride_z);
@@ -1907,8 +1902,8 @@ __kernel void winograd_input_transform_2x2_7x7_stepz1_nhwc(
 
     // Row7
     z_coord = (z * (int)OUTPUT_TILE_H) - (int)PAD_TOP + 7;
-    valid_y = select(y_coord, (int8) - 1, (int8)z_coord < 0);
-    valid_y = select(valid_y, (int8)SRC_DIM_1, (int8)z_coord >= (int)SRC_DIM_2);
+    valid_y = select(y_coord, (int8)(-1), (int8)(z_coord < 0));
+    valid_y = select(valid_y, (int8)(SRC_DIM_1), (int8)(z_coord >= (int)SRC_DIM_2));
     z_coord = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     in_row7.s0 = *(__global DATA_TYPE *)(src_addr + valid_y.s0 * (int)src_stride_y + z_coord * (int)src_stride_z);

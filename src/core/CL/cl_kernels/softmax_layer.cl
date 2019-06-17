@@ -328,9 +328,8 @@ __kernel void softmax_layer_max_shift_exp_sum_parallel(
     __local VEC_DATA_TYPE(DATA_TYPE, 4) tmp_local[GRID_SIZE];
     __local DATA_TYPE max_local;
 
-    __constant VEC_DATA_TYPE(DATA_TYPE, 4) type_min4 = (VEC_DATA_TYPE(DATA_TYPE, 4))(MINVAL);
-    VEC_DATA_TYPE(DATA_TYPE, 4)
-    max_val_vec = (VEC_DATA_TYPE(DATA_TYPE, 4))type_min4;
+    VEC_DATA_TYPE(DATA_TYPE, 4) type_min4 = (VEC_DATA_TYPE(DATA_TYPE, 4))(MINVAL);
+    VEC_DATA_TYPE(DATA_TYPE, 4) max_val_vec = type_min4;
     // Number of elements per work-item.
     const uint row = width / GRID_SIZE;
     // Number of iterations per work-item.

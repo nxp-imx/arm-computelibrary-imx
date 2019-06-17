@@ -65,7 +65,7 @@
         /* COMPMID-907 */                                                                                    \
         VEC_DATA_TYPE(int, size)                                                                             \
         ab_x2_high32 = convert_int##size(((ab_64 + (1 << 30)) >> 31));                                       \
-        return select(ab_x2_high32, INT_MAX, overflow);                                                      \
+        return select(ab_x2_high32, (VEC_DATA_TYPE(int, size))(INT_MAX), overflow);                          \
     }
 
 /** Calculates \f$ exp(x) \f$ for x in [-1/4, 0).
