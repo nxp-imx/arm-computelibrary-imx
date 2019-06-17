@@ -26,7 +26,7 @@
 #if defined(POOL_AVG) || defined(POOL_L2)
 #define POOL_OP(x, y) ((x) + (y))
 #else /* defined(POOL_AVG) || defined(POOL_L2) */
-#define POOL_OP(x, y) (fmax((x), (y)))
+#define POOL_OP(x, y) (((x) < (y)) ? (y) : (x))
 #endif /* defined(POOL_AVG) || defined(POOL_L2) */
 
 #if defined(POOL_L2)

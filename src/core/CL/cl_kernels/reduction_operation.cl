@@ -136,7 +136,7 @@ __kernel void reduction_operation_x(
 #if defined(MEAN) && defined(WIDTH)
             if(y == get_local_size(1) - 1)
             {
-                local_results[0] /= WIDTH;
+                local_results[0] = local_results[0] / WIDTH;
             }
 #endif /* defined(MEAN) && defined(WIDTH) */
             ((__global DATA_TYPE *)offset(&partial_res, get_group_id(0), y))[0] = local_results[0];
@@ -194,7 +194,7 @@ __kernel void reduction_operation_non_parallel_x(
     *((__global uint *)output.ptr) = indx;
 #else // !(defined(ARG_MAX) || defined(ARG_MIN))
 #if defined(MEAN)
-    res /= WIDTH;
+    res = res / WIDTH;
 #endif // defined(MEAN)
     *((__global uchar *)output.ptr) = convert_uchar(res);
 #endif // defined(ARG_MAX) || defined(ARG_MIN)
@@ -267,7 +267,7 @@ __kernel void reduction_operation_y(
     vstore16(indx, 0, (__global uint *)output.ptr);
 #else // !(defined(ARG_MAX) || defined(ARG_MIN))
 #if defined(MEAN)
-    res /= HEIGHT;
+    res = res / HEIGHT;
 #endif // defined(MEAN)
     vstore16(CONVERT(res, VEC_DATA_TYPE(DATA_TYPE, 16)), 0, (__global DATA_TYPE *)output.ptr);
 #endif // defined(ARG_MAX) || defined(ARG_MIN)
@@ -357,7 +357,7 @@ __kernel void reduction_operation_z(
     vstore16(indx, 0, (__global uint *)output.ptr);
 #else // !(defined(ARG_MAX) || defined(ARG_MIN))
 #if defined(MEAN)
-    res /= DEPTH;
+    res = res / DEPTH;
 #endif // defined(MEAN)
     vstore16(CONVERT(res, VEC_DATA_TYPE(DATA_TYPE, 16)), 0, (__global DATA_TYPE *)output.ptr);
 #if defined(COMPLEX)
@@ -443,7 +443,7 @@ __kernel void reduction_operation_w(
     vstore16(indx, 0, (__global uint *)output.ptr);
 #else // !(defined(ARG_MAX) || defined(ARG_MIN))
 #if defined(MEAN)
-    res /= BATCH;
+    res = res / BATCH;
 #endif // defined(MEAN)
     vstore16(CONVERT(res, VEC_DATA_TYPE(DATA_TYPE, 16)), 0, (__global DATA_TYPE *)output.ptr);
 #endif // defined(ARG_MAX) || defined(ARG_MIN)
