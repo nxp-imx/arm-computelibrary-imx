@@ -114,17 +114,17 @@ const auto SmallWinogradFilterTransformDatasetNCHW =
            framework::dataset::concat(combine(datasets::Small3x3Shapes(), framework::dataset::make("OutputTile", { Size2D(2U, 2U), Size2D(4U, 4U) })),
            framework::dataset::concat(combine(datasets::Small3x1Shapes(), framework::dataset::make("OutputTile", { Size2D(2U, 1U), Size2D(4U, 1U) })),
            framework::dataset::concat(combine(datasets::Small1x3Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 2U), Size2D(1U, 4U) })),
-           framework::dataset::concat(combine(datasets::Small5x5Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 4U) })),
+           //framework::dataset::concat(combine(datasets::Small5x5Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 4U) })),
            framework::dataset::concat(combine(datasets::Small5x1Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 1U) })),
-                                      combine(datasets::Small1x5Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 4U) })))))));
+                                      combine(datasets::Small1x5Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 4U) }))))));
 
 const auto SmallWinogradFilterTransformDatasetNHWC_F16 =
            framework::dataset::concat(combine(datasets::Small3x3Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 4U) })),
            framework::dataset::concat(combine(datasets::Small3x1Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 1U) })),
            framework::dataset::concat(combine(datasets::Small1x3Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 4U) })),
-           framework::dataset::concat(combine(datasets::Small5x5Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 4U) })),
+           //framework::dataset::concat(combine(datasets::Small5x5Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 4U) })),
            framework::dataset::concat(combine(datasets::Small5x1Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 1U) })),
-                                     (combine(datasets::Small1x5Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 4U) }))))))));
+                                     (combine(datasets::Small1x5Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 4U) })))))));
 
 const auto SmallWinogradFilterTransformDatasetNHWC_F32 =
            framework::dataset::concat(SmallWinogradFilterTransformDatasetNHWC_F16,
@@ -136,17 +136,17 @@ const auto LargeWinogradFilterTransformDatasetNCHW =
            framework::dataset::concat(combine(datasets::Large3x3Shapes(), framework::dataset::make("OutputTile", { Size2D(2U, 2U), Size2D(4U, 4U) })),
            framework::dataset::concat(combine(datasets::Large3x1Shapes(), framework::dataset::make("OutputTile", { Size2D(2U, 1U), Size2D(4U, 1U) })),
            framework::dataset::concat(combine(datasets::Large1x3Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 2U), Size2D(1U, 4U) })),
-           framework::dataset::concat(combine(datasets::Large5x5Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 4U) })),
+           //framework::dataset::concat(combine(datasets::Large5x5Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 4U) })),
            framework::dataset::concat(combine(datasets::Large5x1Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 1U) })),
-                                      combine(datasets::Large1x5Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 4U) })))))));
+                                      combine(datasets::Large1x5Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 4U) }))))));
 
 const auto LargeWinogradFilterTransformDatasetNHWC_F16 =
            framework::dataset::concat(combine(datasets::Large3x3Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 4U) })),
            framework::dataset::concat(combine(datasets::Large3x1Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 1U) })),
            framework::dataset::concat(combine(datasets::Large1x3Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 4U) })),
-           framework::dataset::concat(combine(datasets::Large5x5Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 4U) })),
+           //framework::dataset::concat(combine(datasets::Large5x5Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 4U) })),
            framework::dataset::concat(combine(datasets::Large5x1Shapes(), framework::dataset::make("OutputTile", { Size2D(4U, 1U) })),
-                                      combine(datasets::Large1x5Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 4U) })))))));
+                                      combine(datasets::Large1x5Shapes(), framework::dataset::make("OutputTile", { Size2D(1U, 4U) }))))));
 
 const auto LargeWinogradFilterTransformDatasetNHWC_F32 =
            framework::dataset::concat(LargeWinogradFilterTransformDatasetNHWC_F16,
@@ -668,29 +668,29 @@ FIXTURE_DATA_TEST_CASE(RunLarge, CLWinogradConvolutionLayerFastMathFixture, fram
 }
 TEST_SUITE_END() // Conv1x3
 
-TEST_SUITE(Conv5x5)
-FIXTURE_DATA_TEST_CASE(RunSmall, CLWinogradConvolutionLayerFastMathFixture, framework::DatasetMode::PRECOMMIT,
-                       combine(combine(combine(datasets::SmallWinogradConvolutionLayer5x5Dataset(),
-                                               framework::dataset::make("DataType", { DataType::F32 })),
-                                               ActivationFunctionsSmallDataset ),
-                                               framework::dataset::make("DataLayout", { DataLayout::NCHW, DataLayout::NHWC })))
+// TEST_SUITE(Conv5x5)
+// FIXTURE_DATA_TEST_CASE(RunSmall, CLWinogradConvolutionLayerFastMathFixture, framework::DatasetMode::PRECOMMIT,
+//                        combine(combine(combine(datasets::SmallWinogradConvolutionLayer5x5Dataset(),
+//                                                framework::dataset::make("DataType", { DataType::F32 })),
+//                                                ActivationFunctionsSmallDataset ),
+//                                                framework::dataset::make("DataLayout", { DataLayout::NCHW, DataLayout::NHWC })))
 
-{
-    // Validate output
-    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f32);
-}
+// {
+//     // Validate output
+//     validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f32);
+// }
 
-FIXTURE_DATA_TEST_CASE(RunLarge, CLWinogradConvolutionLayerFastMathFixture, framework::DatasetMode::NIGHTLY,
-                       combine(combine(combine(datasets::LargeWinogradConvolutionLayer5x5Dataset(),
-                                               framework::dataset::make("DataType", { DataType::F32 })),
-                                               ActivationFunctionsDataset ),
-                                               framework::dataset::make("DataLayout", { DataLayout::NCHW, DataLayout::NHWC })))
+// FIXTURE_DATA_TEST_CASE(RunLarge, CLWinogradConvolutionLayerFastMathFixture, framework::DatasetMode::NIGHTLY,
+//                        combine(combine(combine(datasets::LargeWinogradConvolutionLayer5x5Dataset(),
+//                                                framework::dataset::make("DataType", { DataType::F32 })),
+//                                                ActivationFunctionsDataset ),
+//                                                framework::dataset::make("DataLayout", { DataLayout::NCHW, DataLayout::NHWC })))
 
-{
-    // Validate output
-    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f32);
-}
-TEST_SUITE_END() // Conv5x5
+// {
+//     // Validate output
+//     validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f32);
+// }
+// TEST_SUITE_END() // Conv5x5
 
 TEST_SUITE(Conv5x1)
 FIXTURE_DATA_TEST_CASE(RunSmall, CLWinogradConvolutionLayerFastMathFixture, framework::DatasetMode::PRECOMMIT,

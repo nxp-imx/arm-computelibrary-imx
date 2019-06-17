@@ -29,14 +29,14 @@
  * @param[in,out] input The input on which the factor should be applied.
  */
 #define TWIDDLE_FACTOR_MULTIPLICATION(phi, input)  \
-    {                                              \
+    do {                                           \
         float2 w, tmp;                             \
         w.x   = native_cos(phi);                   \
         w.y   = native_sin(phi);                   \
         tmp.x = (w.x * input.x) - (w.y * input.y); \
         tmp.y = (w.x * input.y) + (w.y * input.x); \
         input = tmp;                               \
-    }
+    } while(0)
 
 /** Computes radix-2 butterfly unit.
  *
@@ -44,12 +44,12 @@
  * @param[in,out] c1 Complex input 1.
  */
 #define DFT_2(c0, c1) \
-    {                 \
+    do {              \
         float2 v0;    \
         v0 = c0;      \
         c0 = v0 + c1; \
         c1 = v0 - c1; \
-    }
+    } while(0)
 
 // radix-3 butterfly unit factors
 #define SQRT3DIV2 0.86602540378443f
@@ -61,7 +61,7 @@
  * @param[in,out] c2 Complex input 2.
  */
 #define DFT_3(c0, c1, c2)                                  \
-    {                                                      \
+    do {                                                   \
         float2 v0 = c1 + c2;                               \
         float2 v1 = c1 - c2;                               \
         c1.x      = c0.x - 0.5f * v0.x + v1.y * SQRT3DIV2; \
@@ -69,7 +69,7 @@
         c2.x      = c0.x - 0.5f * v0.x - v1.y * SQRT3DIV2; \
         c2.y      = c0.y - 0.5f * v0.y + v1.x * SQRT3DIV2; \
         c0        = c0 + v0;                               \
-    }
+    } while(0)
 
 /**Computes radix-4 butterfly unit.
  *
@@ -79,7 +79,7 @@
  * @param[in,out] c3 Complex input 3.
  */
 #define DFT_4(c0, c1, c2, c3)  \
-    {                          \
+    do {                       \
         float2 v0, v1, v2, v3; \
         v0   = c0 + c2;        \
         v1   = c1 + c3;        \
@@ -90,7 +90,7 @@
         c2   = v0 - v1;        \
         c1   = v2 + v3;        \
         c3   = v2 - v3;        \
-    }
+    } while(0)
 
 // radix-5 butterfly unit factors
 #define W5_A 0.30901699437494f
@@ -107,7 +107,7 @@
  * @param[in,out] c4 Complex input 4.
  */
 #define DFT_5(c0, c1, c2, c3, c4)                 \
-    {                                             \
+    do {                                          \
         float2 v0, v1, v2, v3, v4;                \
         v0 = c0;                                  \
         v1 = W5_A * (c1 + c4) - W5_C * (c2 + c3); \
@@ -119,7 +119,7 @@
         c2 = v0 - v2 + (float2)(v3.y, -v3.x);     \
         c3 = v0 - v2 + (float2)(-v3.y, v3.x);     \
         c4 = v0 + v1 + (float2)(-v4.y, v4.x);     \
-    }
+    } while(0)
 
 // radix-7 butterfly unit factors
 #define W7_A 0.62348980185873f
@@ -140,7 +140,7 @@
  * @param[in,out] c6 Complex input 6.
  */
 #define DFT_7(c0, c1, c2, c3, c4, c5, c6)                            \
-    {                                                                \
+    do {                                                             \
         float2 v0, v1, v2, v3, v4, v5, v6;                           \
         v0 = c0;                                                     \
         v1 = W7_A * (c1 + c6) - W7_C * (c2 + c5) - W7_E * (c3 + c4); \
@@ -156,7 +156,7 @@
         c4 = v0 - v3 + (float2)(-v6.y, v6.x);                        \
         c5 = v0 - v2 + (float2)(-v5.y, v5.x);                        \
         c6 = v0 + v1 + (float2)(-v4.y, v4.x);                        \
-    }
+    } while(0)
 
 /** Computes radix-8 butterfly unit.
  *
@@ -170,7 +170,7 @@
  * @param[in,out] c7 Complex input 7.
  */
 #define DFT_8(c0, c1, c2, c3, c4, c5, c6, c7)  \
-    {                                          \
+    do {                                       \
         float2 v0, v1, v2, v3, v4, v5, v6, v7; \
         float2 s0, s1, s2, s3, s4, s5, s6, s7; \
         float2 t0, t1, t2;                     \
@@ -208,7 +208,7 @@
         c5   = s6 + t2;                        \
         c6   = s2 + t0;                        \
         c7   = s4 + t1;                        \
-    }
+    } while(0)
 
 /** Computes the first stage of a radix-2 DFT on axis 0.
  *
