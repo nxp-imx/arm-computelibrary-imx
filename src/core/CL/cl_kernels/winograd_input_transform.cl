@@ -1013,8 +1013,8 @@ __kernel void winograd_input_transform_4x4_3x3_stepz1_nhwc(
 #if PAD_TOP != 0
     valid_y0 = select(y_coord0, (int4)(-1), (int4)(z_coord < 0));
     valid_y1 = select(y_coord1, (int2)(-1), (int2)(z_coord < 0));
-    valid_y0 = select(valid_y0, (int)SRC_DIM_1, (int4)(z_coord >= (int)SRC_DIM_2));
-    valid_y1 = select(valid_y1, (int)SRC_DIM_1, (int2)(z_coord >= (int)SRC_DIM_2));
+    valid_y0 = select(valid_y0, (int4)(SRC_DIM_1), (int4)(z_coord >= (int)SRC_DIM_2));
+    valid_y1 = select(valid_y1, (int2)(SRC_DIM_1), (int2)(z_coord >= (int)SRC_DIM_2));
     z_coord  = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 #else  // PAD_TOP != 0
     valid_y0 = y_coord0;
@@ -1061,7 +1061,7 @@ __kernel void winograd_input_transform_4x4_3x3_stepz1_nhwc(
     valid_y1 = select(y_coord1, (int2)(-1), (int2)(z_coord < 0));
     valid_y0 = select(valid_y0, (int4)(SRC_DIM_1), (int4)(z_coord >= (int)SRC_DIM_2));
     valid_y1 = select(valid_y1, (int2)(SRC_DIM_1), (int2)(z_coord >= (int)SRC_DIM_2));
-    z_coord  = clamp(z_coord, 0, (int)(SRC_DIM_2 - 1));
+    z_coord  = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     DATA_TYPE d20 = *(__global DATA_TYPE *)(src_addr + valid_y0.s0 * (int)src_stride_y + z_coord * src_stride_z);
     DATA_TYPE d21 = *(__global DATA_TYPE *)(src_addr + valid_y0.s1 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1275,8 +1275,8 @@ __kernel void winograd_input_transform_4x4_3x3_stepz1_nhwc(
     valid_y1 = select(y_coord1, (int2)(-1), (int2)(z_coord < 0));
     valid_y0 = select(valid_y0, (int4)(SRC_DIM_1), (int4)(z_coord >= (int)SRC_DIM_2));
     valid_y1 = select(valid_y1, (int2)(SRC_DIM_1), (int2)(z_coord >= (int)SRC_DIM_2));
-    z_coord  = clamp(z_coord, 0, (int)(SRC_DIM_2 - 1));
-    z_coord  = clamp(z_coord, 0, (int)(SRC_DIM_2 - 1));
+    z_coord  = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
+    z_coord  = clamp(z_coord, 0, (int)SRC_DIM_2 - 1);
 
     DATA_TYPE d50 = *(__global DATA_TYPE *)(src_addr + valid_y0.s0 * (int)src_stride_y + z_coord * src_stride_z);
     DATA_TYPE d51 = *(__global DATA_TYPE *)(src_addr + valid_y0.s1 * (int)src_stride_y + z_coord * src_stride_z);
@@ -1397,7 +1397,7 @@ __kernel void winograd_input_transform_4x4_5x5_stepz1_nhwc(
     int8 z_coord = (int8)(z * OUTPUT_TILE_H) + (int8)(0, 1, 2, 3, 4, 5, 6, 7) - (int8)(PAD_TOP);
     int8 valid_y = select((int8)(y_coord), (int8)(-1), z_coord < (int8)(0));         // If z < 0, set y to -1
     valid_y      = select(valid_y, (int8)(SRC_DIM_1), z_coord >= (int8)(SRC_DIM_2)); // If z >= SRC_DIM_2, set y to SRC_DIM_2
-    z_coord      = clamp(z_coord, (int8)(0), (int8)(SRC_DIM_2 - 1));                 // Clamp z coordinate
+    z_coord      = clamp(z_coord, (int8)(0), (int8)((int)SRC_DIM_2 - 1));                 // Clamp z coordinate
 
     // Load the input tile
     VEC_DATA_TYPE(DATA_TYPE, 8)
