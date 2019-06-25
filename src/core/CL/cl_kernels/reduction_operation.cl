@@ -136,6 +136,7 @@ __kernel void reduction_operation_x(
 #if defined(MEAN) && defined(WIDTH)
             if(y == get_local_size(1) - 1)
             {
+				// [AIR-1474/AIR-1468] /= operator not working due to OpenCL driver, a = a / b used instead
                 local_results[0] = local_results[0] / WIDTH;
             }
 #endif /* defined(MEAN) && defined(WIDTH) */
@@ -194,6 +195,7 @@ __kernel void reduction_operation_non_parallel_x(
     *((__global uint *)output.ptr) = indx;
 #else // !(defined(ARG_MAX) || defined(ARG_MIN))
 #if defined(MEAN)
+	// [AIR-1474/AIR-1468] /= operator not working due to OpenCL driver, a = a / b used instead
     res = res / WIDTH;
 #endif // defined(MEAN)
     *((__global uchar *)output.ptr) = convert_uchar(res);
@@ -267,6 +269,7 @@ __kernel void reduction_operation_y(
     vstore16(indx, 0, (__global uint *)output.ptr);
 #else // !(defined(ARG_MAX) || defined(ARG_MIN))
 #if defined(MEAN)
+	// [AIR-1474/AIR-1468] /= operator not working due to OpenCL driver, a = a / b used instead
     res = res / HEIGHT;
 #endif // defined(MEAN)
     vstore16(CONVERT(res, VEC_DATA_TYPE(DATA_TYPE, 16)), 0, (__global DATA_TYPE *)output.ptr);
@@ -357,6 +360,7 @@ __kernel void reduction_operation_z(
     vstore16(indx, 0, (__global uint *)output.ptr);
 #else // !(defined(ARG_MAX) || defined(ARG_MIN))
 #if defined(MEAN)
+	// [AIR-1474/AIR-1468] /= operator not working due to OpenCL driver, a = a / b used instead
     res = res / DEPTH;
 #endif // defined(MEAN)
     vstore16(CONVERT(res, VEC_DATA_TYPE(DATA_TYPE, 16)), 0, (__global DATA_TYPE *)output.ptr);
@@ -443,6 +447,7 @@ __kernel void reduction_operation_w(
     vstore16(indx, 0, (__global uint *)output.ptr);
 #else // !(defined(ARG_MAX) || defined(ARG_MIN))
 #if defined(MEAN)
+	// [AIR-1474/AIR-1468] /= operator not working due to OpenCL driver, a = a / b used instead
     res = res / BATCH;
 #endif // defined(MEAN)
     vstore16(CONVERT(res, VEC_DATA_TYPE(DATA_TYPE, 16)), 0, (__global DATA_TYPE *)output.ptr);

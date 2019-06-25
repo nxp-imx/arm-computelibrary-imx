@@ -1062,7 +1062,7 @@ Kernel CLKernelLibrary::create_kernel(const std::string &kernel_name, const Stri
     {
         concat_str += " -cl-std=CL1.2 ";
 #if defined(ARM_COMPUTE_DEBUG_ENABLED)
-        std::clog << "Using Vivante Corporation GPU IP" << std::endl;
+        ARM_COMPUTE_LOG_INFO_MSG_CORE("Using Vivante Corporation GPU IP.");
 #endif 
     }
     else

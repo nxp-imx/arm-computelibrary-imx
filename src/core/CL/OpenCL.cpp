@@ -332,7 +332,7 @@ cl_int clEnqueueNDRangeKernel(
     auto func = arm_compute::CLSymbols::get().clEnqueueNDRangeKernel_ptr;
     if(func != nullptr)
     {
-        return func(command_queue, kernel, work_dim, global_work_offset, global_work_size, NULL, num_events_in_wait_list, event_wait_list, event);
+        return func(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list, event);
     }
     else
     {

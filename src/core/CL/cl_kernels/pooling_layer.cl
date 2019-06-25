@@ -26,6 +26,7 @@
 #if defined(POOL_AVG) || defined(POOL_L2)
 #define POOL_OP(x, y) ((x) + (y))
 #else /* defined(POOL_AVG) || defined(POOL_L2) */
+// [AIR-1474/AIR-1468] fmax does not work properly due to OpenCL driver
 #define POOL_OP(x, y) (((x) < (y)) ? (y) : (x))
 #endif /* defined(POOL_AVG) || defined(POOL_L2) */
 

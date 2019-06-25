@@ -31,6 +31,7 @@
 #include "arm_compute/core/Utils.h"
 #include "arm_compute/core/Validate.h"
 #include "arm_compute/core/Window.h"
+#include "arm_compute/core/Log.h"
 
 #include <cstddef>
 
@@ -72,7 +73,20 @@ void arm_compute::enqueue(cl::CommandQueue &queue, ICLKernel &kernel, const Wind
     }
     else
     {
-        valid_lws = lws_hint;
+        // [AIR-1543/AIR-1468] Non-uniform LWS is supported only on OpenCL 2.0 or using cl_arm_non_uniform_work_group_size
+        // Uniform LWS is enforced by passing NULL to clEnqueueNDRangeKernel, which might create unexpected issues
+        // when specific LWS is required by the kernel.
+        if (((gws[0] % lws_hint[0]) == 0) &&
+            ((gws[1] % lws_hint[1]) == 0) &&
+            ((gws[2] % lws_hint[2]) == 0))
+        {
+            valid_lws = lws_hint;
+        }
+        else
+        {
+            ARM_COMPUTE_LOG_INFO_MSG_CORE("Local work size is not uniform. Enforcing NULL value.");
+            valid_lws = cl::NullRange;
+        }
     }
 
     cl::NDRange lws = cl::NullRange;
