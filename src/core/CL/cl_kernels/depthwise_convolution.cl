@@ -1797,47 +1797,51 @@ __kernel void depthwise_convolution_3x3_nhwc_stride1(
     VEC_FLOAT values14 = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(src_addr + offset.s2));
     VEC_FLOAT values15 = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(src_addr + offset.s3));
 
-    acc0 = fma(values0, w0, acc0);
-    acc0 = fma(values1, w1, acc0);
-    acc0 = fma(values2, w2, acc0);
-    acc1 = fma(values1, w0, acc1);
-    acc1 = fma(values2, w1, acc1);
-    acc1 = fma(values3, w2, acc1);
+	// [AIR-1435] Workaround for fma which does not seem to work on 6.4.0 OpenCL driver
+    acc0 = acc0 + (values0 * w0);//fma(values0, w0, acc0);
+    acc0 = acc0 + (values1 * w1);//fma(values1, w1, acc0);
+    acc0 = acc0 + (values2 * w2);//fma(values2, w2, acc0);
 
-    acc0 = fma(values4, w3, acc0);
-    acc0 = fma(values5, w4, acc0);
-    acc0 = fma(values6, w5, acc0);
-    acc1 = fma(values5, w3, acc1);
-    acc1 = fma(values6, w4, acc1);
-    acc1 = fma(values7, w5, acc1);
+    acc1 = acc1 + (values1 * w0);//fma(values1, w0, acc1);
+    acc1 = acc1 + (values2 * w1);//fma(values2, w1, acc1);
+    acc1 = acc1 + (values3 * w2);//fma(values3, w2, acc1);
 
-    acc0 = fma(values8, w6, acc0);
-    acc0 = fma(values9, w7, acc0);
-    acc0 = fma(values10, w8, acc0);
-    acc1 = fma(values9, w6, acc1);
-    acc1 = fma(values10, w7, acc1);
-    acc1 = fma(values11, w8, acc1);
+    acc0 = acc0 + (values4 * w3);//fma(values4, w3, acc0);
+    acc0 = acc0 + (values5 * w4);//fma(values5, w4, acc0);
+    acc0 = acc0 + (values6 * w5);//fma(values6, w5, acc0);
 
-    acc2 = fma(values4, w0, acc2);
-    acc2 = fma(values5, w1, acc2);
-    acc2 = fma(values6, w2, acc2);
-    acc3 = fma(values5, w0, acc3);
-    acc3 = fma(values6, w1, acc3);
-    acc3 = fma(values7, w2, acc3);
+    acc1 = acc1 + (values5 * w3);//fma(values5, w3, acc1);
+    acc1 = acc1 + (values6 * w4);//fma(values6, w4, acc1);
+    acc1 = acc1 + (values7 * w5);//fma(values7, w5, acc1);
 
-    acc2 = fma(values8, w3, acc2);
-    acc2 = fma(values9, w4, acc2);
-    acc2 = fma(values10, w5, acc2);
-    acc3 = fma(values9, w3, acc3);
-    acc3 = fma(values10, w4, acc3);
-    acc3 = fma(values11, w5, acc3);
+    acc0 = acc0 + (values8 * w6);//fma(values8, w6, acc0);
+    acc0 = acc0 + (values9 * w7);//fma(values9, w7, acc0);
+    acc0 = acc0 + (values10 * w8);//fma(values10, w8, acc0);
 
-    acc2 = fma(values12, w6, acc2);
-    acc2 = fma(values13, w7, acc2);
-    acc2 = fma(values14, w8, acc2);
-    acc3 = fma(values13, w6, acc3);
-    acc3 = fma(values14, w7, acc3);
-    acc3 = fma(values15, w8, acc3);
+    acc1 = acc1 + (values9 * w6);//fma(values9, w6, acc1);
+    acc1 = acc1 + (values10 * w7);//fma(values10, w7, acc1);
+    acc1 = acc1 + (values11 * w8);//fma(values11, w8, acc1);
+
+    acc2 = acc2 + (values4 * w0);//fma(values4, w0, acc2);
+    acc2 = acc2 + (values5 * w1);//fma(values5, w1, acc2);
+    acc2 = acc2 + (values6 * w2);//fma(values6, w2, acc2);
+    acc3 = acc3 + (values5 * w0);//fma(values5, w0, acc3);
+    acc3 = acc3 + (values6 * w1);//fma(values6, w1, acc3);
+    acc3 = acc3 + (values7 * w2);//fma(values7, w2, acc3);
+
+    acc2 = acc2 + (values8 * w3);//fma(values8, w3, acc2);
+    acc2 = acc2 + (values9 * w4);//fma(values9, w4, acc2);
+    acc2 = acc2 + (values10 * w5);//fma(values10, w5, acc2);
+    acc3 = acc3 + (values9 * w3);//fma(values9, w3, acc3);
+    acc3 = acc3 + (values10 * w4);//fma(values10, w4, acc3);
+    acc3 = acc3 + (values11 * w5);//fma(values11, w5, acc3);
+
+    acc2 = acc2 + (values12 * w6);//fma(values12, w6, acc2);
+    acc2 = acc2 + (values13 * w7);//fma(values13, w7, acc2);
+    acc2 = acc2 + (values14 * w8);//fma(values14, w8, acc2);
+    acc3 = acc3 + (values13 * w6);//fma(values13, w6, acc3);
+    acc3 = acc3 + (values14 * w7);//fma(values14, w7, acc3);
+    acc3 = acc3 + (values15 * w8);//fma(values15, w8, acc3);
 
 #if defined(HAS_BIAS)
     Vector biases = CONVERT_TO_VECTOR_STRUCT(biases);
