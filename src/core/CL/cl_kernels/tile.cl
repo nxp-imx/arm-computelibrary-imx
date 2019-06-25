@@ -71,10 +71,18 @@ __kernel void tile(
     int x_input = x % SRC_WIDTH;
 
     // Shift x based on being the last tile
-    const int last_tile = (int)(x_input + VEC_SIZE > SRC_WIDTH);
-    x -= last_tile * OFFSET;
-    x_input = x % SRC_WIDTH;
-    output.ptr -= (tile_number + last_tile) * OFFSET * output_stride_x;
+	// [AIR-1474/AIR-1468] Comparison produces different result for signed types than if/else
+    if ((x_input + VEC_SIZE) > SRC_WIDTH)
+    {
+        x -= OFFSET;
+        x_input = x % SRC_WIDTH;
+        output.ptr -= (tile_number + 1) * output_stride_x * OFFSET;
+    }
+    else
+    {
+        x_input = x % SRC_WIDTH;
+        output.ptr -= (tile_number) * output_stride_x * OFFSET;
+    }
 
     // Update the input pointer
     input.ptr = tensor4D_offset(&input, x_input, y % SRC_HEIGHT, z % SRC_DEPTH, batch % SRC_BATCHES);
