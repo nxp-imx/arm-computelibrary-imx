@@ -26,6 +26,7 @@
 #include "arm_compute/core/CL/CLHelpers.h"
 #include "arm_compute/core/Error.h"
 #include "arm_compute/core/Utils.h"
+#include "arm_compute/core/Log.h"
 
 #include <algorithm>
 #include <fstream>
