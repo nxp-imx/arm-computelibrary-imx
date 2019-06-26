@@ -347,6 +347,12 @@ public:
      */
     bool int64_base_atomics_supported() const;
 
+    /** Returns true if cl_khr_global_int32_base_atomics extension is supported by the CL device
+     *
+     * @return true if the CL device supports cl_khr_global_int32_base_atomics extension
+     */
+    bool int32_base_atomics_supported() const;
+
 private:
     /** Load program and its dependencies.
      *

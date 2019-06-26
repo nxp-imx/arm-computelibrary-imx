@@ -23,7 +23,7 @@
  */
 #include "helpers.h"
 
-#pragma OPENCL EXTENSION cl_khr_int64_base_atomics : enable
+#pragma OPENCL EXTENSION cl_khr_global_int32_base_atomics : enable
 
 /** This function calculates the sum and sum of squares of a given input image.
  *
@@ -42,10 +42,10 @@
 __kernel void mean_stddev_accumulate(
     IMAGE_DECLARATION(src),
     uint     height,
-    __global ulong *global_sum
+    __global uint *global_sum
 #ifdef STDDEV
     ,
-    __global ulong *global_sum_sq
+    __global uint *global_sum_sq
 #endif /* STDDEV */
 )
 {
@@ -70,13 +70,13 @@ __kernel void mean_stddev_accumulate(
     // Perform reduction
     tmp_sum.s0123 += tmp_sum.s4567;
     tmp_sum.s01 += tmp_sum.s23;
-    atom_add(global_sum, tmp_sum.s0 + tmp_sum.s1);
+    atomic_add(global_sum, tmp_sum.s0 + tmp_sum.s1);
 
 #ifdef STDDEV
     tmp_sum_sq.s0123 += tmp_sum_sq.s4567;
     tmp_sum_sq.s01 += tmp_sum_sq.s23;
-    atom_add(global_sum_sq, tmp_sum_sq.s0 + tmp_sum_sq.s1);
+    atomic_add(global_sum_sq, tmp_sum_sq.s0 + tmp_sum_sq.s1);
 #endif /* STDDEV */
 }
 
-#pragma OPENCL EXTENSION cl_khr_int64_base_atomics : disable
+#pragma OPENCL EXTENSION cl_khr_global_int32_base_atomics : disable

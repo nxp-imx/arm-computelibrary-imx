@@ -56,7 +56,7 @@ Status CLMeanStdDevKernel::validate(const ITensorInfo *input, float *mean, cl::B
     ARM_COMPUTE_UNUSED(stddev);
     ARM_COMPUTE_UNUSED(global_sum);
     ARM_COMPUTE_UNUSED(global_sum_squared);
-    ARM_COMPUTE_RETURN_ERROR_ON_INT64_BASE_ATOMICS_UNSUPPORTED();
+    ARM_COMPUTE_RETURN_ERROR_ON_INT32_BASE_ATOMICS_UNSUPPORTED();
     ARM_COMPUTE_RETURN_ERROR_ON_TENSOR_NOT_2D(input);
     ARM_COMPUTE_RETURN_ERROR_ON_DATA_TYPE_CHANNEL_NOT_IN(input, 1, DataType::U8);
 
@@ -115,12 +115,12 @@ void CLMeanStdDevKernel::run(const Window &window, cl::CommandQueue &queue)
     ARM_COMPUTE_ERROR_ON_INVALID_SUBWINDOW(ICLKernel::window(), window);
 
     // Clear sums
-    static const cl_ulong zero = 0;
-    queue.enqueueWriteBuffer(*_global_sum, CL_FALSE, 0, sizeof(cl_ulong), &zero);
+    static const cl_uint zero = 0;
+    queue.enqueueWriteBuffer(*_global_sum, CL_FALSE, 0, sizeof(cl_uint), &zero);
 
     if(_stddev != nullptr)
     {
-        queue.enqueueWriteBuffer(*_global_sum_squared, CL_FALSE, 0, sizeof(cl_ulong), &zero);
+        queue.enqueueWriteBuffer(*_global_sum_squared, CL_FALSE, 0, sizeof(cl_uint), &zero);
     }
 
     Window slice = window.first_slice_window_2D();
@@ -137,17 +137,17 @@ void CLMeanStdDevKernel::run(const Window &window, cl::CommandQueue &queue)
     while(window.slide_window_slice_2D(slice));
 
     // Calculate mean and stddev
-    cl_ulong    global_sum         = 0;
-    cl_ulong    global_sum_squared = 0;
+    cl_uint    global_sum         = 0;
+    cl_uint    global_sum_squared = 0;
     const float num_pixels         = _input->info()->dimension(0) * _input->info()->dimension(1);
 
-    queue.enqueueReadBuffer(*_global_sum, CL_TRUE, 0, sizeof(cl_ulong), static_cast<void *>(&global_sum));
+    queue.enqueueReadBuffer(*_global_sum, CL_TRUE, 0, sizeof(cl_uint), static_cast<void *>(&global_sum));
     const float mean = global_sum / num_pixels;
     *_mean           = mean;
 
     if(_stddev != nullptr)
     {
-        queue.enqueueReadBuffer(*_global_sum_squared, CL_TRUE, 0, sizeof(cl_ulong), static_cast<void *>(&global_sum_squared));
+        queue.enqueueReadBuffer(*_global_sum_squared, CL_TRUE, 0, sizeof(cl_uint), static_cast<void *>(&global_sum_squared));
         *_stddev = std::sqrt((global_sum_squared / num_pixels) - (mean * mean));
     }
 }

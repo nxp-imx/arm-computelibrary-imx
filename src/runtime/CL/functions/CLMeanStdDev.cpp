@@ -89,11 +89,11 @@ void CLMeanStdDev::configure(ICLImage *input, float *mean, float *stddev)
     }
     else
     {
-        _global_sum = cl::Buffer(CLScheduler::get().context(), CL_MEM_ALLOC_HOST_PTR | CL_MEM_READ_WRITE, sizeof(cl_ulong));
+        _global_sum = cl::Buffer(CLScheduler::get().context(), CL_MEM_ALLOC_HOST_PTR | CL_MEM_READ_WRITE, sizeof(cl_uint));
 
         if(stddev != nullptr)
         {
-            _global_sum_squared = cl::Buffer(CLScheduler::get().context(), CL_MEM_ALLOC_HOST_PTR | CL_MEM_READ_WRITE, sizeof(cl_ulong));
+            _global_sum_squared = cl::Buffer(CLScheduler::get().context(), CL_MEM_ALLOC_HOST_PTR | CL_MEM_READ_WRITE, sizeof(cl_uint));
         }
 
         _mean_stddev_kernel.configure(input, mean, &_global_sum, stddev, &_global_sum_squared);

@@ -1116,6 +1116,11 @@ bool CLKernelLibrary::int64_base_atomics_supported() const
     return device_supports_extension(_device, "cl_khr_int64_base_atomics");
 }
 
+bool CLKernelLibrary::int32_base_atomics_supported() const
+{
+    return device_supports_extension(_device, "cl_khr_global_int32_base_atomics");
+}
+
 const Program &CLKernelLibrary::load_program(const std::string &program_name) const
 {
     const auto program_it = _programs_map.find(program_name);
