@@ -1062,13 +1062,7 @@ Kernel CLKernelLibrary::create_kernel(const std::string &kernel_name, const Stri
     else if (_device.getInfo <CL_DEVICE_VENDOR> () == "Vivante Corporation")
     {
         concat_str += " -cl-std=CL1.2 ";
-#if defined(ARM_COMPUTE_DEBUG_ENABLED)
-        ARM_COMPUTE_LOG_INFO_MSG_CORE("Using Vivante Corporation GPU IP.");
-#endif 
-    }
-    else
-    {
-        ARM_COMPUTE_ERROR("Non uniform workgroup size is not supported!!");
+        ARM_COMPUTE_LOG_INFO_MSG_CORE("Using Vivante Corporation GPU with OpenCL 1.2.");
     }
 
     // Check if the program has been built before with same build options.
