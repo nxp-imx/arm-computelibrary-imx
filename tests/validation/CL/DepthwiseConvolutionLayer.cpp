@@ -556,6 +556,8 @@ using CLDepthwiseConvolutionLayerQuantizedFixture = DepthwiseConvolutionLayerVal
 TEST_SUITE(Quantized)
 TEST_SUITE(QASYMM8)
 TEST_SUITE(Generic)
+// [AIR-1610] Causes GPU to hang when running CL/DepthwiseConvolutionLayer validation test
+#ifdef ARM_COMPUTE_FAULTED_TESTS
 FIXTURE_DATA_TEST_CASE(RunSmall, CLDepthwiseConvolutionLayerQuantizedFixture<uint8_t>, framework::DatasetMode::PRECOMMIT,
                        combine(combine(combine(combine(combine(datasets::SmallDepthwiseConvolutionLayerDataset(),
                                                                depth_multipliers),
@@ -566,6 +568,7 @@ FIXTURE_DATA_TEST_CASE(RunSmall, CLDepthwiseConvolutionLayerQuantizedFixture<uin
 {
     validate(CLAccessor(_target), _reference, tolerance_qasymm8);
 }
+#endif // ARM_COMPUTE_FAULTED_TESTS
 FIXTURE_DATA_TEST_CASE(RunLarge, CLDepthwiseConvolutionLayerQuantizedFixture<uint8_t>, framework::DatasetMode::NIGHTLY,
                        combine(combine(combine(combine(combine(datasets::LargeDepthwiseConvolutionLayerDataset(),
                                                                depth_multipliers),
@@ -600,6 +603,8 @@ FIXTURE_DATA_TEST_CASE(RunLarge, CLDepthwiseConvolutionLayerQuantizedFixture<uin
 TEST_SUITE_END() // Dilation
 TEST_SUITE_END() // Generic
 TEST_SUITE(W3x3)
+// [AIR-1610] Causes GPU to hang when running CL/DepthwiseConvolutionLayer validation test
+#ifdef ARM_COMPUTE_FAULTED_TESTS
 FIXTURE_DATA_TEST_CASE(RunSmall, CLDepthwiseConvolutionLayerQuantizedFixture<uint8_t>, framework::DatasetMode::PRECOMMIT,
                        combine(combine(combine(combine(combine(datasets::SmallDepthwiseConvolutionLayerDataset3x3(),
                                                                depth_multipliers),
@@ -610,6 +615,7 @@ FIXTURE_DATA_TEST_CASE(RunSmall, CLDepthwiseConvolutionLayerQuantizedFixture<uin
 {
     validate(CLAccessor(_target), _reference, tolerance_qasymm8);
 }
+#endif // ARM_COMPUTE_FAULTED_TESTS
 FIXTURE_DATA_TEST_CASE(RunLarge, CLDepthwiseConvolutionLayerQuantizedFixture<uint8_t>, framework::DatasetMode::NIGHTLY,
                        combine(combine(combine(combine(combine(datasets::LargeDepthwiseConvolutionLayerDataset3x3(),
                                                                depth_multipliers),
@@ -621,6 +627,8 @@ FIXTURE_DATA_TEST_CASE(RunLarge, CLDepthwiseConvolutionLayerQuantizedFixture<uin
     validate(CLAccessor(_target), _reference, tolerance_qasymm8);
 }
 TEST_SUITE(Dilation)
+// [AIR-1610] Causes GPU to hang when running CL/DepthwiseConvolutionLayer validation test
+#ifdef ARM_COMPUTE_FAULTED_TESTS
 FIXTURE_DATA_TEST_CASE(RunSmall, CLDepthwiseConvolutionLayerQuantizedFixture<uint8_t>, framework::DatasetMode::PRECOMMIT,
                        combine(combine(combine(combine(combine(datasets::SmallDepthwiseDilatedConvolutionLayerDataset3x3(),
                                                                depth_multipliers),
@@ -631,6 +639,7 @@ FIXTURE_DATA_TEST_CASE(RunSmall, CLDepthwiseConvolutionLayerQuantizedFixture<uin
 {
     validate(CLAccessor(_target), _reference, tolerance_qasymm8);
 }
+#endif // ARM_COMPUTE_FAULTED_TESTS
 FIXTURE_DATA_TEST_CASE(RunLarge, CLDepthwiseConvolutionLayerQuantizedFixture<uint8_t>, framework::DatasetMode::NIGHTLY,
                        combine(combine(combine(combine(combine(datasets::LargeDepthwiseDilatedConvolutionLayerDataset3x3(),
                                                                depth_multipliers),

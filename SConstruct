@@ -50,6 +50,7 @@ vars.AddVariables(
     BoolVariable("neon", "Enable Neon support", False),
     BoolVariable("gles_compute", "Enable OpenGL ES Compute Shader support", False),
     BoolVariable("embed_kernels", "Embed OpenCL kernels and OpenGL ES compute shaders in library binary", True),
+    BoolVariable("faulted_tests", "Enable specific benchmark/validation tests which cause issues such as segfaults on specific platforms", False),
     BoolVariable("set_soname", "Set the library's soname and shlibversion (requires SCons 2.4 or above)", False),
     BoolVariable("openmp", "Enable OpenMP backend", False),
     BoolVariable("cppthreads", "Enable C++11 threads backend", True),
@@ -283,6 +284,9 @@ if env['debug']:
     env.Append(CPPDEFINES = ['ARM_COMPUTE_DEBUG_ENABLED'])
 else:
     env.Append(CXXFLAGS = ['-O3','-ftree-vectorize'])
+
+if env['faulted_tests']:
+    env.Append(CPPDEFINES = ['ARM_COMPUTE_FAULTED_TESTS'])
 
 if env['asserts']:
     env.Append(CPPDEFINES = ['ARM_COMPUTE_ASSERTS_ENABLED'])

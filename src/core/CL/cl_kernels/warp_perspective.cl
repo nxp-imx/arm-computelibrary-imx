@@ -25,9 +25,13 @@
 #include "warp_helpers.h"
 
 /** Returns the perspective matrix */
+// [AIR-1582] VSI OpenCL compiler unable to compile ctors with different vectorn params
 inline const float16 build_perspective_mtx()
 {
-    return (float16)(MAT0, MAT1, MAT2, MAT3, MAT4, MAT5, MAT6, MAT7, MAT8, 0, 0, 0, (float4)0);
+    return (float16)(MAT0, MAT1, MAT2, MAT3,
+                     MAT4, MAT5, MAT6, MAT7,
+                     MAT8, 0,    0,    0,
+                     0,    0,    0,    0);
 }
 
 /** Transforms four 2D coordinates using the formula:

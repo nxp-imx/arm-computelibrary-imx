@@ -124,7 +124,7 @@ const std::string &string_from_target(GPUTarget target)
     return gpu_target_map[target];
 }
 
-GPUTarget get_target_from_name(const std::string &device_name)
+GPUTarget get_target_from_name(const std::string &device_name, const std::string &vendor_name)
 {
     std::regex  mali_regex(R"(Mali-(.*))");
     std::smatch name_parts;
@@ -132,7 +132,14 @@ GPUTarget get_target_from_name(const std::string &device_name)
 
     if(!found_mali)
     {
-        ARM_COMPUTE_LOG_INFO_MSG_CORE("Can't find valid Mali GPU. Target is set to default.");
+        if (get_vendor_from_name(vendor_name) == GPUVendor::VIVANTE)
+        {
+            ARM_COMPUTE_LOG_INFO_MSG_CORE("Found Vivante Corporation GPU. Target is set to default.");
+        }
+        else 
+        {
+            ARM_COMPUTE_LOG_INFO_MSG_CORE("Can't find valid Mali GPU. Target is set to default.");
+        }
         return GPUTarget::MIDGARD;
     }
 
@@ -155,6 +162,27 @@ GPUTarget get_target_from_name(const std::string &device_name)
         ARM_COMPUTE_LOG_INFO_MSG_CORE("Mali GPU unknown. Target is set to the default one. (BIFROST)");
         return GPUTarget::BIFROST;
     }
+}
+
+const std::string &string_from_vendor(GPUVendor vendor)
+{
+    static std::map<GPUVendor, const std::string> gpu_vendor_map =
+    {
+        { GPUVendor::VIVANTE, "Vivante Corporation" },
+        // TODO: get vendor name from ARM Mali
+    };
+
+    return gpu_vendor_map[vendor];
+}
+
+GPUVendor get_vendor_from_name(const std::string &vendor)
+{
+    // TODO: get vendor name from ARM Mali
+    if(vendor == "Vivante Corporation")
+    {
+        return GPUVendor::VIVANTE;
+    }
+    return GPUVendor::UNKNOWN;
 }
 
 GPUTarget get_arch_from_target(GPUTarget target)

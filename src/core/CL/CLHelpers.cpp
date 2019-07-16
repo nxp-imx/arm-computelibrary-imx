@@ -128,8 +128,16 @@ GPUTarget get_target_from_device(const cl::Device &device)
 {
     // Query device name size
     std::string device_name = device.getInfo<CL_DEVICE_NAME>();
+    std::string vendor_name = device.getInfo<CL_DEVICE_VENDOR>();
 
-    return get_target_from_name(device_name);
+    return get_target_from_name(device_name, vendor_name);
+}
+
+GPUVendor get_vendor_from_device(const cl::Device &device)
+{
+    std::string vendor_name = device.getInfo<CL_DEVICE_VENDOR>();
+
+    return get_vendor_from_name(vendor_name);
 }
 
 bool arm_non_uniform_workgroup_supported(const cl::Device &device)
@@ -145,7 +153,8 @@ bool fp16_supported(const cl::Device &device)
 bool dot8_supported(const cl::Device &device)
 {
     std::string     device_name = device.getInfo<CL_DEVICE_NAME>();
-    const GPUTarget gpu_target  = get_target_from_name(device_name);
+    std::string     vendor_name = device.getInfo<CL_DEVICE_VENDOR>();
+    const GPUTarget gpu_target  = get_target_from_name(device_name, vendor_name);
 
     // SW_WORKAROUND: Workaround for DDK revision r14p0.to enable cl_arm_integer_dot_product_int8
     std::set<GPUTarget> sw_workaround_issue = { GPUTarget::G76 };

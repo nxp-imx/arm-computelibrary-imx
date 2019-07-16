@@ -1797,7 +1797,7 @@ __kernel void depthwise_convolution_3x3_nhwc_stride1(
     VEC_FLOAT values14 = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(src_addr + offset.s2));
     VEC_FLOAT values15 = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)(src_addr + offset.s3));
 
-	// [AIR-1435] Workaround for fma which does not seem to work on 6.4.0 OpenCL driver
+    // [AIR-1435] Workaround for fma which does not seem to work on 6.4.0 OpenCL driver
     acc0 = acc0 + (values0 * w0);//fma(values0, w0, acc0);
     acc0 = acc0 + (values1 * w1);//fma(values1, w1, acc0);
     acc0 = acc0 + (values2 * w2);//fma(values2, w2, acc0);

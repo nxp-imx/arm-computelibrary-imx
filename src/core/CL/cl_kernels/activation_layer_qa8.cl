@@ -47,7 +47,7 @@ inline TYPE lu_brelu_op(TYPE x)
 
 #if defined(O1_VAL) && defined(O2_VAL) && defined(S1_VAL) && defined(S2_VAL)
 #define PERFORM_ACTIVATION_QA8(act, data)                                                         \
-    do{                                                                                            \
+    do {                                                                                            \
         data = ACTIVATION_OP(act, data);                                                          \
         \
         VEC_DATA_TYPE(float, VEC_SIZE)                                                            \
@@ -55,12 +55,12 @@ inline TYPE lu_brelu_op(TYPE x)
         \
         fdata = round((fdata - (float)O1_VAL) * ((float)S1_VAL / (float)S2_VAL) + (float)O2_VAL); \
         data  = CONVERT_SAT(fdata, VEC_DATA_TYPE(uchar, VEC_SIZE));                               \
-    }while(0)
+    } while(0)
 #else /* defined(O1_VAL) && defined(O2_VAL) && defined(S1_VAL) && defined(S2_VAL) */
 #define PERFORM_ACTIVATION_QA8(act, data) \
-    do{                                    \
+    do {                                    \
         data = ACTIVATION_OP(act, data);  \
-    }while(0)
+    } while(0)
 #endif /* defined(O1_VAL) && defined(O2_VAL) && defined(S1_VAL) && defined(S2_VAL) */
 
 #if defined(ACT)
@@ -113,7 +113,8 @@ __kernel void activation_layer_qa8(
     // Load data
     TYPE data = VLOAD(VEC_SIZE)(0, (__global DATA_TYPE *)input.ptr);
 
-    data = PERFORM_ACTIVATION_QA8(ACT, data);
+    // Assigns result to data
+    PERFORM_ACTIVATION_QA8(ACT, data);
 
     // Store result
     VSTORE(VEC_SIZE)

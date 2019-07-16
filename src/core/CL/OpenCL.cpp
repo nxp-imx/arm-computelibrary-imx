@@ -23,9 +23,11 @@
  */
 
 #include "arm_compute/core/CL/OpenCL.h"
+#include "arm_compute/core/Log.h"
 
 #include <dlfcn.h>
 #include <iostream>
+#include <sstream>
 
 namespace arm_compute
 {
@@ -332,7 +334,42 @@ cl_int clEnqueueNDRangeKernel(
     auto func = arm_compute::CLSymbols::get().clEnqueueNDRangeKernel_ptr;
     if(func != nullptr)
     {
+        #ifdef ARM_COMPUTE_DEBUG_ENABLED
+        char kernel_name[512];
+        if(CL_SUCCESS == clGetKernelInfo(kernel, CL_KERNEL_FUNCTION_NAME, sizeof(kernel_name), kernel_name, NULL))
+        {
+            std::stringstream ss;
+            ss << "Running kernel '" << kernel_name << "' (global: [";
+            for(cl_uint i = 0; i < work_dim; ++i)
+            {
+                ss << (int)global_work_size[i];
+                if(i != (work_dim - 1))
+                    ss << ",";
+            }
+            ss << "], local: [";
+            if(local_work_size != NULL)
+            {
+                for(cl_uint i = 0; i < work_dim; ++i)
+                {
+                    ss << (int)local_work_size[i];
+                    if(i != (work_dim - 1))
+                        ss << ",";
+                }
+            }
+            else
+                ss << "NULL";
+            ss << "])";
+            ARM_COMPUTE_LOG_INFO_MSG_CORE(ss.str().c_str());
+            return func(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list, event);
+        }
+        else
+        {
+            ARM_COMPUTE_LOG_INFO_MSG_CORE("Invalid kernel query");
+            return CL_INVALID_KERNEL;
+        }
+        #else
         return func(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list, event);
+        #endif // ARM_COMPUTE_DEBUG_ENABLED
     }
     else
     {

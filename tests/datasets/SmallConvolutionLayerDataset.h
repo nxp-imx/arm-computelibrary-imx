@@ -138,8 +138,11 @@ public:
     SmallFFTConvolutionLayerDataset()
     {
         add_config(TensorShape(8U, 7U, 3U), TensorShape(3U, 3U, 3U, 2U), TensorShape(2U), TensorShape(8U, 7U, 2U), PadStrideInfo(1, 1, 1, 1));
+        // [AIR-1570] Causes GPU to hang when running CL/FFTConvolutionLayer validation tests
+        #ifdef ARM_COMPUTE_FAULTED_TESTS
         add_config(TensorShape(64U, 32U, 5U), TensorShape(5U, 5U, 5U, 10U), TensorShape(10U), TensorShape(64U, 32U, 10U), PadStrideInfo(1, 1, 2, 2));
         add_config(TensorShape(192U, 128U, 8U), TensorShape(9U, 9U, 8U, 3U), TensorShape(3U), TensorShape(192U, 128U, 3U), PadStrideInfo(1, 1, 4, 4));
+        #endif // ARM_COMPUTE_FAULTED_TESTS
     }
 };
 

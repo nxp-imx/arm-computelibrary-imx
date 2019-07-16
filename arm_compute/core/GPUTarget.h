@@ -52,6 +52,14 @@ enum class GPUTarget
     TBOX          = 0x270
 };
 
+/** Available GPU Vendors */
+enum class GPUVendor
+{
+    UNKNOWN = 1,
+    ARM     = 2,
+    VIVANTE = 3
+};
+
 /** Enable bitwise operations on GPUTarget enumerations */
 template <>
 struct enable_bitwise_ops<arm_compute::GPUTarget>
@@ -70,10 +78,27 @@ const std::string &string_from_target(GPUTarget target);
 /** Helper function to get the GPU target from a device name
  *
  * @param[in] device_name A device name
+ * @param[in] vendor_name (Optional) Name of the device vendor
  *
  * @return the GPU target
  */
-GPUTarget get_target_from_name(const std::string &device_name);
+GPUTarget get_target_from_name(const std::string &device_name, const std::string &vendor_name = std::string());
+
+/** Translates a given gpu device vendor to string.
+ *
+ * @param[in] vendor Given gpu vendor.
+ *
+ * @return The string describing the vendor.
+ */
+const std::string &string_from_vendor(GPUVendor vendor);
+
+/** Helper function to get the GPU vendor from a device info
+ *
+ * @param[in] vendor A device vendor
+ *
+ * @return the GPU vendor
+ */
+GPUVendor get_vendor_from_name(const std::string &vendor);
 
 /** Helper function to get the GPU arch
  *

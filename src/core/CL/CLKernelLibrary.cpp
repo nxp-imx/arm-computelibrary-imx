@@ -1059,11 +1059,11 @@ Kernel CLKernelLibrary::create_kernel(const std::string &kernel_name, const Stri
     {
         concat_str += " -cl-arm-non-uniform-work-group-size ";
     }
-    else if (_device.getInfo <CL_DEVICE_VENDOR> () == "Vivante Corporation")
+    if (get_cl_version(_device) == CLVersion::CL12)
     {
         concat_str += " -cl-std=CL1.2 ";
-        ARM_COMPUTE_LOG_INFO_MSG_CORE("Using Vivante Corporation GPU with OpenCL 1.2.");
     }
+    
 
     // Check if the program has been built before with same build options.
     const std::string program_name  = kernel_program_it->second;
@@ -1090,6 +1090,8 @@ Kernel CLKernelLibrary::create_kernel(const std::string &kernel_name, const Stri
         // Add built program to internal map
         _built_programs_map.emplace(built_program_name, cl_program);
     }
+
+    ARM_COMPUTE_LOG_INFO_MSG_WITH_FORMAT_CORE("Creating kernel '%s' (params: '%s')", kernel_name.c_str(), built_program_name.c_str());
 
     // Create and return kernel
     return Kernel(kernel_name, cl_program);

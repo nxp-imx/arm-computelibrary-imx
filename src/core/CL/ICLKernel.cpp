@@ -69,6 +69,8 @@ void arm_compute::enqueue(cl::CommandQueue &queue, ICLKernel &kernel, const Wind
     cl::NDRange valid_lws;
     if(lws_hint[0] * lws_hint[1] * lws_hint[2] > kernel.get_max_workgroup_size())
     {
+        ARM_COMPUTE_LOG_INFO_MSG_WITH_FORMAT_CORE("Local work size exceeds max workgroup size (global: [%u,%u,%u], local: [%u,%u,%u]).", 
+                gws[0], gws[1], gws[2], lws_hint[0], lws_hint[1], lws_hint[2]);
         valid_lws = cl::NullRange;
     }
     else
@@ -84,7 +86,8 @@ void arm_compute::enqueue(cl::CommandQueue &queue, ICLKernel &kernel, const Wind
         }
         else
         {
-            ARM_COMPUTE_LOG_INFO_MSG_CORE("Local work size is not uniform. Enforcing NULL value.");
+            ARM_COMPUTE_LOG_INFO_MSG_WITH_FORMAT_CORE("Local work size is not uniform (global: [%u,%u,%u], local: [%u,%u,%u]). Enforcing NULL value.", 
+                gws[0], gws[1], gws[2], lws_hint[0], lws_hint[1], lws_hint[2]);
             valid_lws = cl::NullRange;
         }
     }
@@ -95,7 +98,11 @@ void arm_compute::enqueue(cl::CommandQueue &queue, ICLKernel &kernel, const Wind
     {
         lws = valid_lws;
     }
-
+    else
+    {
+        ARM_COMPUTE_LOG_INFO_MSG_WITH_FORMAT_CORE("Local work size exceeds global work size (global: [%u,%u,%u], local: [%u,%u,%u]).", 
+                gws[0], gws[1], gws[2], valid_lws[0], valid_lws[1], valid_lws[2]);
+    }
     queue.enqueueNDRangeKernel(kernel.kernel(), cl::NullRange, gws, lws);
 }
 
