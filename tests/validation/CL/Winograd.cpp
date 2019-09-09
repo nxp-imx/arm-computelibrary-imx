@@ -61,6 +61,7 @@ const AbsoluteTolerance<half> tolerance_convolution_layer_f16(half(0.4f));
 RelativeTolerance<half_float::half> rel_tolerance_f16(half(0.2)); /**< Tolerance value for comparing reference's output against implementation's output for FP16 data types */
 constexpr float                     tolerance_num   = 0.05f;  /**< Tolerance number */
 constexpr float                     abs_tolerance_convolution_layer_f16   = 2.5f;  /**< Tolerance number */
+constexpr float                      tolerance_num_convolution_f16 = 0.15f;                 /**< Tolerance number */
 
 // Input transform
 const auto SmallWinogradInputTransformDatasetNCHW =
@@ -787,7 +788,7 @@ FIXTURE_DATA_TEST_CASE(RunSmall, CLWinogradConvolutionLayerFastMathFixture16, fr
                                                framework::dataset::make("DataLayout", { DataLayout::NCHW, DataLayout::NHWC })))
 {
     // Validate output
-    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16);
+    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16, tolerance_num_convolution_f16);
 }
 
 FIXTURE_DATA_TEST_CASE(RunLarge, CLWinogradConvolutionLayerFastMathFixture16, framework::DatasetMode::NIGHTLY,
@@ -809,7 +810,7 @@ FIXTURE_DATA_TEST_CASE(RunSmall, CLWinogradConvolutionLayerFastMathFixture16, fr
                                        framework::dataset::make("DataLayout", { DataLayout::NCHW, DataLayout::NHWC })))
 {
     // Validate output
-    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16);
+    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16, tolerance_num_convolution_f16);
 }
 
 FIXTURE_DATA_TEST_CASE(RunLarge, CLWinogradConvolutionLayerFastMathFixture16, framework::DatasetMode::NIGHTLY,
@@ -831,7 +832,7 @@ FIXTURE_DATA_TEST_CASE(RunSmall, CLWinogradConvolutionLayerFastMathFixture16, fr
                                        framework::dataset::make("DataLayout", { DataLayout::NCHW, DataLayout::NHWC })))
 {
     // Validate output
-    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16);
+    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16, tolerance_num_convolution_f16);
 }
 
 FIXTURE_DATA_TEST_CASE(RunLarge, CLWinogradConvolutionLayerFastMathFixture16, framework::DatasetMode::NIGHTLY,
@@ -854,7 +855,7 @@ FIXTURE_DATA_TEST_CASE(RunSmall, CLWinogradConvolutionLayerFastMathFixture16, fr
 
 {
     // Validate output
-    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16);
+    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16, tolerance_num_convolution_f16);
 }
 
 FIXTURE_DATA_TEST_CASE(RunLarge, CLWinogradConvolutionLayerFastMathFixture16, framework::DatasetMode::NIGHTLY,
@@ -878,7 +879,7 @@ FIXTURE_DATA_TEST_CASE(RunSmall, CLWinogradConvolutionLayerFastMathFixture16, fr
 
 {
     // Validate output
-    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16);
+    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16, tolerance_num_convolution_f16);
 }
 
 FIXTURE_DATA_TEST_CASE(RunLarge, CLWinogradConvolutionLayerFastMathFixture16, framework::DatasetMode::NIGHTLY,
@@ -902,7 +903,7 @@ FIXTURE_DATA_TEST_CASE(RunSmall, CLWinogradConvolutionLayerFastMathFixture16, fr
 
 {
     // Validate output
-    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16);
+    validate(CLAccessor(_target), _reference, tolerance_convolution_layer_f16, tolerance_num_convolution_f16);
 }
 
 FIXTURE_DATA_TEST_CASE(RunLarge, CLWinogradConvolutionLayerFastMathFixture16, framework::DatasetMode::NIGHTLY,
