@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2017-2018 ARM Limited.
+ * Copyright 2019 NXP
  *
  * SPDX-License-Identifier: MIT
  *
