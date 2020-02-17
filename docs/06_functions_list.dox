@@ -180,7 +180,6 @@ namespace arm_compute
     - @ref NESoftmaxLayerGeneric &lt;IS_LOG&gt;
     - @ref NESpaceToBatchLayer
     - @ref NESpaceToDepthLayer
-    - @ref NESplit
     - @ref NEStackLayer
     - @ref NEUnstack
     - @ref NEUpsampleLayer
@@ -326,7 +325,6 @@ namespace arm_compute
         - @ref CLSelect
         - @ref CLSlice
         - @ref CLSobel3x3
-        - @ref CLSplit
         - @ref CLStridedSlice
         - @ref CLTableLookup
         - @ref CLThreshold

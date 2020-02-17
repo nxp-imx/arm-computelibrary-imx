@@ -249,7 +249,6 @@ If there is more than one release in a month then an extra sequential number is 
 v20.02 Public major release
  - Various bug fixes.
  - Various optimisations.
- - Update recommended android toolchain to 17c.
  - Added new data type QASYMM8_SIGNED support for:
      - @ref CLDepthwiseConvolutionLayer
      - @ref CLDepthwiseConvolutionLayer3x3
@@ -286,6 +285,7 @@ v20.02 Public major release
  - Added the ability to build bootcode for bare metal.
  - Added support for generating synthetic QASYMM8 graphs.
  - Added support for F16 datatype in VGG16.
+ - Removed pre-built binaries for GLES.
 
 v19.11.1 Public maintenance release
  - Fix offset calculation in NEReductionOperationKernel.
