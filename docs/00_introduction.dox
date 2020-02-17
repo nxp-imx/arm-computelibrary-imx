@@ -1,5 +1,5 @@
 ///
-/// Copyright (c) 2017-2019 ARM Limited.
+/// Copyright (c) 2017-2020 ARM Limited.
 ///
 /// SPDX-License-Identifier: MIT
 ///
@@ -245,6 +245,47 @@ If there is more than one release in a month then an extra sequential number is 
 @note We're aiming at releasing one major public release with new features per quarter. All releases in between will only contain bug fixes.
 
 @subsection S2_2_changelog Changelog
+
+v20.02 Public major release
+ - Various bug fixes.
+ - Various optimisations.
+ - Update recommended android toolchain to 17c.
+ - Added new data type QASYMM8_SIGNED support for:
+     - CLDepthwiseConvolutionLayer
+     - CLDepthwiseConvolutionLayer3x3
+     - CLElementWiseOperations
+     - CLGEMMConvolutionLayer
+     - CLGEMMLowpMatrixMultiplyCore
+     - CLGEMMLowpMatrixMultiplyReshapedOnlyRHSKernel
+     - CLGEMMLowpOutputStage
+     - NEActivationLayer
+     - NEComparisonOperationKernel
+     - NEConvolutionLayer.
+     - NEDepthwiseConvolutionLayer
+     - NEDepthwiseConvolutionLayer3x3Kernel
+     - NEDirectConvolutionLayerOutputStageKernel
+     - NEElementwiseMax
+     - NEElementwiseMin
+     - NEElementwiseSquareDiff
+     - NEFullyConnectedLayer
+     - NEGEMMLowpOutputStage
+     - NEGEMMMatrixVectorMultiplyKernel
+     - NEPixelwiseMultiplication.
+     - NEPoolingLayer
+     - NEPReluLayer
+ - Added support for QUANT8_PER_CHANNEL_SYMM in:
+     - @ref NEDepthwiseConvolution 3x3
+ - Added support for split sizes in:
+     - @ref CLSplit
+     - @ref NESplit
+ - New OpenCL functions:
+     - @ref CLFill
+ - New NEON functions:
+     - @ref NEFill
+ - Added support for quantization with multiplier greater than 1 on NEON and CL.
+ - Added the ability to build bootcode for bare metal.
+ - Added support for generating synthetic QASYMM8 graphs.
+ - Added support for F16 datatype in VGG16.
 
 v19.11.1 Public maintenance release
  - Fix offset calculation in NEReductionOperationKernel.
