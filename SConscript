@@ -24,7 +24,7 @@ import os.path
 import re
 import subprocess
 
-VERSION = "v0.0-unreleased"
+VERSION = "v20.02"
 SONAME_VERSION="1.0.0"
 
 Import('env')
