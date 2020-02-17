@@ -30,9 +30,8 @@ Import('install_bin')
 variables = [
     BoolVariable("benchmark_examples", "Build benchmark examples programs", True),
     BoolVariable("validate_examples", "Build validate examples programs", True),
-    #FIXME Switch the following two options to False before releasing
-    BoolVariable("validation_tests", "Build validation test programs", True),
-    BoolVariable("benchmark_tests", "Build benchmark test programs", True),
+    BoolVariable("validation_tests", "Build validation test programs", False),
+    BoolVariable("benchmark_tests", "Build benchmark test programs", False),
     ("test_filter", "Pattern to specify the tests' filenames to be compiled", "*.cpp")
 ]
 
@@ -87,10 +86,6 @@ else:
 if env['os'] in ['bare_metal']:
     Import("bootcode_o")
 
-#FIXME Delete before release
-if env['internal_only']:
-    test_env.Append(CPPDEFINES=['INTERNAL_ONLY'])
-
 test_env.Append(CPPPATH = ["#3rdparty/include"])
 test_env.Append(LIBPATH = ["#3rdparty/%s/%s" % (env['os'], env['arch'])])
 
@@ -98,9 +93,6 @@ common_files = Glob('*.cpp')
 common_objects = [test_env.StaticObject(f) for f in common_files]
 
 files_benchmark = Glob('benchmark/*.cpp')
-#FIXME Delete before release
-if env['internal_only']:
-    files_benchmark += Glob('../3rdparty/tests/benchmark/*.cpp')
 
 # Add unit tests
 files_validation = Glob('validation/UNIT/*/*.cpp')
@@ -117,23 +109,13 @@ if env['opencl']:
 
     files_benchmark += Glob('benchmark/CL/*/' + filter_pattern)
     files_benchmark += Glob('benchmark/CL/' + filter_pattern)
-    #FIXME Delete before release
-    if env['internal_only']:
-        files_benchmark += Glob('../3rdparty/tests/benchmark/CL/' + filter_pattern)
-
     files_validation += Glob('validation/CL/*/' + filter_pattern)
     files_validation += Glob('validation/CL/' + filter_pattern)
-    #FIXME Delete before release
-    if env['internal_only']:
-        files_validation += Glob('../3rdparty/tests/validation/CL/' + filter_pattern)
 
 if env['neon']:
     filter_pattern = test_env['test_filter']
     files_benchmark += Glob('benchmark/NEON/*/' + filter_pattern)
     files_benchmark += Glob('benchmark/NEON/' + filter_pattern)
-    #FIXME Delete before release
-    if env['internal_only']:
-        files_benchmark += Glob('../3rdparty/tests/benchmark/NEON/' + filter_pattern)
 
     files_validation += Glob('validation/NEON/' + filter_pattern)
     if env['os'] == 'bare_metal':

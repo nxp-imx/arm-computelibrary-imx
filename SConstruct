@@ -61,8 +61,6 @@ vars.AddVariables(
     PathVariable("install_dir", "Specify sub-folder for the install", "", PathVariable.PathAccept),
     BoolVariable("exceptions", "Enable/disable C++ exception support", True),
     PathVariable("linker_script", "Use an external linker script", "", PathVariable.PathAccept),
-    #FIXME Remove before release (And remove all references to INTERNAL_ONLY)
-    BoolVariable("internal_only", "Enable ARM internal only tests", False),
     ("toolchain_prefix", "Override the toolchain prefix", ""),
     ("compiler_prefix", "Override the compiler prefix", ""),
     ("extra_cxx_flags", "Extra CXX flags to be appended to the build command", ""),
