@@ -31,14 +31,6 @@ Import('env')
 Import('vars')
 Import('install_lib')
 
-def build_bootcode_objs(sources):
-
-    arm_compute_env.Append(ASFLAGS = "-I bootcode/")
-    obj = arm_compute_env.Object(sources)
-    obj = install_lib(obj)
-    Default(obj)
-    return obj
-
 def build_library(name, sources, static=False, libs=[]):
     if static:
         obj = arm_compute_env.StaticLibrary(name, source=sources, LIBS = arm_compute_env["LIBS"] + libs)
@@ -224,10 +216,11 @@ if env['neon']:
 
     graph_files += Glob('src/graph/backends/NEON/*.cpp')
 
-    if env['estate'] == '32':
+    if env['arch'] == "armv7a":
         core_files += Glob('src/core/NEON/kernels/arm_gemm/kernels/a32_*/*.cpp')
 
-    if env['estate'] == '64':
+
+    if "arm64-v8" in env['arch']:
         core_files += Glob('src/core/NEON/kernels/arm_gemm/kernels/a64_*/*.cpp')
         if "sve" in env['arch']:
              core_files += Glob('src/core/NEON/kernels/arm_gemm/kernels/sve_*/*.cpp')
@@ -247,12 +240,6 @@ if env['gles_compute']:
     runtime_files += Glob('src/runtime/GLES_COMPUTE/functions/*.cpp')
 
     graph_files += Glob('src/graph/backends/GLES/*.cpp')
-
-bootcode_o = []
-if env['os'] == 'bare_metal':
-    bootcode_files = Glob('bootcode/*.s')
-    bootcode_o = build_bootcode_objs(bootcode_files)
-Export('bootcode_o')
 
 arm_compute_core_a = build_library('arm_compute_core-static', core_files, static=True)
 Export('arm_compute_core_a')

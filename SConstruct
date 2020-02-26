@@ -1,4 +1,5 @@
 # Copyright (c) 2016, 2017 ARM Limited.
+# Copyright 2019 NXP
 #
 # SPDX-License-Identifier: MIT
 #
@@ -40,10 +41,7 @@ vars.AddVariables(
     BoolVariable("debug", "Debug", False),
     BoolVariable("asserts", "Enable asserts (this flag is forced to 1 for debug=1)", False),
     BoolVariable("logging", "Logging (this flag is forced to 1 for debug=1)", False),
-    EnumVariable("arch", "Target Architecture", "armv7a",
-                  allowed_values=("armv7a", "arm64-v8a", "arm64-v8.2-a", "arm64-v8.2-a-sve", "x86_32", "x86_64",
-                                  "armv8a", "armv8.2-a", "armv8.2-a-sve", "armv8.6-a", "x86")),
-    EnumVariable("estate", "Execution State", "auto", allowed_values=("auto", "32", "64")),
+    EnumVariable("arch", "Target Architecture", "armv7a", allowed_values=("armv7a", "arm64-v8a", "arm64-v8.2-a", "arm64-v8.2-a-sve", "x86_32", "x86_64")),
     EnumVariable("os", "Target OS", "linux", allowed_values=("linux", "android", "bare_metal")),
     EnumVariable("build", "Build type", "cross_compile", allowed_values=("native", "cross_compile", "embed_only")),
     BoolVariable("examples", "Build example programs", True),
@@ -60,9 +58,7 @@ vars.AddVariables(
     PathVariable("build_dir", "Specify sub-folder for the build", ".", PathVariable.PathAccept),
     PathVariable("install_dir", "Specify sub-folder for the install", "", PathVariable.PathAccept),
     BoolVariable("exceptions", "Enable/disable C++ exception support", True),
-    PathVariable("linker_script", "Use an external linker script", "", PathVariable.PathAccept),
     ("toolchain_prefix", "Override the toolchain prefix", ""),
-    ("compiler_prefix", "Override the compiler prefix", ""),
     ("extra_cxx_flags", "Extra CXX flags to be appended to the build command", ""),
     ("extra_link_flags", "Extra LD flags to be appended to the build command", ""),
     ("compiler_cache", "Command to prefix to the C and C++ compiler (e.g ccache)", "")
@@ -106,10 +102,6 @@ Export('install_bin')
 
 Help(vars.GenerateHelpText(env))
 
-if env['linker_script'] and env['os'] != 'bare_metal':
-    print("Linker script is only supported for bare_metal builds")
-    Exit(1)
-
 if env['build'] == "embed_only":
     SConscript('./SConscript', variant_dir=build_path, duplicate=0)
     Return()
@@ -139,7 +131,7 @@ if not env['exceptions']:
 env.Append(CXXFLAGS = ['-Wall','-DARCH_ARM',
          '-Wextra','-pedantic','-Wdisabled-optimization','-Wformat=2',
          '-Winit-self','-Wstrict-overflow=2','-Wswitch-default',
-         '-std=gnu++11','-Woverloaded-virtual', '-Wformat-security',
+         '-fpermissive','-std=gnu++11','-Woverloaded-virtual', '-Wformat-security',
          '-Wctor-dtor-privacy','-Wsign-promo','-Weffc++','-Wno-overlength-strings'])
 
 env.Append(CPPDEFINES = ['_GLIBCXX_USE_NANOSLEEP'])
@@ -171,66 +163,48 @@ if env['openmp']:
     env.Append(CXXFLAGS = ['-fopenmp'])
     env.Append(LINKFLAGS = ['-fopenmp'])
 
-# Validate and define state
-if env['estate'] == 'auto':
-    if 'v7a' in env['arch']:
-        env['estate'] = '32'
-    else:
-        env['estate'] = '64'
-
-# Map legacy arch
-if 'arm64' in env['arch']:
-    env['estate'] = '64'
-
-if 'v7a' in env['estate'] and env['estate'] == '64':
-    print("ERROR: armv7a architecture has only 32-bit execution state")
-    Exit(1)
-
 # Add architecture specific flags
 prefix = ""
-if 'v7a' in env['arch']:
+if env['arch'] == 'armv7a':
     env.Append(CXXFLAGS = ['-march=armv7-a', '-mthumb', '-mfpu=neon'])
-    if env['os'] == 'android':
-        env.Append(CXXFLAGS = ['-mfloat-abi=softfp'])
-    else:
+
+    if env['os'] == 'linux':
+        prefix = ""
         env.Append(CXXFLAGS = ['-mfloat-abi=hard'])
-elif 'v8' in env['arch']:
-    if 'sve' in env['arch']:
+    elif env['os'] == 'bare_metal':
+        prefix = "arm-eabi-"
+        env.Append(CXXFLAGS = ['-mfloat-abi=hard'])
+    elif env['os'] == 'android':
+        prefix = "arm-linux-androideabi-"
+        env.Append(CXXFLAGS = ['-mfloat-abi=softfp'])
+elif env['arch'] == 'arm64-v8a':
+    env.Append(CXXFLAGS = ['-march=armv8-a'])
+    env.Append(CPPDEFINES = ['ARM_COMPUTE_AARCH64_V8A'])
+    if env['os'] == 'linux':
+        prefix = ""
+    elif env['os'] == 'bare_metal':
+        prefix = "aarch64-elf-"
+    elif env['os'] == 'android':
+        prefix = "aarch64-linux-android-"
+elif 'arm64-v8.2-a' in env['arch']:
+    if env['arch'] == 'arm64-v8.2-a-sve':
         env.Append(CXXFLAGS = ['-march=armv8.2-a+sve+fp16+dotprod'])
-    elif 'v8.2-a' in env['arch']:
+    else:
         env.Append(CXXFLAGS = ['-march=armv8.2-a+fp16']) # explicitly enable fp16 extension otherwise __ARM_FEATURE_FP16_VECTOR_ARITHMETIC is undefined
-    else:
-        env.Append(CXXFLAGS = ['-march=armv8-a'])
-
-    if 'v8.6-a' in env['arch']:
-        env.Append(CXXFLAGS = ['-DV8P6'])
-
-elif 'x86' in env['arch']:
-    if env['estate'] == '32':
-        env.Append(CCFLAGS = ['-m32'])
-        env.Append(LINKFLAGS = ['-m32'])
-    else:
-        env.Append(CXXFLAGS = ['-fPIC'])
-        env.Append(CCFLAGS = ['-m64'])
-        env.Append(LINKFLAGS = ['-m64'])
-
-# Define toolchain
-prefix = ""
-if 'x86' not in env['arch']:
-    if env['estate'] == '32':
-        if env['os'] == 'linux':
-            prefix = "arm-linux-gnueabihf-" if 'v7' in env['arch'] else "armv8l-linux-gnueabihf-"
-        elif env['os'] == 'bare_metal':
-            prefix = "arm-eabi-"
-        elif env['os'] == 'android':
-            prefix = "arm-linux-androideabi-"
-    elif env['estate'] == '64' and 'v8' in env['arch']:
-        if env['os'] == 'linux':
-            prefix = "aarch64-linux-gnu-"
-        elif env['os'] == 'bare_metal':
-            prefix = "aarch64-elf-"
-        elif env['os'] == 'android':
-            prefix = "aarch64-linux-android-"
+    if env['os'] == 'linux':
+        prefix = "aarch64-linux-gnu-"
+    elif env['os'] == 'bare_metal':
+        prefix = "aarch64-elf-"
+    elif env['os'] == 'android':
+        prefix = "aarch64-linux-android-"
+    env.Append(CPPDEFINES = ['ARM_COMPUTE_AARCH64_V8_2'])
+elif env['arch'] == 'x86_32':
+    env.Append(CCFLAGS = ['-m32'])
+    env.Append(LINKFLAGS = ['-m32'])
+elif env['arch'] == 'x86_64':
+    env.Append(CXXFLAGS = ['-fPIC'])
+    env.Append(CCFLAGS = ['-m64'])
+    env.Append(LINKFLAGS = ['-m64'])
 
 if env['build'] == 'native':
     prefix = ""
@@ -238,12 +212,8 @@ if env['build'] == 'native':
 if env["toolchain_prefix"] != "":
     prefix = env["toolchain_prefix"]
 
-compiler_prefix = prefix
-if env["compiler_prefix"] != "":
-    compiler_prefix = env["compiler_prefix"]
-
-env['CC'] = env['compiler_cache']+ " " + compiler_prefix + c_compiler
-env['CXX'] = env['compiler_cache']+ " " + compiler_prefix + cpp_compiler
+env['CC'] = env['compiler_cache']+" "+prefix + c_compiler
+env['CXX'] = env['compiler_cache']+" "+prefix + cpp_compiler
 env['LD'] = prefix + "ld"
 env['AS'] = prefix + "as"
 env['AR'] = prefix + "ar"
@@ -281,7 +251,7 @@ if env['Werror']:
 
 if env['os'] == 'android':
     env.Append(CPPDEFINES = ['ANDROID'])
-    env.Append(LINKFLAGS = ['-pie', '-static-libstdc++', '-ldl'])
+    env.Append(LINKFLAGS = ['-pie', '-static-libstdc++'])
 elif env['os'] == 'bare_metal':
     env.Append(LINKFLAGS = ['-static'])
     env.Append(LINKFLAGS = ['-specs=rdimon.specs'])
@@ -312,7 +282,7 @@ if env['debug']:
     env.Append(CXXFLAGS = ['-O0','-g','-gdwarf-2'])
     env.Append(CPPDEFINES = ['ARM_COMPUTE_DEBUG_ENABLED'])
 else:
-    env.Append(CXXFLAGS = ['-O3'])
+    env.Append(CXXFLAGS = ['-O3','-ftree-vectorize'])
 
 if env['asserts']:
     env.Append(CPPDEFINES = ['ARM_COMPUTE_ASSERTS_ENABLED'])
@@ -333,20 +303,17 @@ for dirname in os.listdir("./include"):
 
 Export('version_at_least')
 
+if env['opencl']:
+    SConscript("./opencl-1.2-stubs/SConscript", variant_dir="%s/opencl-1.2-stubs" % build_path, duplicate=0)
 
 if env['gles_compute'] and env['os'] != 'android':
     env.Append(CPPPATH = ['#/include/linux'])
+    SConscript("./opengles-3.1-stubs/SConscript", variant_dir="%s/opengles-3.1-stubs" % build_path, duplicate=0)
 
 SConscript('./SConscript', variant_dir=build_path, duplicate=0)
 
-if env['examples'] and env['exceptions']:
-    if env['os'] == 'bare_metal' and env['arch'] == 'armv7a':
-        print("WARNING: Building examples for bare metal and armv7a is not supported. Use examples=0")
-        Return()
+if env['examples'] and env['os'] != 'bare_metal' and env['exceptions']:
     SConscript('./examples/SConscript', variant_dir='%s/examples' % build_path, duplicate=0)
 
-if env['exceptions']:
-    if env['os'] == 'bare_metal' and env['arch'] == 'armv7a':
-        print("WARNING: Building tests for bare metal and armv7a is not supported")
-        Return()
+if env['os'] != 'bare_metal' and env['exceptions']:
     SConscript('./tests/SConscript', variant_dir='%s/tests' % build_path, duplicate=0)
