@@ -116,7 +116,7 @@ inline void rgb_to_u8_conversion(const uint8x16x3_t &in, uint8x16_t &out)
     convert_float32x4x4_to_unit8x16(out_float32, out);
 }
 
-inline void rgb_to_yuv_calculation(const float32x4_t &rvec, const float32x4_t &gvec, const float32x4_t &bvec,
+void rgb_to_yuv_calculation(const float32x4_t &rvec, const float32x4_t &gvec, const float32x4_t &bvec,
                                    float32x4_t &yvec, float32x4_t &uvec, float32x4_t &vvec)
 {
     /*
@@ -140,7 +140,7 @@ inline void rgb_to_yuv_calculation(const float32x4_t &rvec, const float32x4_t &g
     vvec = vmlaq_n_f32(c128, vvec, rgb2yuv_bt709_cv);
 }
 
-inline void yuyv_to_rgb_calculation(const float32x4_t &yvec_val, float32x4_t uvec_val, const float32x4_t &yyvec_val,
+void yuyv_to_rgb_calculation(const float32x4_t &yvec_val, float32x4_t uvec_val, const float32x4_t &yyvec_val,
                                     float32x4_t vvec_val, unsigned char *output_ptr, const bool alpha)
 {
     float32x4x3_t rgb1, rgb2;
