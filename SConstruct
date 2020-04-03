@@ -282,6 +282,7 @@ if env['debug']:
     env.Append(CPPDEFINES = ['ARM_COMPUTE_DEBUG_ENABLED'])
 else:
     env.Append(CXXFLAGS = ['-O3','-ftree-vectorize'])
+env.Append(CXXFLAGS = ['-fPIC'])
 
 if env['faulted_tests']:
     env.Append(CPPDEFINES = ['ARM_COMPUTE_FAULTED_TESTS'])
