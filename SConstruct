@@ -58,7 +58,6 @@ vars.AddVariables(
     PathVariable("build_dir", "Specify sub-folder for the build", ".", PathVariable.PathAccept),
     PathVariable("install_dir", "Specify sub-folder for the install", "", PathVariable.PathAccept),
     BoolVariable("exceptions", "Enable/disable C++ exception support", True),
-    BoolVariable("imx8", "Specific flags for NXP imx8 boards", True),
     ("toolchain_prefix", "Override the toolchain prefix", ""),
     ("extra_cxx_flags", "Extra CXX flags to be appended to the build command", ""),
     ("extra_link_flags", "Extra LD flags to be appended to the build command", ""),
@@ -283,13 +282,9 @@ if env['debug']:
     env.Append(CXXFLAGS = ['-O0','-g','-gdwarf-2'])
     env.Append(CPPDEFINES = ['ARM_COMPUTE_DEBUG_ENABLED'])
 else:
-    env.Append(CXXFLAGS = ['-ftree-vectorize'])
-    if env['imx8']:
-        env.Append(CXXFLAGS = ['-O1'])
-    else:
-        env.Append(CXXFLAGS = ['-O3'])
-if env['imx8']:
-    env.Append(CXXFLAGS = ['-fPIC'])
+    env.Append(CXXFLAGS = ['-O1', '-ftree-vectorize']) # change back to O3 when fixed with GCC 9.2
+
+env.Append(CXXFLAGS = ['-fPIC'])
 
 if env['asserts']:
     env.Append(CPPDEFINES = ['ARM_COMPUTE_ASSERTS_ENABLED'])
