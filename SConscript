@@ -24,7 +24,7 @@ import os.path
 import re
 import subprocess
 
-VERSION = "v0.0-unreleased"
+VERSION = "v20.08"
 LIBRARY_VERSION_MAJOR = 20
 LIBRARY_VERSION_MINOR =  0
 LIBRARY_VERSION_PATCH =  0
