@@ -1,0 +1,4 @@
+[submodule "release_repository"]
+	path = release_repository
+	url = ssh://eu-gerrit-1.euhpc.arm.com:29418/VisualCompute/Github/ComputeLibrary
+	branch = master
