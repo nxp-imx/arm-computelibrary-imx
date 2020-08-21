@@ -20,6 +20,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<path_to_acl_repo>/build
 ### 20.02.01
 - For a complete list of changes see documentation for [20.02.01](https://arm-software.github.io/ComputeLibrary/v20.02.1/) and [20.02](https://arm-software.github.io/ComputeLibrary/v20.02/)
 - Removed "imx8" scons compile flag
+- Switched from O3 to O1 optimization due to compile break
 
 ##### Validation tests on Linux imx8mpevk 5.4.47-2.2.0+Galcore version 6.4.3.p0.283965
 ```
