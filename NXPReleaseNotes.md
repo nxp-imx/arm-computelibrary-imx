@@ -1,21 +1,30 @@
 # ARM Compute Library NXP Release Notes
 
 ## Overview
-The latest release notes are for the ARM Compute Library (ACL) release 20.02.01. The purpose of this release is to adapt the [original ACL 20.02.01](https://github.com/ARM-software/ComputeLibrary) and optimize it for the NXP i.MX8 series. Only NEON/CPU backend is supported, OpenCL backend is not tested, but it can be used experimentally. To take advantage of GPU and NPU acceleration on NXP i.MX8, we strongly suggest using [Arm NN with the VSI NPU backend](https://source.codeaurora.org/external/imx/armnn-imx).
+The latest release notes are for the ARM Compute Library (ACL) release 20.08. The purpose of this release is to adapt the [original ACL 20.08](https://github.com/ARM-software/ComputeLibrary) and optimize it for the NXP i.MX8 series/Yocto Linux. Only NEON/CPU backend is supported, OpenCL backend is not tested, but it can be used experimentally. To take advantage of GPU and NPU acceleration on NXP i.MX8, we strongly suggest using [Arm NN with the VSI NPU backend](https://source.codeaurora.org/external/imx/armnn-imx).
 
-## How to compile and execute ACL mannualy
+## How to cross-compile for Yocto Linux and execute ACL mannualy
 - Clone the [NXP repository](https://source.codeaurora.org/external/imx/arm-computelibrary-imx)
+```
+git clone https://source.codeaurora.org/external/imx/arm-computelibrary-imx -b imx_20.08
+```
+
 - Install scons on the target using `pip install scons`
-- Navigate to the ACL directory and compile it with the following command or similar (see [documentation](https://arm-software.github.io/ComputeLibrary/v20.02.1/) for additional parameters):
+- Setup the cross-compile enviornment. Navigate to the ACL directory and compile it with the following command or similar (see [documentation](https://arm-software.github.io/ComputeLibrary/v20.08/) for additional parameters):
 ```
+source <path_to_yocto_sdk>/environment-setup-aarch64-poky-linux
 cd <path_to_acl_repo>
-scons os=linux neon=1 opencl=0 embed_kernels=1 gles_compute=0 arch=arm64-v8a build=cross_compile Werror=0 examples=1 -j32
+scons os=linux neon=1 opencl=0 embed_kernels=1 gles_compute=0 arch=arm64-v8a build=cross_compile toolchain_prefix=' ' extra_cxx_flags='-fPIC' -j32
 ```
-- Export the path to ACL libraries (or similar):
+- Copy the build directory to your i.MX8 series board
+- Add the build libraries to `LD_LIBRARY_PATH` to link dynamically:
 ```
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<path_to_acl_repo>/build
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<path_to_the_build>
 ```
-- Now you may run your program or some of the examples and it will link the dynamic libraries unless you used the static libraries for your build.
+- Now you may run your program or some of the examples and it will link the dynamic libraries. You may also use the static libraries instead for a statically linked application.
+
+### 20.08 (Not yet released!)
+- Fixed O3 build break. Switched back from O1 to O3 optimizations.
 
 ### 20.02.01
 - For a complete list of changes see documentation for [20.02.01](https://arm-software.github.io/ComputeLibrary/v20.02.1/) and [20.02](https://arm-software.github.io/ComputeLibrary/v20.02/)
