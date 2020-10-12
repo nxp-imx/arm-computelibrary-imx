@@ -66,6 +66,7 @@ namespace arm_compute
         - @ref NEScharr3x3
         - @ref NESelect
         - @ref NESobel3x3
+        - @ref NESplit
         - @ref NEStridedSlice
         - @ref NEWarpAffine
         - @ref NEWarpPerspective
@@ -179,7 +180,6 @@ namespace arm_compute
     - @ref NESoftmaxLayerGeneric &lt;IS_LOG&gt;
     - @ref NESpaceToBatchLayer
     - @ref NESpaceToDepthLayer
-    - @ref NESplit
     - @ref NEStackLayer
     - @ref NEUnstack
     - @ref NEUpsampleLayer

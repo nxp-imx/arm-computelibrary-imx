@@ -86,7 +86,7 @@ SimpleTensor<T2> accumulate_squared(const SimpleTensor<T1> &src, uint32_t shift,
     library->fill_tensor_uniform(dst, 1, static_cast<T2>(0), static_cast<T2>(std::numeric_limits<T1>::max()));
 
     using intermediate_type = typename common_promoted_signed_type<T1, T2>::intermediate_type;
-    intermediate_type denom = 1 << shift;
+    intermediate_type denom = static_cast<intermediate_type>(1) << shift;
 #if defined(_OPENMP)
     #pragma omp parallel for
 #endif /* _OPENMP */

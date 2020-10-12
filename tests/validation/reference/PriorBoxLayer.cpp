@@ -54,7 +54,7 @@ SimpleTensor<T> prior_box_layer(const SimpleTensor<T> &src1, const SimpleTensor<
     if(step_x == 0.f || step_y == 0.f)
     {
         step_x = static_cast<float>(img_width) / layer_width;
-        step_x = static_cast<float>(img_height) / layer_height;
+        step_y = static_cast<float>(img_height) / layer_height;
     }
 
     // Calculate number of aspect ratios
