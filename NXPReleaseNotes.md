@@ -16,6 +16,11 @@ source <path_to_yocto_sdk>/environment-setup-aarch64-poky-linux
 cd <path_to_acl_repo>
 scons os=linux neon=1 opencl=0 embed_kernels=1 gles_compute=0 arch=arm64-v8a build=cross_compile toolchain_prefix=' ' extra_cxx_flags='-fPIC' -j32
 ```
+- To build all the tests for testing use the following command instead:
+```
+scons os=linux neon=1 opencl=0 embed_kernels=1 gles_compute=0 arch=arm64-v8a build=cross_compile toolchain_prefix=' ' extra_cxx_flags='-fPIC' benchmark_examples=1 validate_examples=1 validation_tests=1 benchmark_tests=1 -j32
+```
+- Optionally you may also use a custom build directory using `build_dir=<build_directory>`
 - Copy the build directory to your i.MX8 series board
 - Add the build libraries to `LD_LIBRARY_PATH` to link dynamically:
 ```
