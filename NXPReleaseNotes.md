@@ -30,6 +30,16 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<path_to_the_build>
 
 ### 20.08 (Not yet released!)
 - Fixed O3 build break. Switched back from O1 to O3 optimizations.
+- Removed forced "-fPIC" in builds. Should be added using extra_cxx_flags='-fPIC'.
+- For a complete list of changes see documentation for [20.08](https://arm-software.github.io/ComputeLibrary/v20.08/) and [20.05](https://arm-software.github.io/ComputeLibrary/v20.05/).
+
+###### Validation tests on Linux imx8mpevk 5.4.47-2.2.0+Galcore version 6.4.3.p0.286725
+```
+./arm_compute_validation --filter='NEON/*' --log-level=ERRORS
+Executed 19415 test(s) (19288 passed, 0 expected failures, 0 failed, 0 crashed, 0 disabled) in 611 second(s)
+./arm_compute_validation --filter='CPP/*' --log-level=ERRORS
+Executed 784 test(s) (784 passed, 0 expected failures, 0 failed, 0 crashed, 0 disabled) in 16 second(s)
+```
 
 ### 20.02.01
 - For a complete list of changes see documentation for [20.02.01](https://arm-software.github.io/ComputeLibrary/v20.02.1/) and [20.02](https://arm-software.github.io/ComputeLibrary/v20.02/)
