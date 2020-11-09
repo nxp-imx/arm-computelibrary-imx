@@ -1,4 +1,5 @@
 # Copyright (c) 2016, 2017 Arm Limited.
+# Copyright 2020 NXP
 #
 # SPDX-License-Identifier: MIT
 #
@@ -281,12 +282,6 @@ if not GetOption("help"):
 
         if not version_at_least(compiler_ver, '7.0.0') and env['os'] == 'bare_metal':
             env.Append(LINKFLAGS = ['-fstack-protector-strong'])
-
-if env['data_type_support']:
-    if any(i in env['data_type_support'] for i in ['all', 'fp16']):
-        env.Append(CXXFLAGS = ['-DENABLE_FP16_KERNELS'])
-    if any(i in env['data_type_support'] for i in ['all', 'fp32']):
-        env.Append(CXXFLAGS = ['-DENABLE_FP32_KERNELS'])
 
 if env['standalone']:
     env.Append(CXXFLAGS = ['-fPIC'])
