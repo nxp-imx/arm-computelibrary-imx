@@ -284,7 +284,11 @@ if env['debug']:
     env.Append(CXXFLAGS = ['-O0','-g','-gdwarf-2'])
     env.Append(CPPDEFINES = ['ARM_COMPUTE_DEBUG_ENABLED'])
 else:
-    env.Append(CXXFLAGS = ['-O1', '-ftree-vectorize']) # change back to O3 when fixed with GCC 9.2 or when a different compiler is used
+    version_split = compiler_ver.split('.')
+    if (len(version_split) >= 2) and (version_split[0] == 9 and version_split[1] == 2):
+        env.Append(CXXFLAGS = ['-O1', '-ftree-vectorize']) # there is a bug in GCC 9.2 which requires -O1
+    else:
+        env.Append(CXXFLAGS = ['-O3', '-ftree-vectorize'])
 
 if env['asserts']:
     env.Append(CPPDEFINES = ['ARM_COMPUTE_ASSERTS_ENABLED'])
