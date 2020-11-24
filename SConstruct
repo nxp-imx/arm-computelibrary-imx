@@ -26,12 +26,14 @@ import os
 import subprocess
 
 def version_at_least(version, required):
-    end = min(len(version), len(required))
 
-    for i in range(0, end, 2):
-        if int(version[i]) < int(required[i]):
+    version_list = version.split('.')
+    required_list = required.split('.')
+    end = min(len(version_list), len(required_list))
+    for i in range(0, end):
+        if int(version_list[i]) < int(required_list[i]):
             return False
-        elif int(version[i]) > int(required[i]):
+        elif int(version_list[i]) > int(required_list[i]):
             return True
 
     return True
@@ -282,9 +284,7 @@ if env['debug']:
     env.Append(CXXFLAGS = ['-O0','-g','-gdwarf-2'])
     env.Append(CPPDEFINES = ['ARM_COMPUTE_DEBUG_ENABLED'])
 else:
-    env.Append(CXXFLAGS = ['-O1', '-ftree-vectorize']) # change back to O3 when fixed with GCC 9.2
-
-env.Append(CXXFLAGS = ['-fPIC'])
+    env.Append(CXXFLAGS = ['-O1', '-ftree-vectorize']) # change back to O3 when fixed with GCC 9.2 or when a different compiler is used
 
 if env['asserts']:
     env.Append(CPPDEFINES = ['ARM_COMPUTE_ASSERTS_ENABLED'])

@@ -9,7 +9,7 @@ The latest release notes are for the ARM Compute Library (ACL) release 20.02.01.
 - Navigate to the ACL directory and compile it with the following command or similar (see [documentation](https://arm-software.github.io/ComputeLibrary/v20.02.1/) for additional parameters):
 ```
 cd <path_to_acl_repo>
-scons os=linux neon=1 opencl=0 embed_kernels=1 gles_compute=0 arch=arm64-v8a build=cross_compile Werror=0 examples=1 -j32
+scons os=linux neon=1 opencl=0 embed_kernels=1 gles_compute=0 arch=arm64-v8a build=cross_compile toolchain_prefix=' ' extra_cxx_flags='-fPIC' Werror=0 examples=1 -j32
 ```
 - Export the path to ACL libraries (or similar):
 ```
