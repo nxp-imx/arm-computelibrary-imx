@@ -285,10 +285,15 @@ if env['debug']:
     env.Append(CPPDEFINES = ['ARM_COMPUTE_DEBUG_ENABLED'])
 else:
     version_split = compiler_ver.split('.')
-    if (len(version_split) >= 2) and (version_split[0] == 9 and version_split[1] == 2):
-        env.Append(CXXFLAGS = ['-O1', '-ftree-vectorize']) # there is a bug in GCC 9.2 which requires -O1
+    if (len(version_split) >= 1) and ('g++' in cpp_compiler):
+        if version_split[0] == '9':
+            env.Append(CXXFLAGS = ['-O1'])  # workaround for a bug on GCC 9.2 which breaks compile
+        else:
+            env.Append(CXXFLAGS = ['-O3'])  # GCC except for GCC 9.X
     else:
-        env.Append(CXXFLAGS = ['-O3', '-ftree-vectorize'])
+        env.Append(CXXFLAGS = ['-O3'])  # other compilers
+
+    env.Append(CXXFLAGS = ['-ftree-vectorize'])
 
 if env['asserts']:
     env.Append(CPPDEFINES = ['ARM_COMPUTE_ASSERTS_ENABLED'])
