@@ -17,9 +17,15 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<path_to_acl_repo>/build
 ```
 - Now you may run your program or some of the examples and it will link the dynamic libraries unless you used the static libraries for your build.
 
-### 20.02.01
+### 20.02.01 5.4.70-2.3.0
+- There are only minor fixes
+- O1 optimizations are enabled while compiling with GCC 9.X, for other compilers O3 is used. The expected performance drop on CPU (NEON) ranges from 2% to roughly 15-20% on i.MX8MPlus (based on model size where 2% is for large models such as quantized InceptionV4 and 15-20% might be for those Mobilenets).
+- `-fPIC` was removed for all builds and must be added using `extra_cxx_flags='-fPIC'`
+- In order to cross-compile using Yocto SDK `toolchain_prefix=' '` must be added not to enforce a prefix from the build script, but rather the one from Yocto SDK
+
+### 20.02.01 5.4.47-2.2.0
 - For a complete list of changes see documentation for [20.02.01](https://arm-software.github.io/ComputeLibrary/v20.02.1/) and [20.02](https://arm-software.github.io/ComputeLibrary/v20.02/)
-- Removed "imx8" scons compile flag
+- Removed `imx8` scons compile flag
 - Switched from O3 to O1 optimization due to compile break
 
 ##### Validation tests on Linux imx8mpevk 5.4.47-2.2.0+Galcore version 6.4.3.p0.283965
@@ -32,7 +38,7 @@ Executed 710 test(s) (710 passed, 0 expected failures, 0 failed, 0 crashed, 0 di
 
 ### 19.08.01
 - Fixes in Accumulate and PriorBoxLayer tests
-- "-fPIC" added automatically to all builds
+- `-fPIC` added automatically to all builds
 - Fixed GCC 9.2 compilation errors
 - For a complete list of changes see documentation for [19.08.01](https://arm-software.github.io/ComputeLibrary/v19.08.1/) and [19.08](https://arm-software.github.io/ComputeLibrary/v19.08/)
 
