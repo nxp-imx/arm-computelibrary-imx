@@ -107,4 +107,4 @@ If you believe you have discovered a security issue please contact MLG-Security@
 
 ### NXP Release Notes
 
-NXP provides ACL with fixes and optimizations targeted for the i.MX8 application processors in the form of a fork of the original [ARM repository](https://github.com/ARM-software/ComputeLibrary). For details see the [Release Notes](NXPReleaseNotes.md).
+Code releases and release branches for this repository are aligned with Yocto Linux releases for the [i.MX8 series](https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/i-mx-applications-processors/i-mx-8-processors:IMX8-SERIES) and not with actual ACL versions. Corresponding ACL version is always referred to in these [Release Notes](NXPReleaseNotes.md).

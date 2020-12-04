@@ -1,7 +1,10 @@
 # ARM Compute Library NXP Release Notes
 
 ## Overview
-The latest release notes are for the ARM Compute Library (ACL) release 20.02.01. The purpose of this release is to adapt the [original ACL 20.02.01](https://github.com/ARM-software/ComputeLibrary) and optimize it for the NXP i.MX8 series. Only NEON/CPU backend is supported, OpenCL backend is not tested, but it can be used experimentally. To take advantage of GPU and NPU acceleration on NXP i.MX8, we strongly suggest using [Arm NN with the VSI NPU backend](https://source.codeaurora.org/external/imx/armnn-imx).
+
+NXP releases a fork of [ACL](https://github.com/ARM-software/ComputeLibrary) in order to optimize it for the [NXP i.MX8 series](https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/i-mx-applications-processors/i-mx-8-processors:IMX8-SERIES) of applications processors. As a member of the [Linaro Machine Learning Initiative](https://www.mlplatform.org/), the intetion is to differ from the upstream repository only with changes, which are specific to the processors and upstream all changes that are valid.
+
+Only NEON/CPU backend is supported, OpenCL backend is not tested, but it can be used experimentally to run it on a GPU (if available). OpenCL 1.2 is available on most i.MX8 processors, so with a few hacks, such as removing the dependency on uniform workgroup size, it is able to run. However, we do not guarantee that it will work correctly and generally suggest not to use it. Instead, to take advantage of GPU and NPU acceleration on [NXP i.MX8](https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/i-mx-applications-processors/i-mx-8-processors:IMX8-SERIES), we strongly suggest using [Arm NN with the VSI NPU backend](https://source.codeaurora.org/external/imx/armnn-imx).
 
 ## How to compile and execute ACL mannualy
 - Clone the [NXP repository](https://source.codeaurora.org/external/imx/arm-computelibrary-imx)
@@ -17,13 +20,13 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<path_to_acl_repo>/build
 ```
 - Now you may run your program or some of the examples and it will link the dynamic libraries unless you used the static libraries for your build.
 
-### 20.02.01 5.4.70-2.3.0
+### Yocto 5.4.70-2.3.0 (20.02.01)
 - There are only minor fixes
 - O1 optimizations are enabled while compiling with GCC 9.X, for other compilers O3 is used. The expected performance drop on CPU (NEON) ranges from 2% to roughly 15-20% on i.MX8MPlus (based on model size where 2% is for large models such as quantized InceptionV4 and 15-20% might be for those Mobilenets).
 - `-fPIC` was removed for all builds and must be added using `extra_cxx_flags='-fPIC'`
 - In order to cross-compile using Yocto SDK `toolchain_prefix=' '` must be added not to enforce a prefix from the build script, but rather the one from Yocto SDK
 
-### 20.02.01 5.4.47-2.2.0
+### Yocto 5.4.47-2.2.0 (20.02.01)
 - For a complete list of changes see documentation for [20.02.01](https://arm-software.github.io/ComputeLibrary/v20.02.1/) and [20.02](https://arm-software.github.io/ComputeLibrary/v20.02/)
 - Removed `imx8` scons compile flag
 - Switched from O3 to O1 optimization due to compile break
