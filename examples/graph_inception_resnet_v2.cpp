@@ -197,7 +197,9 @@ public:
         config.tuner_mode  = common_params.tuner_mode;
         config.tuner_file  = common_params.tuner_file;
 
-        graph.finalize(common_params.target, config, false);
+        // switch on IR mutating pass and switch off Backend mutating pass
+        // TODO(AIR-3651): Fix graph_inception_resnet_v2 and node fusion.
+        graph.finalize(common_params.target, config, true, false);
 
         return true;
     }

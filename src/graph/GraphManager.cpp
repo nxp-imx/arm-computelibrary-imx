@@ -43,7 +43,7 @@ GraphManager::GraphManager()
 {
 }
 
-void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &pm, Target target, bool apply_IR_mutating_pass)
+void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &pm, Target target, bool apply_IR_mutating_pass, bool apply_Backend_mutating_pass)
 {
     // Check if graph has been registered
     if(_workloads.find(graph.id()) != std::end(_workloads))
@@ -75,7 +75,10 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     detail::configure_all_tensors(graph);
 
     // Apply backend mutating passes
-    pm.run_type(graph, IGraphMutator::MutationType::Backend);
+    if(apply_Backend_mutating_pass)
+    {
+        pm.run_type(graph, IGraphMutator::MutationType::Backend);
+    }
 
     // Perform topological sort
     std::vector<NodeID> topological_sorted_nodes = dfs(graph);
