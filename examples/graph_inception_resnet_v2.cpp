@@ -198,7 +198,7 @@ public:
         config.tuner_file  = common_params.tuner_file;
         config.mlgo_file   = common_params.mlgo_file;
 
-        graph.finalize(common_params.target, config);
+        graph.finalize(common_params.target, config, false);
 
         return true;
     }
