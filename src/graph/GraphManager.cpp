@@ -43,7 +43,7 @@ GraphManager::GraphManager()
 {
 }
 
-void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &pm, Target target)
+void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &pm, Target target, bool apply_IR_mutating_pass)
 {
     // Check if graph has been registered
     if(_workloads.find(graph.id()) != std::end(_workloads))
@@ -52,7 +52,10 @@ void GraphManager::finalize_graph(Graph &graph, GraphContext &ctx, PassManager &
     }
 
     // Apply IR mutating passes
-    pm.run_type(graph, IGraphMutator::MutationType::IR);
+    if(apply_IR_mutating_pass)
+    {
+        pm.run_type(graph, IGraphMutator::MutationType::IR);
+    }
 
     // Force target to all graph construct
     // TODO (COMPMID-2014) : Support heterogeneous execution

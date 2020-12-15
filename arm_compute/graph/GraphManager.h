@@ -65,8 +65,10 @@ public:
      * @param[in] ctx    Graph context
      * @param[in] pm     Pass manager to use for any optimization passes
      * @param[in] target Execution target (Single target execution is currently supported)
+     * @param[in] apply_IR_mutating_pass (Optional) Switch on/off IR mutating passes.
+     * TODO(AIR-3651): Fix graph_inception_resnet_v2 and node fusion.
      */
-    void finalize_graph(Graph &graph, GraphContext &ctx, PassManager &pm, Target target);
+    void finalize_graph(Graph &graph, GraphContext &ctx, PassManager &pm, Target target, bool apply_IR_mutating_pass = true);
     /** Executes a graph
      *
      * @param[in] graph Graph to execute

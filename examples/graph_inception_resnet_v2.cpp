@@ -197,7 +197,7 @@ public:
         config.tuner_mode  = common_params.tuner_mode;
         config.tuner_file  = common_params.tuner_file;
 
-        graph.finalize(common_params.target, config);
+        graph.finalize(common_params.target, config, false);
 
         return true;
     }
