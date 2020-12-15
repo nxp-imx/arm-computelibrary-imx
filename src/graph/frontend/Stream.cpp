@@ -37,11 +37,11 @@ Stream::Stream(size_t id, std::string name)
 {
 }
 
-void Stream::finalize(Target target, const GraphConfig &config, bool apply_IR_mutating_pass)
+void Stream::finalize(Target target, const GraphConfig &config, bool apply_IR_mutating_pass, bool apply_Backend_mutating_pass)
 {
     PassManager pm = create_default_pass_manager(target, config);
     _ctx.set_config(config);
-    _manager.finalize_graph(_g, _ctx, pm, target, apply_IR_mutating_pass);
+    _manager.finalize_graph(_g, _ctx, pm, target, apply_IR_mutating_pass, apply_Backend_mutating_pass);
 }
 
 void Stream::run()

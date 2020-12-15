@@ -60,9 +60,10 @@ public:
      * @param[in] target Execution target
      * @param[in] config (Optional) Graph configuration to use
      * @param[in] apply_IR_mutating_pass (Optional) Switch on/off IR mutating passes.
+     * @param[in] apply_Backend_mutating_pass (Optional) Switch on/off Backend mutating passes.
      * TODO(AIR-3651): Fix graph_inception_resnet_v2 and node fusion.
      */
-    void finalize(Target target, const GraphConfig &config, bool apply_IR_mutating_pass = true);
+    void finalize(Target target, const GraphConfig &config, bool apply_IR_mutating_pass = true, bool apply_Backend_mutating_pass = true);
     /** Executes the stream **/
     void run();
 
