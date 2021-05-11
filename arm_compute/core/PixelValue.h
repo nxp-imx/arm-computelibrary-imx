@@ -35,7 +35,7 @@ class PixelValue
 {
 public:
     /** Default constructor: value initialized to 0 */
-    PixelValue()
+    PixelValue() noexcept
         : value{ int64_t(0) }
     {
     }
@@ -45,7 +45,7 @@ public:
      * @param[in] datatype DataType that @p v have to be stored
      * @param[in] qinfo    (Optional) QuantizationInfo to apply in case of quantized data types to @p v
      */
-    PixelValue(double v, DataType datatype, QuantizationInfo qinfo = QuantizationInfo())
+    PixelValue(double v, DataType datatype, QuantizationInfo qinfo = QuantizationInfo()) noexcept
         : PixelValue()
     {
         switch(datatype)
@@ -108,7 +108,7 @@ public:
      *
      * @param[in] v S8 value.
      */
-    PixelValue(int8_t v)
+    PixelValue(int8_t v) noexcept
         : PixelValue()
     {
         value.s8 = v;
@@ -117,7 +117,7 @@ public:
      *
      * @param[in] v U8 value.
      */
-    PixelValue(uint8_t v)
+    PixelValue(uint8_t v) noexcept
         : PixelValue()
     {
         value.u8 = v;
@@ -126,7 +126,7 @@ public:
      *
      * @param[in] v U16 value.
      */
-    PixelValue(uint16_t v)
+    PixelValue(uint16_t v) noexcept
         : PixelValue()
     {
         value.u16 = v;
@@ -135,7 +135,7 @@ public:
      *
      * @param[in] v S16 value.
      */
-    PixelValue(int16_t v)
+    PixelValue(int16_t v) noexcept
         : PixelValue()
     {
         value.s16 = v;
@@ -144,7 +144,7 @@ public:
      *
      * @param[in] v U32 value.
      */
-    PixelValue(uint32_t v)
+    PixelValue(uint32_t v) noexcept
         : PixelValue()
     {
         value.u32 = v;
@@ -153,7 +153,7 @@ public:
      *
      * @param[in] v S32 value.
      */
-    PixelValue(int32_t v)
+    PixelValue(int32_t v) noexcept
         : PixelValue()
     {
         value.s32 = v;
@@ -163,7 +163,7 @@ public:
      *
      * @param[in] v U64 value.
      */
-    PixelValue(uint64_t v)
+    PixelValue(uint64_t v) noexcept
         : PixelValue()
     {
         value.u64 = v;
@@ -172,7 +172,7 @@ public:
      *
      * @param[in] v S64 value.
      */
-    PixelValue(int64_t v)
+    PixelValue(int64_t v) noexcept
         : PixelValue()
     {
         value.s64 = v;
@@ -181,7 +181,7 @@ public:
      *
      * @param[in] v F16 value.
      */
-    PixelValue(bfloat16 v)
+    PixelValue(bfloat16 v) noexcept
         : PixelValue()
     {
         value.bf16 = v;
@@ -190,7 +190,7 @@ public:
      *
      * @param[in] v F16 value.
      */
-    PixelValue(half v)
+    PixelValue(half v) noexcept
         : PixelValue()
     {
         value.f16 = v;
@@ -199,7 +199,7 @@ public:
      *
      * @param[in] v F32 value.
      */
-    PixelValue(float v)
+    PixelValue(float v) noexcept
         : PixelValue()
     {
         value.f32 = v;
@@ -208,7 +208,7 @@ public:
      *
      * @param[in] v F64 value.
      */
-    PixelValue(double v)
+    PixelValue(double v) noexcept
         : PixelValue()
     {
         value.f64 = v;
