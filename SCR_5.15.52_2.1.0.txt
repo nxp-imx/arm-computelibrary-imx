@@ -1,0 +1,57 @@
+NXP Software Content Register
+
+Release - Arm Compute Library 22.05 for LF 5.15.52_2.1.0
+September 2022
+
+Outgoing License: MIT
+License File:     ./LICENSE
+
+Release branch: lf-5.15.52_2.1.0
+
+--------------------------------------------
+
+Package:                   arm-computelibrary-imx.git
+Version:                   22.05
+Outgoing License:          MIT
+License File:              LICENSE
+Description and comments:  Collection of low-level machine learning functions optimized for Arm Cortex-A, Arm Neoverse and Arm Mali GPUs.
+Release Location:          https://source.codeaurora.org/external/imx/arm-computelibrary-imx.git -b lf-5.15.52_2.1.0
+Origin:                    https://github.com/ARM-software/ComputeLibrary
+
+--------------------------------------------
+
+Addtionally following packages are used at build time:
+
+--------------------------------------------
+
+Package:                   OpenCL
+Version:                   2.0
+Outgoing License:          Apache 2.0
+License File:              http://www.apache.org/licenses/LICENSE-2.0
+Location:                  ./include/CL
+ 
+--------------------------------------------
+
+Package:                   half
+Version:                   1.12.0
+Outgoing License:          MIT
+License File:              ./include/half/LICENSE.txt
+Location:                  ./include/half
+ 
+-------------------------------------------- 
+
+Package:                   libnpy
+Version:                   2.0
+Outgoing License:          MIT
+License File:              ./LICENSE
+Location:                  ./include/libnpy
+ 
+-------------------------------------------- 
+
+Package:                   stb
+Version:                   v2.19
+Outgoing License:          MIT or Public Domain
+License File:              ./LICENSE
+Location:                  ./include/stb
+ 
+-------------------------------------------- 

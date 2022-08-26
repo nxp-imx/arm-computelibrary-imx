@@ -5,7 +5,6 @@ build/
 *cscope*
 
 # Text files
-*.txt
 *.xml
 *.embed
 *.diff
