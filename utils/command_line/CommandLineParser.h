@@ -34,6 +34,7 @@
 #include <regex>
 #include <string>
 #include <utility>
+#include <cstring>
 #include <vector>
 
 namespace arm_compute
