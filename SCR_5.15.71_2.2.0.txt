@@ -15,7 +15,6 @@ Version:                   22.05
 Outgoing License:          MIT
 License File:              LICENSE
 Description and comments:  Collection of low-level machine learning functions optimized for Arm Cortex-A, Arm Neoverse and Arm Mali GPUs.
-Release Location:          https://source.codeaurora.org/external/imx/arm-computelibrary-imx.git -b lf-5.15.71_2.2.0
 Origin:                    https://github.com/ARM-software/ComputeLibrary
 
 --------------------------------------------
