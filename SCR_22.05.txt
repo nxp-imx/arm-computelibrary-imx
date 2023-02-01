@@ -1,0 +1,62 @@
+NXP Software Content Register
+
+Release - Arm Compute Library 22.05
+March 2023
+
+Outgoing License: MIT
+License in File: LICENSE
+
+Release branch: lf-6.1.1_1.0.0
+
+--------------------------------------------
+
+Package:                   arm-computelibrary-imx.git
+Version:                   22.05
+Outgoing License:          MIT
+License File:              LICENSE
+Description and comments:  The Compute Library is a collection of low-level machine learning functions optimized for Arm® Cortex®-A,
+                           Arm® Neoverse® and Arm® Mali™ GPUs architectures.
+Release Location:          https://github.com/nxp-imx/arm-computelibrary-imx -b lf-6.1.1_1.1.0
+Origin:                    Linaro - https://git.mlplatform.org/ml/ComputeLibrary.git/
+
+--------------------------------------------
+
+Package:                   include/CL
+Version:                   N/A
+Outgoing License:          Apache 2.0
+License File:              N/A
+Description and comments:  Khronos OpenCL spedification
+Release Location:          N/A
+Origin:                    Khronos
+                           
+--------------------------------------------
+
+Package:                   include/half
+Version:                   N/A
+Outgoing License:          MIT
+License File:              include/half/LICENSE.txt
+Description and comments:  C++ header-only library to provide an IEEE 754 conformant 16-bit half-precision floating point type
+                           along with corresponding arithmetic operators, type conversions and common mathematical functions.
+Release Location:          N/A
+Origin:                    N/A
+                           
+--------------------------------------------
+
+Package:                   include/libnpu
+Version:                   N/A
+Outgoing License:          MIT
+License File:              N/A
+Description and comments:  Simple C++ library for reading and writing of numpy's .npy files.
+Release Location:          N/A
+Origin:                    N/A
+                           
+--------------------------------------------
+Package:                   include/stb
+Version:                   v2.19
+Outgoing License:          Public Domain
+License File:              N/A
+Description and comments:  public domain image loader - http://nothings.org/stb
+Release Location:          N/A
+Origin:                    N/A
+                           
+--------------------------------------------
