@@ -26,8 +26,6 @@
 #include "arm_compute/core/Error.h"
 #include "arm_compute/runtime/CL/CLScheduler.h"
 
-#include "src/common/utils/Log.h"
-
 namespace arm_compute
 {
 ICLMemoryRegion::ICLMemoryRegion(size_t size)
@@ -74,14 +72,7 @@ CLBufferMemoryRegion::~CLBufferMemoryRegion()
     // Flush the command queue to ensure all commands that may use this memory buffer are scheduled to be finished before
     // this buffer is freed
     // Do not call finish as it is a blocking call which affects the performance
-    try
-    {
-        CLScheduler::get().queue().flush();
-    }
-    catch (const std::exception &e)
-    {
-        ARM_COMPUTE_LOG_ERROR_ACL(e.what());
-    }
+    CLScheduler::get().queue().flush();
 }
 
 void *CLBufferMemoryRegion::ptr()
